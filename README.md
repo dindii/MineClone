@@ -5,7 +5,7 @@ Learning purposes project.
 Just for fun (:
 
 
-HOW TO INSTALL:
+HOW TO BUILD:
 
 For now, you just need to have premake (https://github.com/premake/premake-core) and execute premake5.exe with your configuration. 
 
