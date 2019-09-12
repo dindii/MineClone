@@ -2,8 +2,6 @@
 #include "Application.h"
 #include "Utils/Logger.h"
 
-#include <iostream>
-
 namespace MC
 {
 

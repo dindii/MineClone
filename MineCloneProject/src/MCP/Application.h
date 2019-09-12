@@ -2,6 +2,13 @@
 
 namespace MC
 {
+
+	/*
+	* Aqui é a central do programa, basicamente poderia se chamar "Engine", a Application é um singleton (como só temos uma Application) que terá
+	  suas janelas, seus sistemas de renderer e irá também distribuir os eventos que é recebido por meio de nossa janela.
+	  Aqui também atualizaremos todos os sistemas e com isso daremos oportunidade ao App.cpp funcionar perfeitamente.
+	*/
+
 	class Application
 	{
 	public:

@@ -1,6 +1,10 @@
 #include <MC.h>
 
 
+/*
+* Detalhes sobre a implementação em Application.h
+*/
+
 class SandBoxApp : public MC::Application
 {
 public:
