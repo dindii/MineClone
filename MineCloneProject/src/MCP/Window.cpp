@@ -115,7 +115,7 @@ namespace MC
 	{
 	   // DEBUG HELLO TRIANGLE
 
-		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+		glClearColor(0.501f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
@@ -129,7 +129,7 @@ namespace MC
 			"out vec4 FragColor;\n"
 			"void main()\n"
 			"{\n"
-			"   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+			"   FragColor = vec4(1.0f, 0.749f, 0.0f, 1.0f);\n"
 			"}\n\0";
 
 		int vertexShader = glCreateShader(GL_VERTEX_SHADER);
