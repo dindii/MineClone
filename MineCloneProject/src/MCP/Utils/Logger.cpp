@@ -1,5 +1,5 @@
 #include "mcpch.h"
-#include "logger.h"
+#include "Logger.h"
 
 
 namespace MC {
@@ -51,7 +51,7 @@ namespace MC {
 
 		void Logger::checkFatal(const Level& level)
 		{
-			if (level == Level::FATAL)
+			if (level == Level::MCFATAL)
 				MC_ASSERT(false);
 		}
 	}

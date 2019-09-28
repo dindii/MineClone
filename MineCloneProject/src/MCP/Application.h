@@ -1,4 +1,5 @@
 #pragma once
+#include "Window.h"
 
 namespace MC
 {
@@ -22,7 +23,7 @@ namespace MC
 		
 	private:
 		bool m_Running;
-		
+		Window* m_Window;
 	};
 
 	Application* CreateApplication();

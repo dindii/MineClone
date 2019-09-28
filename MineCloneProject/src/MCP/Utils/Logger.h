@@ -15,10 +15,10 @@ namespace MC {
 		{
 			enum Level
 			{
-				TRACE = 0,
-				WARNING,
-				ERROR,
-				FATAL,
+				MCTRACE = 0,
+				MCWARNING,
+				MCERROR,
+				MCFATAL,
 			};
 
 			Logger();
@@ -37,13 +37,12 @@ namespace MC {
 	}
 }
 
-#define MC_ASSERT(x) if(!x) __debugbreak()
 
 #ifdef  MC_DEBUG
-#define MC_LOG_TRACE(...)   MC::Debug::Logger::Log(__VA_ARGS__, MC::Debug::Logger::Level::TRACE);
-#define MC_LOG_WARNING(...) MC::Debug::Logger::Log(__VA_ARGS__,  MC::Debug::Logger::Level::WARNING);
-#define MC_LOG_ERROR(...)   MC::Debug::Logger::Log(__VA_ARGS__,  MC::Debug::Logger::Level::ERROR);
-#define MC_LOG_FATAL(...)   MC::Debug::Logger::Log(__VA_ARGS__,  MC::Debug::Logger::Level::FATAL);
+#define MC_LOG_TRACE(...)   MC::Debug::Logger::Log(__VA_ARGS__,  MC::Debug::Logger::Level::MCTRACE);
+#define MC_LOG_WARNING(...) MC::Debug::Logger::Log(__VA_ARGS__,  MC::Debug::Logger::Level::MCWARNING);
+#define MC_LOG_ERROR(...)   MC::Debug::Logger::Log(__VA_ARGS__,  MC::Debug::Logger::Level::MCERROR);
+#define MC_LOG_FATAL(...)   MC::Debug::Logger::Log(__VA_ARGS__,  MC::Debug::Logger::Level::MCFATAL);
 
 #else
 #define MC_LOG_TRACE(...) 
@@ -52,3 +51,5 @@ namespace MC {
 #define MC_LOG_FATAL(...) 
 
 #endif
+
+#define MC_ASSERT(x) if(!x)  __debugbreak()

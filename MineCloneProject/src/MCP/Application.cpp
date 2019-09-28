@@ -10,19 +10,21 @@ namespace MC
 	Application::Application() : m_Running(true)
 	{
 		s_Instance = this;
+
+		m_Window = new Window(1360, 720, "MClone!");
+
 	}
 
 	Application::~Application()
 	{
-
+		delete m_Window;
 	}
 
 	void Application::Run()
 	{
 		while (m_Running)
 		{
-			MC_LOG_TRACE("Hello, World!");
-			std::cin.get();
+			m_Window->pollEvents();
 		}
 	}
 }

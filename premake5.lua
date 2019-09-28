@@ -12,6 +12,13 @@ configurations
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
+ IncludeDir = {}
+  IncludeDir["Glad"] = "MineCloneProject/vendor/Glad/include"
+
+  group "Dependencies"
+  include "MineCloneProject/vendor/Glad"
+  group ""
+
 project "MineCloneProject"
 	location "MineCloneProject"
 	kind "StaticLib"
@@ -33,9 +40,17 @@ project "MineCloneProject"
 
 	includedirs
 	{
-		"%{prj.name}/src"
+		"%{prj.name}/src",
+		"%{IncludeDir.Glad}"
+
 	}
 	
+	links
+	{
+		"Glad",
+		"opengl32.lib"
+	}
+
 	filter "system:windows"
 	systemversion "latest"
 
@@ -87,7 +102,7 @@ project "MineCloneProject"
 
 	links                      -- Linkamos a Engine no Sandbox também
       {
-      	 --"MineCloneProject"
+      	 "MineCloneProject"
       }
 	
 	filter "system:windows"
