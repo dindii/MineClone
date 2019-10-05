@@ -14,7 +14,6 @@ namespace MC
 
 		m_Details = new WindowProperties(Width, Height, Name);
 		m_WindowInput = new WindowInput();
-	//	m_WindowInput->setEventCallback(EventCallback);
 
 
 		WNDCLASSEX wc;
@@ -40,6 +39,8 @@ namespace MC
 			NULL, NULL, NULL, this);
 
 		ShowWindow(m_NativeWindow, SW_SHOW);
+		SetActiveWindow(m_NativeWindow);
+		//SetCapture(m_NativeWindow);
 
 		loadGraphicsContext();
 
@@ -102,15 +103,10 @@ namespace MC
 		delete m_Details;
 		delete m_WindowInput;
 
-		if(GetDC(m_NativeWindow))
-			if(!wglMakeCurrent(NULL, NULL))
-				MC_LOG_FATAL("Release Of DC And RC Failed.");
+		if (GetDC(m_NativeWindow))
+			if (!wglMakeCurrent(NULL, NULL))
 
-
-		if(!DestroyWindow(m_NativeWindow))
-			MC_LOG_FATAL("Could not destroy window.");
-			
-
+		if (DestroyWindow(m_NativeWindow));
 	}
 
 	void Window::onUpdate()

@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-
+#include "MCP/Event/Event.h"
 
 
 /*      @ TODO:
@@ -24,7 +24,9 @@ namespace MC {
 			Logger();
 			~Logger();
 
+			static void Log(Event& event, const Level level);
 			static void Log(const char* string, const Level level);
+			static void Log(std::string string, const Level level);
 			static void Log(const int num, const Level level);
 			static void Log(const float num, const Level level);
 

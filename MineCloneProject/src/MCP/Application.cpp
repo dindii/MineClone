@@ -30,9 +30,36 @@ namespace MC
 		}
 	}
 
-	void Application::OnEvent(Event& e)
+	void Application::OnEvent(Event& event)
 	{
-		std::cout << e.ToString() << std::endl;
+
+		//No futuro a maioria disso aqui vai ser mandado para os Layers e somente.
+
+		MC_LOG_TRACE(event);
+
+		EventDispatcher Dispatcher(event);
+
+		Dispatcher.Dispatch<WindowCloseEvent>([&](WindowCloseEvent Event) -> bool
+		{
+			this->setRunning(false);
+			
+			return true;
+		});
+
+		//TEST
+		Dispatcher.Dispatch<KeyPressedEvent>([&](KeyPressedEvent Event) -> bool
+		{
+			if (Event.GetKeyCode() == MC_KEYS::MC_KEY_ESC)
+			{
+				WindowCloseEvent e;
+				this->OnEvent(e);
+
+				return true;
+			}
+
+			return true;
+		});
+
 	}
 
 }

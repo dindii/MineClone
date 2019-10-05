@@ -20,9 +20,11 @@ namespace MC
 
 		void OnEvent(Event& e);
 
+		inline void setRunning(bool isRunning) { m_Running = isRunning; }
+
 	private:
 		static Application* s_Instance;
-		
+	
 	private:
 		bool m_Running;
 		Window* m_Window;

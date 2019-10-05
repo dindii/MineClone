@@ -29,7 +29,6 @@ namespace MC
 
 		void swapBuffers() const;
 
-	//	inline void setEventCallback(const EventCallbackFn& callback) { EventCallback = callback; }
 		inline void setEventCallback(const EventCallbackFn& callback) { m_WindowInput->setEventCallback(callback); }
 
 	private:

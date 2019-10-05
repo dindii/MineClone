@@ -43,6 +43,20 @@ namespace MC {
 			checkFatal(level);
 		}
 
+		void Logger::Log(std::string string, const Level level)
+		{
+			printf("%s:  %s\n", levelLabels[level].c_str(), string.c_str());
+			Dispatch();
+			checkFatal(level);
+		}
+
+		void Logger::Log(Event& event, const Level level)
+		{
+			printf("%s:  %s\n", levelLabels[level].c_str(), event.ToString().c_str());
+			Dispatch();
+			checkFatal(level);
+		}
+
 		//Since the main purpose of this log it's human interaction, i will be flushing in every message.
 		void Logger::Dispatch()
 		{

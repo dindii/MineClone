@@ -7,10 +7,10 @@ namespace MC
 	class MouseMovedEvent : public Event
 	{
 	public:
-		MouseMovedEvent(float x, float y) : m_MouseX(x), m_MouseY(y) {};
+		MouseMovedEvent(uint16_t x, uint16_t y) : m_MouseX(x), m_MouseY(y) {};
 
-		inline float GetX() const { return m_MouseX; }
-		inline float GetY() const { return m_MouseY; }
+		inline uint16_t GetX() const { return m_MouseX; }
+		inline uint16_t GetY() const { return m_MouseY; }
 
 		std::string ToString() const override
 		{
@@ -23,12 +23,12 @@ namespace MC
 		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
 
 	private:
-		float m_MouseX, m_MouseY;
+		uint16_t m_MouseX, m_MouseY;
 	};
 
-	class MoouseScrolledEvent : public Event
+	class MouseScrolledEvent : public Event
 	{
-		MoouseScrolledEvent(float xOffset, float yOffset) : m_XOffset(xOffset), m_YOffset(yOffset) {};
+		MouseScrolledEvent(float xOffset, float yOffset) : m_XOffset(xOffset), m_YOffset(yOffset) {};
 
 		inline float GetXOffset() const { return m_XOffset; }
 		inline float GetYOffset() const { return m_YOffset; }

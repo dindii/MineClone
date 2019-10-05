@@ -19,21 +19,21 @@ namespace MC
 	class KeyPressedEvent : public KeyEvent
 	{
 	public:
-		KeyPressedEvent(int keycode, int repeatCount) : KeyEvent(keycode), m_RepeatCount(repeatCount) {};
+		KeyPressedEvent(int keycode, bool repeated) : KeyEvent(keycode), m_Repeated(repeated) {};
 		
-		inline int GetRepeatCount() const { return m_RepeatCount; }
+		inline bool GetRepeated() const { return m_Repeated; }
 
 		std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "KeyPressedEvent: " << m_KeyCode << "(" << m_RepeatCount << " repeats";
+			ss << "KeyPressedEvent: " << m_KeyCode << "(" << (m_Repeated ? "Repeated)" : "Not Repeated)");
 			return ss.str();
 		}
 
 		EVENT_CLASS_TYPE(KeyPressed)
 
 	private:
-		int m_RepeatCount;
+		bool m_Repeated;
 	};
 
 
@@ -61,7 +61,7 @@ namespace MC
 		{
 			std::stringstream ss;
 			ss << "KeyTypedEvent: " << m_KeyCode;
-			ss.str();
+			return ss.str();
 		}
 
 		EVENT_CLASS_TYPE(KeyTyped)
