@@ -87,18 +87,19 @@ namespace MC
 			MC_LOG_FATAL("Failed to load OpenGL (Glad).");
 		}
 
+
 		MC_LOG_TRACE((char*)glGetString(GL_VENDOR));
 		MC_LOG_TRACE((char*)glGetString(GL_VERSION));
 		
 
-
 		//Setup the first OpenGL call
-		glViewport(0, 0, m_Details->Width, m_Details->Height);
+		glViewport(0, 0, m_Details->Width, m_Details->Height); //@TODO: Mover isso para outro lugar que lide apenas com OpenGL calls.
 	}
 
 	Window::~Window()
 	{
 		delete m_Details;
+		delete m_WindowInput;
 
 		if(GetDC(m_NativeWindow))
 			if(!wglMakeCurrent(NULL, NULL))
@@ -200,8 +201,9 @@ namespace MC
 		glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 
-		SwapBuffers(GetDC(m_NativeWindow));
-
+		//Permanente
+		swapBuffers();
+		pollEvents();
 	}
 
 	bool Window::pollEvents()
@@ -212,13 +214,16 @@ namespace MC
 		{
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
-
-			onUpdate();
 		}
 
 		Sleep(0);
 
 		return true;
+	}
+
+	void Window::swapBuffers() const
+	{
+		SwapBuffers(m_Context);
 	}
 
 }

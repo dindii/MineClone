@@ -12,7 +12,6 @@ namespace MC
 		s_Instance = this;
 
 		m_Window = new Window(1360, 720, "MClone!");
-
 	}
 
 	Application::~Application()
@@ -24,7 +23,7 @@ namespace MC
 	{
 		while (m_Running)
 		{
-			m_Window->pollEvents();
+			m_Window->onUpdate();
 		}
 	}
 }

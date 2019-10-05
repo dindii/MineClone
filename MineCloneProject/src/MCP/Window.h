@@ -27,6 +27,8 @@ namespace MC
 		inline uint32_t getHeight() const { m_Details->Height; }
 		inline const char* getName() const { m_Details->Name; }
 
+		void swapBuffers() const;
+
 	private:
 		void loadGraphicsContext();
 
