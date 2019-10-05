@@ -1,6 +1,7 @@
 #pragma once
 #include <windows.h>
-
+#include "MCP/Event/Event.h"
+#include <functional>
 
 namespace MC
 {
@@ -20,6 +21,8 @@ namespace MC
 		};
 	};
 
+	using EventCallbackFn = std::function<void(Event&)>;
+
 	class WindowInput
 	{
 	public:
@@ -27,8 +30,12 @@ namespace MC
 		~WindowInput();
 
 		static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
-	private:
 
+	public:
+
+		inline void setEventCallback(const EventCallbackFn& callback) { EventCallback = callback; }
+	private:
 		static uint8_t* Keys;
+		static EventCallbackFn EventCallback;
 	};
 }

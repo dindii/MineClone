@@ -2,6 +2,7 @@
 
 #include "MCP/Core.h"
 #include <string>
+#include <functional>
 
 namespace MC
 {

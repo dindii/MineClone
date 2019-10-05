@@ -1,11 +1,15 @@
 #include "mcpch.h"
 #include "WindowInput.h"
 #include "Utils/Logger.h"
+#include "MCP/Event/Event.h"
+#include "MCP/Event/KeyEvent.h"
+#include "MCP/Event/MouseEvent.h"
 
 
 namespace MC
 {
 	uint8_t* WindowInput::Keys = nullptr;
+	EventCallbackFn WindowInput::EventCallback = nullptr;
 
 	enum MC_KEYS : unsigned char
 	{
@@ -221,7 +225,11 @@ namespace MC
 
 				//@TODO: Gerar eventos, bindar um OnEvent para o Window e do Window para o Application.
 				//debug info
-				std::cout << "Key: " << (MC_KEYS)Keys[wparam] << " Repeated: " << (uint16_t)Ki.nPrevious << Ki.nRepeatCount << std::endl;
+				//std::cout << "Key: " << (MC_KEYS)Keys[wparam] << " Repeated: " << (uint16_t)Ki.nPrevious << Ki.nRepeatCount << std::endl;
+
+				//@TODO: Fazer uma preparação aqui, verificar o repeat e gerar um evento repeat ou um evento single, um evento key up etc
+				MC::KeyPressedEvent event((MC_KEYS)Keys[wparam], Ki.nRepeatCount);
+				EventCallback(event);
 
 				break;
 			}

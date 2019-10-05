@@ -1,6 +1,7 @@
 #include "mcpch.h"
 #include "Application.h"
 #include "Utils/Logger.h"
+#include "Core.h"
 
 namespace MC
 {
@@ -12,6 +13,8 @@ namespace MC
 		s_Instance = this;
 
 		m_Window = new Window(1360, 720, "MClone!");
+
+		m_Window->setEventCallback(BIND_EVENT_FN(Application::OnEvent));
 	}
 
 	Application::~Application()
@@ -26,4 +29,10 @@ namespace MC
 			m_Window->onUpdate();
 		}
 	}
+
+	void Application::OnEvent(Event& e)
+	{
+		std::cout << e.ToString() << std::endl;
+	}
+
 }

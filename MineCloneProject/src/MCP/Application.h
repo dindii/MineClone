@@ -18,6 +18,8 @@ namespace MC
 
 		virtual void Run();
 
+		void OnEvent(Event& e);
+
 	private:
 		static Application* s_Instance;
 		

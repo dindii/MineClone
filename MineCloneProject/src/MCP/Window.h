@@ -29,6 +29,9 @@ namespace MC
 
 		void swapBuffers() const;
 
+	//	inline void setEventCallback(const EventCallbackFn& callback) { EventCallback = callback; }
+		inline void setEventCallback(const EventCallbackFn& callback) { m_WindowInput->setEventCallback(callback); }
+
 	private:
 		void loadGraphicsContext();
 
@@ -39,6 +42,8 @@ namespace MC
 
 		WindowProperties* m_Details;
 		WindowInput* m_WindowInput;
+
+		EventCallbackFn EventCallback;
 	};
 
 

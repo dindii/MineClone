@@ -14,6 +14,7 @@ namespace MC
 
 		m_Details = new WindowProperties(Width, Height, Name);
 		m_WindowInput = new WindowInput();
+	//	m_WindowInput->setEventCallback(EventCallback);
 
 
 		WNDCLASSEX wc;
