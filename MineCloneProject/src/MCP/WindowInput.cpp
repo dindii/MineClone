@@ -148,7 +148,6 @@ namespace MC
 
 			case WM_LBUTTONUP:
 			{
-				//Usar o wparam para saber se alguma tecla especial estava sendo acionada no release (shift, control etc)
 				MC::MouseButtoinReleasedEvent event(MC_KEYS::MC_BUTTON_LBUTTON);
 				EventCallback(event);
 
@@ -157,7 +156,6 @@ namespace MC
 
 			case WM_RBUTTONDOWN:
 			{
-				//Usar o wparam para saber se alguma tecla especial estava sendo acionada no click (shift, control etc)
 				MC::MouseButtonPressedEvent event(MC_KEYS::MC_BUTTON_RBUTTON);
 				EventCallback(event);
 
@@ -166,7 +164,6 @@ namespace MC
 
 			case WM_RBUTTONUP:
 			{
-				//Usar o wparam para saber se alguma tecla especial estava sendo acionada no release (shift, control etc)
 				MC::MouseButtoinReleasedEvent event(MC_KEYS::MC_BUTTON_RBUTTON);
 				EventCallback(event);
 
@@ -176,7 +173,7 @@ namespace MC
 
 			case WM_MOUSEMOVE:
 			{				
-				MC::MouseMovedEvent event((lparam & 0xFFFF), ((lparam >> 16) & 0xFFFF));
+				MC::MouseMovedEvent event((lparam & 0xFFFF), ((lparam >> 16) & 0xFFFF)); //X in low order and Y in high order.
 				EventCallback(event);
 
 				break;
