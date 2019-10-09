@@ -1,7 +1,7 @@
 #pragma once
 #include <windows.h>
 #include <tchar.h>
-#include "WindowInput.h"
+#include "IO/WindowInput.h"
 
 namespace MC
 {

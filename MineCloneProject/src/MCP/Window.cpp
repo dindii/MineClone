@@ -106,7 +106,7 @@ namespace MC
 		if (GetDC(m_NativeWindow))
 			if (!wglMakeCurrent(NULL, NULL))
 
-		if (DestroyWindow(m_NativeWindow));
+		DestroyWindow(m_NativeWindow);
 	}
 
 	void Window::onUpdate()

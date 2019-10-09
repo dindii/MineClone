@@ -2,6 +2,8 @@
 #include "Application.h"
 #include "Utils/Logger.h"
 #include "Core.h"
+#include "IO/InputHandler.h"
+
 
 //TEMPORARY
 #include <glad/glad.h>
@@ -117,7 +119,6 @@ namespace MC
 			glUseProgram(shaderProgram);
 			glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
 			glDrawArrays(GL_TRIANGLES, 0, 3);
-
 		}
 	}
 
@@ -127,6 +128,8 @@ namespace MC
 		//No futuro a maioria disso aqui vai ser mandado para os Layers e somente.
 
 		MC_LOG_TRACE(event);
+	//	MC_LOG_TRACE(InputHandler::isKeyHeld(MC_KEY_SPACE));
+
 
 		EventDispatcher Dispatcher(event);
 
@@ -140,17 +143,16 @@ namespace MC
 		//TEST
 		Dispatcher.Dispatch<KeyPressedEvent>([&](KeyPressedEvent Event) -> bool
 		{
-			if (Event.GetKeyCode() == MC_KEYS::MC_KEY_ESC && Event.GetRepeated() == true) //Fechar a janela quando segurar ESC
+			if (Event.GetKeyCode() == MC_KEYS::MC_KEY_ESC /* && Event.GetRepeated() == true */ && InputHandler::isKeyPressed(MC_KEYS::MC_KEY_SPACE) == true) //Fechar a janela quando apertar esc e espaço estiver pressionado
 			{
 				WindowCloseEvent e;
 				this->OnEvent(e);
 
 				return true;
-			}
+			} 
 
 			return true;
 		});
-
 	}
 
 }
