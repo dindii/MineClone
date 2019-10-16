@@ -1,5 +1,6 @@
 #pragma once
 #include "Window.h"
+#include "LayerStack.h"
 
 namespace MC
 {
@@ -22,12 +23,15 @@ namespace MC
 
 		inline void setRunning(bool isRunning) { m_Running = isRunning; }
 
+		void PushLayer(Layer* layer);
+		void PushOverLay(Layer* layer);
 	private:
 		static Application* s_Instance;
 	
 	private:
 		bool m_Running;
 		Window* m_Window;
+		LayerStack m_LayerStack;
 	};
 
 	Application* CreateApplication();
