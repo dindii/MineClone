@@ -11,7 +11,7 @@ namespace MC
 	//TODO@: Load into a buffer and then parse the buffer
 	Mesh MeshLoader::loadOBJFile(const char* path)
 	{
-		std::ifstream source("D:\\dev\\MineCloneProject\\MineCloneProject\\src\\MCP\\Object\\Mesh\\cube.obj", std::ifstream::binary);
+		std::ifstream source(path, std::ifstream::binary);
 
 		if (!source)
 		{

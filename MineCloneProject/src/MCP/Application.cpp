@@ -22,8 +22,7 @@ namespace MC
 		m_Window->setEventCallback(BIND_EVENT_FN(Application::OnEvent));
 
 		//TEST
-		MC::Mesh mesh = MC::MeshLoader::loadOBJFile("bla.txt");
-
+		MC::Mesh mesh = MC::MeshLoader::loadOBJFile("D:\\dev\\MineCloneProject\\MineCloneProject\\src\\MCP\\Object\\Mesh\\cube.obj");
 	}
 
 	Application::~Application()
