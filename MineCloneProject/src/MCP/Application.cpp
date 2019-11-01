@@ -4,6 +4,10 @@
 #include "Core.h"
 #include "IO/InputHandler.h"
 
+
+//test
+#include "Object/Mesh/MeshLoader.h"
+
 namespace MC
 {
 
@@ -16,6 +20,10 @@ namespace MC
 		m_Window = new Window(1360, 720, "MClone!");
 
 		m_Window->setEventCallback(BIND_EVENT_FN(Application::OnEvent));
+
+		//TEST
+		MC::Mesh mesh = MC::MeshLoader::loadOBJFile("bla.txt");
+
 	}
 
 	Application::~Application()

@@ -13,3 +13,5 @@
 
 #include "MCP/Layer.h"
 #include "MCP/LayerStack.h"
+
+#include "MCP/Object/Mesh/MeshLoader.h"

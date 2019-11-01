@@ -1,6 +1,5 @@
 #include <MC.h>
 
-
 /*
 * Detalhes sobre a implementação em Application.h
 */
@@ -8,7 +7,11 @@
 class testLayer : public MC::Layer
 {
 public:
-	testLayer() : Layer("testLayer") {};
+	testLayer() : Layer("testLayer")
+	{
+	
+	
+	};
 
 	void OnUpdate() override;
 	void OnEvent(MC::Event& e) override;
