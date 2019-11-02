@@ -62,6 +62,13 @@ namespace MC
 		return vec3(y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x);
 	}
 
+	vec3  vec3::Cross(const vec3& first, const vec3& second)
+	{
+		return vec3(first.y * second.z - first.z * second.y,
+					first.z * second.x - first.x * second.z,
+					first.x * second.y - first.y * second.x);
+	}
+
 	float vec3::Dot(const vec3& other)
 	{
 		return x * other.x + y * other.y + z * other.z;
