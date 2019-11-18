@@ -2,6 +2,8 @@
 #include "vec3.h"
 #include <sstream>
 
+#include "MCP/Utils/Logger.h"
+
 namespace MC
 {
 	vec3::vec3() : x(0.0f), y(0.0f), z(0.0f)
@@ -25,36 +27,51 @@ namespace MC
 	}
 
 
-	float vec3::Lenght()
+	float vec3::Length()
 	{
 		return sqrt(x * x + y * y + z * z);
 	}
 
-	float vec3::Lenght2()
+	float vec3::Length2()
 	{
 		return (x * x + y * y + z * z);
 	}
 
-	float vec3::Lenght(const vec3& vec)
+	float vec3::Length(const vec3& vec)
 	{
 		return sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
 	}
-	float vec3::Lenght2(const vec3& vec)
+	float vec3::Length2(const vec3& vec)
 	{
 		return (vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
 	}
 
 	MC::vec3 vec3::Normalize(const MC::vec3& vec)
 	{
-		float lenght = vec3::Lenght(vec);
-		return vec3(vec.x / lenght, vec.y / lenght, vec.z / lenght);
+		float lenght = vec3::Length(vec);
+	
+
+		if (lenght)
+			return vec3(vec.x / lenght, vec.y / lenght, vec.z / lenght);
+
+		else
+		{
+			MC_LOG_ERROR("Cannot divide by zero");
+			return vec;
+		}
 	}
 
 	vec3  vec3::Normalized()
 	{
-		float lenght = this->Lenght();
+		float lenght = this->Length();
 
-		return vec3(x / lenght, y / lenght, z / lenght);
+		if (lenght)
+			return vec3(x / lenght, y / lenght, z / lenght);
+		else
+		{
+			MC_LOG_ERROR("Cannot divide by zero");
+			return *this;
+		}
 	}
 
 	vec3  vec3::Cross(const vec3& other)

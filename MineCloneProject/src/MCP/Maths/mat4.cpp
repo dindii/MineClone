@@ -31,7 +31,7 @@ namespace MC
 		memcpy(this->elements, other.elements, 4 * 4 * sizeof(float));
 	}
 
-	mat4& mat4::Multiply(const mat4& other)
+	mat4 mat4::Multiply(const mat4& other)
 	{
 		float result[16];
 
@@ -55,6 +55,7 @@ namespace MC
 		memcpy(this->elements, result, 4 * 4 * sizeof(float));
 
 		return *this;
+		/*return *this;*/
 	}
 
 	vec4 mat4::Multiply(const vec4& other) const
@@ -81,7 +82,6 @@ namespace MC
 	{
 		return Multiply(other);
 	}  
-
 
 	mat4 mat4::Scale(const vec3& vector)
 	{
@@ -148,19 +148,19 @@ namespace MC
 		vec3 cameraRight = vec3::Normalize(cameraDir.Cross(up));
 		vec3 cameraUp = cameraRight.Cross(cameraDir);
 
-		result[0 * 0 * 4] = cameraRight.x;
-		result[1 * 0 * 4] = cameraRight.y;
-		result[2 * 0 * 4] = cameraRight.z;
+		result[0 + 0 * 4] = cameraRight.x;
+		result[1 + 0 * 4] = cameraRight.y;
+		result[2 + 0 * 4] = cameraRight.z;
 
-		result[0 * 1 * 4] = cameraUp.x;
-		result[1 * 1 * 4] = cameraUp.y;
-		result[2 * 1 * 4] = cameraUp.z;
+		result[0 + 1 * 4] = cameraUp.x;
+		result[1 + 1 * 4] = cameraUp.y;
+		result[2 + 1 * 4] = cameraUp.z;
 
-		result[0 * 2 * 4] = -cameraDir.x;
-		result[1 * 2 * 4] = -cameraDir.y;
-		result[2 * 2 * 4] = -cameraDir.z;
+		result[0 + 2 * 4] = -cameraDir.x;
+		result[1 + 2 * 4] = -cameraDir.y;
+		result[2 + 2 * 4] = -cameraDir.z;
 
-		return (result * mat4::Translate(vec3(-Position.x, -Position.y, -Position.z)));
+		return result * mat4::Translate(vec3(-Position.x, -Position.y, -Position.z));
 	}
 
 	std::string mat4::ToString() const

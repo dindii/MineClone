@@ -26,6 +26,7 @@ namespace MC {
 
 			static void Log(Event& event, const Level level);
 			static void Log(const char* string, const Level level);
+			static void Log(const char* string, const char* message, const Level level);
 			static void Log(std::string string, const Level level);
 			static void Log(const int num, const Level level);
 			static void Log(const float num, const Level level);
@@ -41,10 +42,10 @@ namespace MC {
 
 
 #ifdef  MC_DEBUG
-#define MC_LOG_TRACE(...)   MC::Debug::Logger::Log(__VA_ARGS__,  MC::Debug::Logger::Level::MCTRACE);
-#define MC_LOG_WARNING(...) MC::Debug::Logger::Log(__VA_ARGS__,  MC::Debug::Logger::Level::MCWARNING);
-#define MC_LOG_ERROR(...)   MC::Debug::Logger::Log(__VA_ARGS__,  MC::Debug::Logger::Level::MCERROR);
-#define MC_LOG_FATAL(...)   MC::Debug::Logger::Log(__VA_ARGS__,  MC::Debug::Logger::Level::MCFATAL);
+#define MC_LOG_TRACE(...)   MC::Debug::Logger::Log(__VA_ARGS__,  MC::Debug::Logger::Level::MCTRACE)
+#define MC_LOG_WARNING(...) MC::Debug::Logger::Log(__VA_ARGS__,  MC::Debug::Logger::Level::MCWARNING)
+#define MC_LOG_ERROR(...)   MC::Debug::Logger::Log(__VA_ARGS__,  MC::Debug::Logger::Level::MCERROR)
+#define MC_LOG_FATAL(...)   MC::Debug::Logger::Log(__VA_ARGS__,  MC::Debug::Logger::Level::MCFATAL)
 
 #else
 #define MC_LOG_TRACE(...) 

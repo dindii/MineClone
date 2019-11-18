@@ -12,6 +12,7 @@ namespace MC
 		m_CameraUp = vec3(0.0f, 1.0f, 0.0f);
 		m_CameraTarget = vec3(0.0f, 0.0f, -1.0f);
 
+		m_CameraPosition = position;
 		m_CameraSensitivity = 0.1f;
 		m_CameraSpeed = 5.0f;
 
@@ -37,5 +38,6 @@ namespace MC
 	}
 
 	//@TODO: SetPosition, Rotation/Pitch/Yaw, Translate, Mouse affecting the Yaw/Pitch
+	// Talvez sobrecarregando os operadores * para o translate/rotate
 
 }

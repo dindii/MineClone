@@ -9,7 +9,8 @@ namespace MC
 	/*    Very Primitive Camera */
 	class Camera
 	{
-		Camera(vec3 position = vec3(0.0f, 0.0f, 0.0f));
+	public:
+		Camera(vec3 position = vec3(0.0f, 0.0f, -0.1f));
 
 		mat4 getViewMatrix();
 		void UpdateCameraVectors();
@@ -22,9 +23,6 @@ namespace MC
 
 	private:
 		float m_CameraSensitivity, m_CameraSpeed;
-
-	private:
 		float m_Yaw, m_Pitch;
-
 	};
 }

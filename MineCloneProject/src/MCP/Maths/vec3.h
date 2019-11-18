@@ -18,12 +18,12 @@ namespace MC
 
 		std::string ToString() const;
 
-		float Lenght();
-		float Lenght2();
+		float Length();
+		float Length2();
 		vec3 Normalized();
 
-		static float Lenght(const vec3& vec);
-		static float Lenght2(const vec3& vec);
+		static float Length(const vec3& vec);
+		static float Length2(const vec3& vec);
 		static vec3 Normalize(const vec3& vec);
 		static vec3 Cross(const vec3& first, const vec3& second);
 

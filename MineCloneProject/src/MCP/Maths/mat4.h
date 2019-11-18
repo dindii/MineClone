@@ -22,7 +22,7 @@ namespace MC
 		inline float& operator[](const unsigned int index) { return elements[index]; }
 		inline const float& operator[](const unsigned int index) const { return elements[index]; }
 	    
-		mat4& Multiply(const mat4& other);
+		mat4 Multiply(const mat4& other);
 
 		vec3 Multiply(const vec3& other) const;
 		vec4 Multiply(const vec4& other) const;
@@ -30,6 +30,7 @@ namespace MC
 		friend vec4 operator*(const mat4& left, const vec4& other);
 		friend vec3 operator*(const mat4& left, const vec3& other);
 		friend mat4 operator*(mat4 left, const mat4& right);
+
 
 		 mat4 operator*=(const mat4& right);
 

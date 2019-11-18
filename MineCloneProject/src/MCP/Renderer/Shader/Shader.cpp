@@ -20,12 +20,13 @@ namespace MC
 		vertexShader.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 		fragmentShader.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 
-		try
-		{
-			std::stringstream vertexShaderStream, fragmentShaderStream;
+	
+		vertexShader.open(vertexShaderPath);
+		fragmentShader.open(fragmentShaderPath);
 
-			vertexShader.open(vertexShaderPath);
-			fragmentShader.open(fragmentShaderPath);
+		if(vertexShader && fragmentShader)
+		{ 		
+			std::stringstream vertexShaderStream, fragmentShaderStream;
 
 			vertexShaderStream << vertexShader.rdbuf();
 			fragmentShaderStream << fragmentShader.rdbuf();
@@ -35,10 +36,12 @@ namespace MC
 
 			CreateShader(vertexShaderStream.str(), fragmentShaderStream.str());
 		}
-		catch (std::ifstream::failure e)
+		else
 		{
-			std::cout << "ERROR READING VERTEX FILES!" << std::endl;
+			MC_LOG_ERROR("ERROR READING SHADER FILES!");
 		}
+		
+		
 	}
 
 	void Shader::CreateShader(const std::string& vertexShaderSource, const std::string& fragmentShaderSource)
@@ -78,13 +81,13 @@ namespace MC
 			glGetShaderInfoLog(shaderId, length, &length, message);
 
 			if (type == GL_FRAGMENT_SHADER)
-				std::cout << "Failed to compile Fragment Shader: " << message << std::endl;
+				MC_LOG_ERROR("Failed to compile Fragment Shader: ", message);
 
-			else if (type == GL_FRAGMENT_SHADER)
-				std::cout << "Failed to compile Fragment Shader: " << message << std::endl;
+			else if (type == GL_VERTEX_SHADER)
+				MC_LOG_ERROR("Failed to compile Vertex Shader: ", message);
 
-			else if (type == GL_FRAGMENT_SHADER)
-				std::cout << "Failed to compile Fragment Shader: " << message << std::endl;
+			else if (type == GL_GEOMETRY_SHADER)
+				MC_LOG_ERROR("Failed to compile Geometry Shader: ", message);
 
 			glDeleteShader(shaderId);
 			delete[] message;

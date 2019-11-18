@@ -8,6 +8,8 @@
 //test
 #include "Object/Mesh/MeshLoader.h"
 #include <glad/glad.h>
+#include "MCP/Renderer/Shader/Shader.h"
+#include "MCP/Renderer/Camera/Camera.h"
 
 namespace MC
 {
@@ -25,14 +27,18 @@ namespace MC
 		/*************** TEST ***************/
 		//Since i don't have the renderer yet, i will be using this area to test my rendering fundamentals
 		MC::Mesh mesh = MC::MeshLoader::loadOBJFile("D:\\dev\\MineCloneProject\\MineCloneProject\\src\\MCP\\Object\\Mesh\\cube.obj");
+		MC::Shader shader("D:\\dev\\MineCloneProject\\MineCloneProject\\src\\MCP\\testVertexShader.shader", "D:\\dev\\MineCloneProject\\MineCloneProject\\src\\MCP\\testFragmentShader.shader");
 
 		unsigned int meshSize = mesh.Data.size();
 		unsigned int CubeVBO, CubeVAO, CubeEBO;
 
 		//VAO Test
+		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 		glGenVertexArrays(1, &CubeVAO);
 		glBindVertexArray(CubeVAO);
-		
+
 		//VBO Test
 		glGenBuffers(1, &CubeVBO);
 		glBindBuffer(GL_ARRAY_BUFFER, CubeVBO);
@@ -51,11 +57,18 @@ namespace MC
 		glGenBuffers(1, &CubeEBO);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, CubeEBO);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * mesh.indices.size(), &mesh.indices, GL_STATIC_DRAW);
-		
-		//bind shader
-		//create camera
-		//bind uniforms
-		//draw
+		// 		
+		shader.Bind();
+		Camera camera;
+		mat4 projection = mat4::Perspective(45.0f, 1360 / 720, 0.1f, 100.0f);
+
+		mat4 ViewProjection = projection * camera.getViewMatrix();
+
+		shader.UploadUniformMat4("u_ViewProjection", ViewProjection[0]); //MVP PVM
+
+		glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, (void*)0);
+
+
 
 		/*************** TEST ***************/
 	}
