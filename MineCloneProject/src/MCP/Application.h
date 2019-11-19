@@ -2,6 +2,10 @@
 #include "Window.h"
 #include "LayerStack.h"
 
+//DEBUG
+#include "Object/Mesh/MeshLoader.h"
+#include "MCP/Renderer/Shader/Shader.h"
+
 namespace MC
 {
 
@@ -32,6 +36,14 @@ namespace MC
 		bool m_Running;
 		Window* m_Window;
 		LayerStack m_LayerStack;
+
+		//DEBUG
+	private:
+		MC::Mesh mesh;
+		MC::Shader shader;
+		unsigned int CubeVBO, CubeVAO, CubeEBO;
+		unsigned int meshSize;
+		//DEBUG
 	};
 
 	Application* CreateApplication();

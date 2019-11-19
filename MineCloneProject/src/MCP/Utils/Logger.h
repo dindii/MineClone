@@ -55,4 +55,6 @@ namespace MC {
 
 #endif
 
-#define MC_ASSERT(x) if(!x)  __debugbreak()
+#define MC_ASSERT(x) if(x) { }\
+else {__debugbreak();}
+

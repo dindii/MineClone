@@ -51,6 +51,9 @@ namespace MC
 		bool operator==(const vec3& other);
 		bool operator!=(const vec3& other);
 
+
+		vec3 operator-() { return { -this->x, -this->y, -this->z }; }
+
 		union {
 			struct {
 				float x, y, z;

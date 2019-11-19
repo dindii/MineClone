@@ -8,6 +8,7 @@ namespace MC
 	{
 	public:
 		Shader(const std::string& vertexSource, const std::string& fragmentSource);
+		Shader() = default;
 		virtual ~Shader();
 
 		virtual void Bind();

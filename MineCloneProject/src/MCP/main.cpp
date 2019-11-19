@@ -5,7 +5,6 @@
 
 int main()
 {
-
 	MC::Debug::Logger s_Logger;
 
 	MC::Application* App = MC::CreateApplication();

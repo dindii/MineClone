@@ -43,6 +43,7 @@ namespace MC
 		 static mat4 Transpose(const mat4& matrix);
 		 static mat4 Perspective(const float& FOV, const float& AR, const float& Near, const float& Far);
 
+		 //@TODO: Criar operações de transformação membro.
 		 static mat4 Scale(const vec3& vector);
 		 static mat4 Rotate(const float& angle, const vec3& axis);
 		 static mat4 Translate(const vec3& vector);

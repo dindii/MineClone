@@ -26,47 +26,100 @@ namespace MC
 
 		/*************** TEST ***************/
 		//Since i don't have the renderer yet, i will be using this area to test my rendering fundamentals
-		MC::Mesh mesh = MC::MeshLoader::loadOBJFile("D:\\dev\\MineCloneProject\\MineCloneProject\\src\\MCP\\Object\\Mesh\\cube.obj");
-		MC::Shader shader("D:\\dev\\MineCloneProject\\MineCloneProject\\src\\MCP\\testVertexShader.shader", "D:\\dev\\MineCloneProject\\MineCloneProject\\src\\MCP\\testFragmentShader.shader");
+		 mesh = MC::MeshLoader::loadOBJFile("D:\\dev\\MineCloneProject\\MineCloneProject\\src\\MCP\\Object\\Mesh\\cube.obj");
 
-		unsigned int meshSize = mesh.Data.size();
-		unsigned int CubeVBO, CubeVAO, CubeEBO;
+		/* meshSize = mesh.Data.size();*/
+
+		 float vertices[] = {
+		-0.5f, -0.5f, -0.5f,
+		 0.5f, -0.5f, -0.5f, 
+		 0.5f,  0.5f, -0.5f, 
+		 0.5f,  0.5f, -0.5f, 
+		-0.5f,  0.5f, -0.5f, 
+		-0.5f, -0.5f, -0.5f, 
+
+		-0.5f, -0.5f,  0.5f, 
+		 0.5f, -0.5f,  0.5f, 
+		 0.5f,  0.5f,  0.5f, 
+		 0.5f,  0.5f,  0.5f, 
+		-0.5f,  0.5f,  0.5f, 
+		-0.5f, -0.5f,  0.5f, 
+
+		-0.5f,  0.5f,  0.5f, 
+		-0.5f,  0.5f, -0.5f, 
+		-0.5f, -0.5f, -0.5f, 
+		-0.5f, -0.5f, -0.5f, 
+		-0.5f, -0.5f,  0.5f, 
+		-0.5f,  0.5f,  0.5f, 
+
+		 0.5f,  0.5f,  0.5f, 
+		 0.5f,  0.5f, -0.5f, 
+		 0.5f, -0.5f, -0.5f, 
+		 0.5f, -0.5f, -0.5f, 
+		 0.5f, -0.5f,  0.5f, 
+		 0.5f,  0.5f,  0.5f, 
+
+		-0.5f, -0.5f, -0.5f, 
+		 0.5f, -0.5f, -0.5f, 
+		 0.5f, -0.5f,  0.5f, 
+		 0.5f, -0.5f,  0.5f, 
+		-0.5f, -0.5f,  0.5f, 
+		-0.5f, -0.5f, -0.5f, 
+
+		-0.5f,  0.5f, -0.5f, 
+		 0.5f,  0.5f, -0.5f, 
+		 0.5f,  0.5f,  0.5f, 
+		 0.5f,  0.5f,  0.5f, 
+		-0.5f,  0.5f,  0.5f, 
+		-0.5f,  0.5f, -0.5f, 
+		 };
+
+		 glGenVertexArrays(1, &CubeVAO);
+		 glGenBuffers(1, &CubeVBO);
+
+		 glBindVertexArray(CubeVAO);
+
+		 glBindBuffer(GL_ARRAY_BUFFER, CubeVBO);
+		 glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+		 // position attribute
+		 glEnableVertexAttribArray(0);
+		 glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+
+		 glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+		
 
 		//VAO Test
-		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		glGenVertexArrays(1, &CubeVAO);
-		glBindVertexArray(CubeVAO);
-
-		//VBO Test
-		glGenBuffers(1, &CubeVBO);
-		glBindBuffer(GL_ARRAY_BUFFER, CubeVBO);
-
-
-		glBufferSubData(GL_ARRAY_BUFFER, 0, meshSize * sizeof(vec3), &mesh.Data[0].Vertex);
-		glBufferSubData(GL_ARRAY_BUFFER, meshSize * sizeof(vec3), meshSize * sizeof(vec3), &mesh.Data[0].Normal);
-		glBufferSubData(GL_ARRAY_BUFFER, 2 * meshSize * sizeof(vec3), meshSize * sizeof(vec2), &mesh.Data[0].TextureCoods);
-
-		//VBO Attribs
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(vec3), (void*)0);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(vec3), (void*)(meshSize * sizeof(vec3)));
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(vec3), (void*)(meshSize * sizeof(vec3) + meshSize * sizeof(vec2)));
-
-		//Element Buffer test
-		glGenBuffers(1, &CubeEBO);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, CubeEBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * mesh.indices.size(), &mesh.indices, GL_STATIC_DRAW);
+// 		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+// 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+// 
+// 		glGenVertexArrays(1, &CubeVAO);
+// 		glBindVertexArray(CubeVAO);
+// 
+// 		//VBO Test
+// 		glGenBuffers(1, &CubeVBO);
+// 		glBindBuffer(GL_ARRAY_BUFFER, CubeVBO);
+// 
+// 
+// 		glBufferSubData(GL_ARRAY_BUFFER, 0, meshSize * sizeof(vec3), &mesh.Data[0].Vertex);
+// 		glBufferSubData(GL_ARRAY_BUFFER, meshSize * sizeof(vec3), meshSize * sizeof(vec3), &mesh.Data[0].Normal);
+// 		glBufferSubData(GL_ARRAY_BUFFER, 2 * meshSize * sizeof(vec3), meshSize * sizeof(vec2), &mesh.Data[0].TextureCoods);
+// 
+// 		//VBO Attribs
+// 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(vec3), (void*)0);
+// 		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(vec3), (void*)(meshSize * sizeof(vec3)));
+// 		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(vec3), (void*)(meshSize * sizeof(vec3) + meshSize * sizeof(vec2)));
+// 
+// 		//Element Buffer test
+// 		glGenBuffers(1, &CubeEBO);
+// 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, CubeEBO);
+// 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * mesh.indices.size(), &mesh.indices, GL_STATIC_DRAW);
 		// 		
-		shader.Bind();
-		Camera camera;
-		mat4 projection = mat4::Perspective(45.0f, 1360 / 720, 0.1f, 100.0f);
 
-		mat4 ViewProjection = projection * camera.getViewMatrix();
+		
 
-		shader.UploadUniformMat4("u_ViewProjection", ViewProjection[0]); //MVP PVM
+		//glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, (void*)0);
 
-		glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, (void*)0);
 
 
 
@@ -83,6 +136,52 @@ namespace MC
 		while (m_Running)
 		{
 			m_Window->onUpdate();	
+
+
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+			Shader me("D:\\dev\\MineCloneProject\\MineCloneProject\\src\\MCP\\testVertexShader.shader", "D:\\dev\\MineCloneProject\\MineCloneProject\\src\\MCP\\testFragmentShader.shader");
+		
+
+			mat4 proj = mat4::Perspective(45.0f, 1.6, 0.1f, 100.0f);
+//trocar lookat por camera
+			vec3 cameraPos = vec3(0.0f, 0.9f, 0.0f);
+			vec3 cameraFront  = vec3(0.0f, 0.0f, -1.0f);
+			vec3 cameraUp =	 vec3(0.0f, 1.0f, 0.0f);
+
+			mat4 view;
+				 view *= mat4::LookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+
+			mat4 transform;
+
+			static float offsetest = 0.0f;
+			offsetest += 0.01;
+
+			transform *= mat4::Translate({ 0.0f, 0.0f, -offsetest });
+			transform *= mat4::Rotate(offsetest *offsetest * 2, vec3(0.0f, 1.0f, 0.0f));
+
+			Camera test;
+		
+			mat4 viewproj = proj * view;
+
+
+			me.Bind();
+			me.UploadUniformMat4("u_ViewProjection", viewproj);
+			me.UploadUniformMat4("u_Transform", transform);
+
+
+			glBindVertexArray(CubeVAO);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+			//glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, (void*)0);
+
+
+
+
+
+
+
+
+
 
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();

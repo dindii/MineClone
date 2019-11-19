@@ -55,10 +55,11 @@ namespace MC
 		glLinkProgram(program);
 		glValidateProgram(program);
 
-		glDeleteShader(vs);
-		glDeleteShader(fs);
 		//@TODO: DETTACH
 		m_RendererID = program;
+
+		glDeleteShader(vs);
+		glDeleteShader(fs);
 	}
 
 	unsigned int Shader::CompileShader(unsigned int type, const std::string& source)

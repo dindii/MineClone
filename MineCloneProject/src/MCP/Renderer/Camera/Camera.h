@@ -10,7 +10,8 @@ namespace MC
 	class Camera
 	{
 	public:
-		Camera(vec3 position = vec3(0.0f, 0.0f, -0.1f));
+		Camera(vec3 position);
+		Camera() = default;
 
 		mat4 getViewMatrix();
 		void UpdateCameraVectors();
