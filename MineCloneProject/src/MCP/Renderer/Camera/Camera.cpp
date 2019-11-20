@@ -20,9 +20,9 @@ namespace MC
 
 		vec3 Target; 
 
-		Target.x = cos(toRadians(m_Pitch) * cos(toRadians(m_Yaw)));
+		Target.x = cos(toRadians(m_Pitch)) * cos(toRadians(m_Yaw));
 		Target.y = sin(toRadians(m_Pitch));
-		Target.z = cos(toRadians(m_Pitch) * sin(toRadians(m_Yaw)));
+		Target.z = cos(toRadians(m_Pitch)) * sin(toRadians(m_Yaw));
 
 		m_CameraTarget = Target.Normalized();
 
