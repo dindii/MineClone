@@ -5,6 +5,7 @@
 //DEBUG
 #include "Object/Mesh/MeshLoader.h"
 #include "MCP/Renderer/Shader/Shader.h"
+#include <memory>
 
 namespace MC
 {
@@ -40,7 +41,7 @@ namespace MC
 		//DEBUG
 	private:
 		MC::Mesh mesh;
-		MC::Shader shader;
+		MC::Shader* shader;
 		unsigned int CubeVBO, CubeVAO, CubeEBO;
 		unsigned int meshSize;
 		//DEBUG

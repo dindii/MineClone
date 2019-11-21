@@ -27,7 +27,7 @@ namespace MC
 		/*************** TEST ***************/	/*************** TEST ***************/	/*************** TEST ***************/
 		//Since i don't have the renderer yet, i will be using this area to test my rendering fundamentals
 		 mesh = MC::MeshLoader::loadOBJFile("D:\\dev\\MineCloneProject\\MineCloneProject\\src\\MCP\\Object\\Mesh\\cube.obj");
-		 //shader = MC::Shader("D:\\dev\\MineCloneProject\\MineCloneProject\\src\\MCP\\testVertexShader.shader", "D:\\dev\\MineCloneProject\\MineCloneProject\\src\\MCP\\testFragmentShader.shader");
+		 shader = new MC::Shader("D:\\dev\\MineCloneProject\\MineCloneProject\\src\\MCP\\testVertexShader.shader", "D:\\dev\\MineCloneProject\\MineCloneProject\\src\\MCP\\testFragmentShader.shader");
 
 		 float vertices[] = {
 		-0.5f, -0.5f, -0.5f,
@@ -86,51 +86,17 @@ namespace MC
 		 glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
 		 glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-		
-
-// 		//VAO Test
-// 		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-// 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-// 
-// 		glGenVertexArrays(1, &CubeVAO);
-// 		glBindVertexArray(CubeVAO);
-// 
-// 		//VBO Test
-// 		glGenBuffers(1, &CubeVBO);
-// 		glBindBuffer(GL_ARRAY_BUFFER, CubeVBO);
-// 
-// 
-// 		glBufferSubData(GL_ARRAY_BUFFER, 0, meshSize * sizeof(vec3), &mesh.Data[0].Vertex);
-// 		glBufferSubData(GL_ARRAY_BUFFER, meshSize * sizeof(vec3), meshSize * sizeof(vec3), &mesh.Data[0].Normal);
-// 		glBufferSubData(GL_ARRAY_BUFFER, 2 * meshSize * sizeof(vec3), meshSize * sizeof(vec2), &mesh.Data[0].TextureCoods);
-// 
-// 		//VBO Attribs
-// 		glEnableVertexAttribArray(0);
-// 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(vec3), (void*)0);
-// 		glEnableVertexAttribArray(1);
-// 		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(vec3), (void*)(meshSize * sizeof(vec3)));
-// 		glEnableVertexAttribArray(2);
-// 		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(vec3), (void*)(meshSize * sizeof(vec3) + meshSize * sizeof(vec2)));
-// 
-// 		//Element Buffer test
-// 		glGenBuffers(1, &CubeEBO);
-// 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, CubeEBO);
-// 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * mesh.indices.size(), &mesh.indices, GL_STATIC_DRAW);
-// 		// 		
-
-		
-
-		//glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, (void*)0);
-
-
-
-
 		/*************** TEST ***************/	/*************** TEST ***************/	/*************** TEST ***************/
 	}
 
 	Application::~Application()
 	{
 		delete m_Window;
+
+		/*************** TEST ***************/	/*************** TEST ***************/	/*************** TEST ***************/
+		//@TODO: Remove
+		delete shader;
+		/*************** TEST ***************/	/*************** TEST ***************/	/*************** TEST ***************/
 	}
 
 	void Application::Run()
@@ -139,10 +105,8 @@ namespace MC
 		{
 			m_Window->onUpdate();	
 
-				/*************** TEST ***************/	/*************** TEST ***************/	/*************** TEST ***************/
+			/*************** TEST ***************/	/*************** TEST ***************/	/*************** TEST ***************/
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-			MC::Shader shader("D:\\dev\\MineCloneProject\\MineCloneProject\\src\\MCP\\testVertexShader.shader", "D:\\dev\\MineCloneProject\\MineCloneProject\\src\\MCP\\testFragmentShader.shader");
 
 			mat4 proj = mat4::Perspective(45.0f, 1.8, 0.1f, 100.0f);
 	
@@ -151,32 +115,24 @@ namespace MC
 			static float offsetest = 0.0f;
 			offsetest += 0.01;
 			
-			//@TODO: Descobrir o porquê UpdateCameraVectors está distorcendo a cena.
 			transform *= mat4::Translate({ 0.0f, 0.0f, 0.0f });
 			transform *= mat4::Rotate(offsetest *offsetest * offsetest, vec3(1.0f, 0.0f, 0.0f));
 
-			Camera test({ 0.0f, 0.0f, 3.0f });
+			Camera test({ 0.0f, 0.0f, 10.0f });
 
 		
 			mat4 viewproj = proj * test.getViewMatrix();
 
 
-			shader.Bind();
-			shader.UploadUniformMat4("u_ViewProjection", viewproj);
-			shader.UploadUniformMat4("u_Transform", transform);
+			shader->Bind();
+			shader->UploadUniformMat4("u_ViewProjection", viewproj);
+			shader->UploadUniformMat4("u_Transform", transform);
 
 
 			glBindVertexArray(CubeVAO);
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 			//glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, (void*)0);
-				/*************** TEST ***************/	/*************** TEST ***************/	/*************** TEST ***************/
-
-
-
-
-
-
-
+			/*************** TEST ***************/	/*************** TEST ***************/	/*************** TEST ***************/
 
 
 			for (Layer* layer : m_LayerStack)

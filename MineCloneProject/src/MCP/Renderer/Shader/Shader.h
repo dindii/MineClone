@@ -8,6 +8,7 @@ namespace MC
 	{
 	public:
 		Shader(const std::string& vertexSource, const std::string& fragmentSource);
+		Shader(const Shader& other) { m_RendererID = other.GetID(); }
 		Shader() = default;
 		virtual ~Shader();
 
@@ -16,6 +17,9 @@ namespace MC
 		virtual void UploadUniformMat4(const std::string& name, const mat4& mat);
 		virtual void UploadUniformFloat4(const std::string& name, const vec4& mat);
 
+		uint32_t GetID() const { return m_RendererID; }
+
+		//void operator=(const Shader& other) { m_RendererID = other.GetID(); }
 	private:
 		virtual void ParseShaderFiles(const std::string& vertexShaderPath, const std::string& fragmentShaderPath);
 		virtual void CreateShader(const std::string& vertexShaderSource, const std::string& fragmentShaderSource);
