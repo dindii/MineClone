@@ -7,11 +7,13 @@
 namespace MC
 {
 	Key* WindowInput::Keys = nullptr;
+	vec2* WindowInput::MouseCoords = nullptr;
 	EventCallbackFn WindowInput::EventCallback = nullptr;
 
 	WindowInput::WindowInput()
 	{
 		Keys = new Key[MAX_KEYS];
+		MouseCoords = new vec2;
 
 		Keys[0x01].KeyCode = MC_KEYS::MC_BUTTON_LBUTTON;
 		Keys[0x02].KeyCode = MC_KEYS::MC_BUTTON_RBUTTON;
@@ -110,6 +112,7 @@ namespace MC
 	WindowInput::~WindowInput()
 	{
 		delete[] Keys;
+		delete MouseCoords;
 	}
 
 	//Deixei o processo de mensagem do Windows aqui pois a ideia de "Input" da Window seria para inputs gerais, tanto em GUI quanto de Hardware.
@@ -193,6 +196,10 @@ namespace MC
 			case WM_MOUSEMOVE:
 			{				
 				MC::MouseMovedEvent event((lparam & 0xFFFF), ((lparam >> 16) & 0xFFFF)); //X em low order and Y em high order.
+
+				MouseCoords->x = event.GetX();
+				MouseCoords->y = event.GetY();
+
 				EventCallback(event);
 
 				break;

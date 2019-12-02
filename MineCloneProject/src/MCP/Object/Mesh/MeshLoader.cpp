@@ -8,6 +8,7 @@
 
 namespace MC
 {
+	//TODO@: Throw a warning if vectors don't have the same size
 	//TODO@: Load into a buffer and then parse the buffer
 	Mesh MeshLoader::loadOBJFile(const char* path)
 	{
@@ -77,19 +78,22 @@ namespace MC
 		{
 			unsigned int index = verticesIndices[x];
 			vec3 vertexPos = verticesTemp[index - 1];
+			data.Mesh_Vertices.push_back(vertexPos);
 
 			index = UVIndices[x];
 			vec2 textureCoord = UVTemp[index - 1];
+			data.Mesh_UVs.push_back(textureCoord);
 
 			index = normalsIndices[x];
 			vec3 normalPos = NormalsTemp[index - 1];
-
-			MeshData md(vertexPos, normalPos, textureCoord);
-			data.Data.push_back(md);
+			data.Mesh_Normals.push_back(normalPos);
 		}
 		
 		//Tira os valores repetidos mas repete o index deles no buffer, para criar o indexed buffer.
-		return indexBuffer(data);
+		indexBuffer(data);
+
+		//Juntar em um vector só
+		return combineAttribs(data);
 
 	}
 
@@ -100,24 +104,31 @@ namespace MC
 
 		std::map<MeshData, unsigned int> vertexToIndex;
 
-		for (unsigned int x = 0; x < data.Data.size(); x++)
+		MeshData int_Data;
+
+		for (unsigned int x = 0; x < data.Mesh_Vertices.size(); x++)
 		{
-			MeshData intermediate = data.Data[x];
+			int_Data.Vertex = data.Mesh_Vertices[x];
+			int_Data.TextureCoods = data.Mesh_UVs[x];
+			int_Data.Normal = data.Mesh_Normals[x];
 	
 
 			unsigned int index;
 
-			bool found = getSimilarVertex(intermediate, vertexToIndex, index);
+			bool found = getSimilarVertex(int_Data, vertexToIndex, index);
 
 			if (found)
 				outData.indices.push_back(index);
+			
 			else
 			{
-				MeshData md(data.Data[x].Vertex, data.Data[x].Normal, data.Data[x].TextureCoods);
-				outData.Data.push_back(md);
-				unsigned int newIndex = (unsigned int)outData.Data.size() - 1;
+				outData.Mesh_Vertices.push_back(data.Mesh_Vertices[x]);
+				outData.Mesh_Normals.push_back(data.Mesh_Normals[x]);
+				outData.Mesh_UVs.push_back(data.Mesh_UVs[x]);
+
+				unsigned int newIndex = (unsigned int)outData.Mesh_Vertices.size() - 1;
 				outData.indices.push_back(newIndex);
-				vertexToIndex[intermediate] = newIndex;
+				vertexToIndex[int_Data] = newIndex;
 			}
 		}
 
@@ -137,6 +148,33 @@ namespace MC
 			return true;
 		}
 
+	}
+
+	//@TODO: Tomar conta do numero de atributos para caso houver mais no futuro.
+
+	Mesh MeshLoader::combineAttribs(Mesh& data)
+	{
+		for (uint32_t x = 0; x < data.Mesh_Vertices.size()  ; x++)
+		{
+ 				data.Mesh_Attributes.push_back(data.Mesh_Vertices[x].x);
+ 				data.Mesh_Attributes.push_back(data.Mesh_Vertices[x].y);
+ 				data.Mesh_Attributes.push_back(data.Mesh_Vertices[x].z);
+		}
+
+		for (uint32_t x = 0; x < data.Mesh_Vertices.size(); x++)
+		{
+				data.Mesh_Attributes.push_back(data.Mesh_Normals[x].x);
+				data.Mesh_Attributes.push_back(data.Mesh_Normals[x].y);
+				data.Mesh_Attributes.push_back(data.Mesh_Normals[x].z);
+		}
+
+		for (uint32_t x = 0; x < data.Mesh_Vertices.size(); x++)
+		{
+				data.Mesh_Attributes.push_back(data.Mesh_UVs[x].x);
+				data.Mesh_Attributes.push_back(data.Mesh_UVs[x].y);
+		}
+
+		return data;
 	}
 
 }

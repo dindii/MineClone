@@ -6,6 +6,7 @@
 #include "Object/Mesh/MeshLoader.h"
 #include "MCP/Renderer/Shader/Shader.h"
 #include <memory>
+#include "MCP/Renderer/Camera/Camera.h"
 
 namespace MC
 {
@@ -40,10 +41,11 @@ namespace MC
 
 		//DEBUG
 	private:
+		vec2 xoffset;
+		Camera test = vec3( 0.0f, 0.0f, 10.0f);
 		MC::Mesh mesh;
 		MC::Shader* shader;
 		unsigned int CubeVBO, CubeVAO, CubeEBO;
-		unsigned int meshSize;
 		//DEBUG
 	};
 

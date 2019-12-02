@@ -4,6 +4,7 @@
 #include "MCP/Event/KeyEvent.h"
 #include "MCP/Event/MouseEvent.h"
 #include "MCP/Event/ApplicationEvent.h"
+#include "MCP/Maths/vec2.h"
 #include <functional>
 
 namespace MC
@@ -147,11 +148,13 @@ namespace MC
 
 		static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 		inline static Key* getKeys() { return Keys; }
+		inline static vec2* getMouseCoords() { return MouseCoords; }
 	public:
 
 		inline void setEventCallback(const EventCallbackFn& callback) { EventCallback = callback; }
 	private:
 		static Key* Keys;
+		static vec2* MouseCoords;
 		static EventCallbackFn EventCallback;
 	};
 }

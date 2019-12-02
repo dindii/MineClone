@@ -31,4 +31,12 @@ namespace MC
 
 		return false;
 	}
+
+	MC::vec2 InputHandler::GetMouseCoords()
+	{
+		vec2* Coords = WindowInput::getMouseCoords();
+
+		return { Coords->x, Coords->y };
+	}
+
 }

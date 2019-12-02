@@ -16,6 +16,9 @@ namespace MC
 		mat4 getViewMatrix();
 		void UpdateCameraVectors();
 
+		void Translate(const vec3& vec);
+
+		void CalculateViewMatrix();
 	private:
 		vec3 m_CameraPosition;
 		vec3 m_CameraTarget;
@@ -25,5 +28,8 @@ namespace MC
 	private:
 		float m_CameraSensitivity, m_CameraSpeed;
 		float m_Yaw, m_Pitch;
+
+	private:
+		mat4 m_ViewMatrix;
 	};
 }

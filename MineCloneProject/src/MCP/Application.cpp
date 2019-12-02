@@ -9,7 +9,7 @@
 #include "Object/Mesh/MeshLoader.h"
 #include <glad/glad.h>
 #include "MCP/Renderer/Shader/Shader.h"
-#include "MCP/Renderer/Camera/Camera.h"
+
 
 namespace MC
 {
@@ -29,63 +29,38 @@ namespace MC
 		 mesh = MC::MeshLoader::loadOBJFile("D:\\dev\\MineCloneProject\\MineCloneProject\\src\\MCP\\Object\\Mesh\\cube.obj");
 		 shader = new MC::Shader("D:\\dev\\MineCloneProject\\MineCloneProject\\src\\MCP\\testVertexShader.shader", "D:\\dev\\MineCloneProject\\MineCloneProject\\src\\MCP\\testFragmentShader.shader");
 
-		 float vertices[] = {
-		-0.5f, -0.5f, -0.5f,
-		 0.5f, -0.5f, -0.5f, 
-		 0.5f,  0.5f, -0.5f, 
-		 0.5f,  0.5f, -0.5f, 
-		-0.5f,  0.5f, -0.5f, 
-		-0.5f, -0.5f, -0.5f, 
-
-		-0.5f, -0.5f,  0.5f, 
-		 0.5f, -0.5f,  0.5f, 
-		 0.5f,  0.5f,  0.5f, 
-		 0.5f,  0.5f,  0.5f, 
-		-0.5f,  0.5f,  0.5f, 
-		-0.5f, -0.5f,  0.5f, 
-
-		-0.5f,  0.5f,  0.5f, 
-		-0.5f,  0.5f, -0.5f, 
-		-0.5f, -0.5f, -0.5f, 
-		-0.5f, -0.5f, -0.5f, 
-		-0.5f, -0.5f,  0.5f, 
-		-0.5f,  0.5f,  0.5f, 
-
-		 0.5f,  0.5f,  0.5f, 
-		 0.5f,  0.5f, -0.5f, 
-		 0.5f, -0.5f, -0.5f, 
-		 0.5f, -0.5f, -0.5f, 
-		 0.5f, -0.5f,  0.5f, 
-		 0.5f,  0.5f,  0.5f, 
-
-		-0.5f, -0.5f, -0.5f, 
-		 0.5f, -0.5f, -0.5f, 
-		 0.5f, -0.5f,  0.5f, 
-		 0.5f, -0.5f,  0.5f, 
-		-0.5f, -0.5f,  0.5f, 
-		-0.5f, -0.5f, -0.5f, 
-
-		-0.5f,  0.5f, -0.5f, 
-		 0.5f,  0.5f, -0.5f, 
-		 0.5f,  0.5f,  0.5f, 
-		 0.5f,  0.5f,  0.5f, 
-		-0.5f,  0.5f,  0.5f, 
-		-0.5f,  0.5f, -0.5f, 
-		 };
-
-		 glGenVertexArrays(1, &CubeVAO);
-		 glGenBuffers(1, &CubeVBO);
-
-		 glBindVertexArray(CubeVAO);
-
-		 glBindBuffer(GL_ARRAY_BUFFER, CubeVBO);
-		 glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-		 // position attribute
-		 glEnableVertexAttribArray(0);
-		 glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+		 /*************** TEST ***************/	/*************** TEST ***************/	/*************** TEST ***************/
 
 		 glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+		 // 		//VAO Test
+	
+		glGenVertexArrays(1, &CubeVAO);
+		glBindVertexArray(CubeVAO);
+
+		//VBO Test
+		glGenBuffers(1, &CubeVBO);
+		glBindBuffer(GL_ARRAY_BUFFER, CubeVBO);
+
+		glBufferData(GL_ARRAY_BUFFER, mesh.Mesh_Attributes.size() * sizeof(float), &mesh.Mesh_Attributes[0], GL_STATIC_DRAW);
+
+		std::cout << mesh.Mesh_Vertices.size() * sizeof(vec3) << std::endl;
+
+		std::cout << (mesh.Mesh_Vertices.size() * sizeof(vec3) + (mesh.Mesh_Normals.size() * sizeof(vec3))) << std::endl;
+
+		//VBO Attribs
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(mesh.Mesh_Vertices.size() * sizeof(vec3)));
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)(mesh.Mesh_Vertices.size() * sizeof(vec3) + (mesh.Mesh_Normals.size() * sizeof(vec3))));
+		glEnableVertexAttribArray(2);
+
+		//Element Buffer test
+		glGenBuffers(1, &CubeEBO);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, CubeEBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * mesh.indices.size(), &mesh.indices[0], GL_STATIC_DRAW);
+		// 		
+
 		/*************** TEST ***************/	/*************** TEST ***************/	/*************** TEST ***************/
 	}
 
@@ -111,14 +86,31 @@ namespace MC
 			mat4 proj = mat4::Perspective(45.0f, 1.8, 0.1f, 100.0f);
 	
 			mat4 transform;
-
-			static float offsetest = 0.0f;
-			offsetest += 0.01;
 			
 			transform *= mat4::Translate({ 0.0f, 0.0f, 0.0f });
-			transform *= mat4::Rotate(offsetest *offsetest * offsetest, vec3(1.0f, 0.0f, 0.0f));
+			//transform *= mat4::Rotate(0, vec3(1.0f, 0.0f, 0.0f));
 
-			Camera test({ 0.0f, 0.0f, 10.0f });
+
+			if (MC::InputHandler::isKeyPressed(MC::MC_KEY_W))
+			{
+				test.Translate({ 0.0f, 0.0f, -0.1f });
+			}
+
+			if (MC::InputHandler::isKeyPressed(MC::MC_KEY_S))
+			{
+				test.Translate({ 0.0f, 0.0f, 0.1f });
+			}
+
+
+			if (MC::InputHandler::isKeyPressed(MC::MC_KEY_D))
+			{
+				test.Translate({ 0.1f, 0.0f, 0.0f });
+			}
+
+			if (MC::InputHandler::isKeyPressed(MC::MC_KEY_A))
+			{
+				test.Translate({ -0.1f, 0.0f, 0.0f });
+			}
 
 		
 			mat4 viewproj = proj * test.getViewMatrix();
@@ -129,9 +121,10 @@ namespace MC
 			shader->UploadUniformMat4("u_Transform", transform);
 
 
-			glBindVertexArray(CubeVAO);
-			glDrawArrays(GL_TRIANGLES, 0, 36);
-			//glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, (void*)0);
+		glBindVertexArray(CubeVAO);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, CubeEBO);
+			/*glDrawArrays(GL_TRIANGLES, 0, 36);*/
+		glDrawElements(GL_TRIANGLES, (GLsizei)mesh.indices.size(), GL_UNSIGNED_INT, (void*)0);
 			/*************** TEST ***************/	/*************** TEST ***************/	/*************** TEST ***************/
 
 

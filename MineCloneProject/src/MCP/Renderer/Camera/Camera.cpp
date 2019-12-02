@@ -8,11 +8,17 @@ namespace MC
 		m_CameraSpeed(5.0f)
 	{
 		UpdateCameraVectors();
+		CalculateViewMatrix();
 	}
 
-	MC::mat4 Camera::getViewMatrix()
+	mat4 Camera::getViewMatrix()
 	{
-		return mat4::LookAt(m_CameraPosition, m_CameraPosition + m_CameraTarget, m_CameraUp);
+		return m_ViewMatrix;
+	}
+
+	void Camera::CalculateViewMatrix()
+	{
+		m_ViewMatrix = mat4::LookAt(m_CameraPosition, m_CameraPosition + m_CameraTarget, m_CameraUp);
 	}
 
 	void Camera::UpdateCameraVectors()
@@ -28,6 +34,12 @@ namespace MC
 
 		m_CameraRight = vec3::Normalize(vec3::Cross(m_CameraTarget, m_CameraUp));
 		m_CameraUp = vec3::Normalize(vec3::Cross(m_CameraRight, m_CameraTarget));
+	}
+
+	void Camera::Translate(const vec3& vec)
+	{
+		m_CameraPosition += { vec.x, vec.y, vec.z };
+		CalculateViewMatrix();
 	}
 
 	//@TODO: SetPosition, Rotation/Pitch/Yaw, Translate, Mouse affecting the Yaw/Pitch
