@@ -19,16 +19,28 @@ namespace MC
 		vec2 TextureCoods;
 	};
 
-	struct Mesh
+	//Como eu preciso ter os buffers para oganiza-los em um só buffer, deixa-los em Mesh iria aumentar muito o tamanho de cada Mesh sendo que eu só preciso deles para o ordering
+	//então criei o MeshBuffers para servir à  Mesh.
+	struct MeshBuffers
 	{
-		//Debug purpose
 		std::vector<vec3> Mesh_Vertices;
 		std::vector<vec3> Mesh_Normals;
 		std::vector<vec2> Mesh_UVs;
-		//Debug purpose
 
 		std::vector<float> Mesh_Attributes;
 
+		std::vector<unsigned int> indices;
+	};
+
+	struct Mesh
+	{
+		std::vector<float> getMeshData() const { return Mesh_Attributes; }
+		std::vector<unsigned int> getMeshIndices() const { return indices; }
+
+		void setMeshData(std::vector<float>& data) { Mesh_Attributes = data; }
+		void setMeshIndices(std::vector<unsigned int>& indicesData) { indices = indicesData; }
+	private:
+		std::vector<float> Mesh_Attributes;
 		std::vector<unsigned int> indices;
 	};
 }

@@ -2,17 +2,19 @@
 #include "Mesh.h"
 #include <vector> 
 #include <map>
+#include "MCP/Core.h"
 
 namespace MC
 {
 	class MeshLoader
 	{
 	public:
-		static Mesh loadOBJFile(const char* path);
+		static Ref<Mesh> loadOBJFile(const char* path, bool batched = false);
 		
 	private:
-		static Mesh indexBuffer(Mesh& data);
+		static Ref<MeshBuffers> indexBuffer(Ref<MeshBuffers> data);
 		static bool getSimilarVertex(MeshData& data, std::map<MeshData, unsigned int>& vertexToIndex, unsigned int& result);
-		static Mesh combineAttribs(Mesh& data);
+		static Ref<Mesh> batchAttribs(Ref<MeshBuffers> data);
+		static Ref<Mesh> combineAttribs(Ref<MeshBuffers> data);
 	};
 }

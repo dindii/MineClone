@@ -6,26 +6,33 @@
 #include <sstream>
 #include <string>
 
+#include <memory>
+
+#include "MCP/Core.h"
+
 namespace MC
 {
 	//TODO@: Throw a warning if vectors don't have the same size
 	//TODO@: Load into a buffer and then parse the buffer
-	Mesh MeshLoader::loadOBJFile(const char* path)
+	Ref<Mesh> MeshLoader::loadOBJFile(const char* path, bool batched)
 	{
 		std::ifstream source(path, std::ifstream::binary);
 
 		if (!source)
 		{
 			MC_LOG_ERROR("Can't load .OBJ file!");
+			return 0;
 		}
-
+		
 		std::vector<vec3> verticesTemp;
 		std::vector<vec2> UVTemp;
-		std::vector<vec3> NormalsTemp;
+		std::vector<vec3> NormalsTemp ;
+	
+		std::vector<unsigned int>	verticesIndices;
+		std::vector<unsigned int>	normalsIndices ;
+		std::vector<unsigned int>	UVIndices;
 
-		std::vector<unsigned int> verticesIndices, normalsIndices, UVIndices;
-
-		Mesh data;
+		Ref<MeshBuffers> data(new MeshBuffers());
 
 		for (std::string line; std::getline(source, line); )
 		{
@@ -78,39 +85,43 @@ namespace MC
 		{
 			unsigned int index = verticesIndices[x];
 			vec3 vertexPos = verticesTemp[index - 1];
-			data.Mesh_Vertices.push_back(vertexPos);
+			data->Mesh_Vertices.push_back(vertexPos);
 
 			index = UVIndices[x];
 			vec2 textureCoord = UVTemp[index - 1];
-			data.Mesh_UVs.push_back(textureCoord);
+			data->Mesh_UVs.push_back(textureCoord);
 
 			index = normalsIndices[x];
 			vec3 normalPos = NormalsTemp[index - 1];
-			data.Mesh_Normals.push_back(normalPos);
+			data->Mesh_Normals.push_back(normalPos);
 		}
 		
+
 		//Tira os valores repetidos mas repete o index deles no buffer, para criar o indexed buffer.
 		indexBuffer(data);
 
 		//Juntar em um vector só
-		return combineAttribs(data);
+		if (batched)
+			return batchAttribs(data);
 
+		else
+			return combineAttribs(data);
 	}
 
 
-	Mesh MeshLoader::indexBuffer(Mesh& data)
+	Ref<MeshBuffers> MeshLoader::indexBuffer(Ref<MeshBuffers> data)
 	{
-		Mesh outData;
+		MeshBuffers outData;
 
 		std::map<MeshData, unsigned int> vertexToIndex;
 
 		MeshData int_Data;
 
-		for (unsigned int x = 0; x < data.Mesh_Vertices.size(); x++)
+		for (unsigned int x = 0; x < data->Mesh_Vertices.size(); x++)
 		{
-			int_Data.Vertex = data.Mesh_Vertices[x];
-			int_Data.TextureCoods = data.Mesh_UVs[x];
-			int_Data.Normal = data.Mesh_Normals[x];
+			int_Data.Vertex = data->Mesh_Vertices[x];
+			int_Data.TextureCoods = data->Mesh_UVs[x];
+			int_Data.Normal = data->Mesh_Normals[x];
 	
 
 			unsigned int index;
@@ -122,9 +133,9 @@ namespace MC
 			
 			else
 			{
-				outData.Mesh_Vertices.push_back(data.Mesh_Vertices[x]);
-				outData.Mesh_Normals.push_back(data.Mesh_Normals[x]);
-				outData.Mesh_UVs.push_back(data.Mesh_UVs[x]);
+				outData.Mesh_Vertices.push_back(data->Mesh_Vertices[x]);
+				outData.Mesh_Normals.push_back(data->Mesh_Normals[x]);
+				outData.Mesh_UVs.push_back(data->Mesh_UVs[x]);
 
 				unsigned int newIndex = (unsigned int)outData.Mesh_Vertices.size() - 1;
 				outData.indices.push_back(newIndex);
@@ -132,8 +143,9 @@ namespace MC
 			}
 		}
 
-		data = outData;
+		*data = outData;
 		return data;
+
 	}
 
 	bool MeshLoader::getSimilarVertex(MeshData& data, std::map<MeshData, unsigned int>& vertexToIndex, unsigned int& result)
@@ -152,29 +164,58 @@ namespace MC
 
 	//@TODO: Tomar conta do numero de atributos para caso houver mais no futuro.
 
-	Mesh MeshLoader::combineAttribs(Mesh& data)
+	Ref<Mesh> MeshLoader::batchAttribs(Ref<MeshBuffers> data)
 	{
-		for (uint32_t x = 0; x < data.Mesh_Vertices.size()  ; x++)
+		for (uint32_t x = 0; x < data->Mesh_Vertices.size()  ; x++)
 		{
- 				data.Mesh_Attributes.push_back(data.Mesh_Vertices[x].x);
- 				data.Mesh_Attributes.push_back(data.Mesh_Vertices[x].y);
- 				data.Mesh_Attributes.push_back(data.Mesh_Vertices[x].z);
+ 				data->Mesh_Attributes.push_back(data->Mesh_Vertices[x].x);
+ 				data->Mesh_Attributes.push_back(data->Mesh_Vertices[x].y);
+ 				data->Mesh_Attributes.push_back(data->Mesh_Vertices[x].z);
 		}
 
-		for (uint32_t x = 0; x < data.Mesh_Vertices.size(); x++)
+		for (uint32_t x = 0; x < data->Mesh_Vertices.size(); x++)
 		{
-				data.Mesh_Attributes.push_back(data.Mesh_Normals[x].x);
-				data.Mesh_Attributes.push_back(data.Mesh_Normals[x].y);
-				data.Mesh_Attributes.push_back(data.Mesh_Normals[x].z);
+				data->Mesh_Attributes.push_back(data->Mesh_Normals[x].x);
+				data->Mesh_Attributes.push_back(data->Mesh_Normals[x].y);
+				data->Mesh_Attributes.push_back(data->Mesh_Normals[x].z);
 		}
 
-		for (uint32_t x = 0; x < data.Mesh_Vertices.size(); x++)
+		for (uint32_t x = 0; x < data->Mesh_Vertices.size(); x++)
 		{
-				data.Mesh_Attributes.push_back(data.Mesh_UVs[x].x);
-				data.Mesh_Attributes.push_back(data.Mesh_UVs[x].y);
+				data->Mesh_Attributes.push_back(data->Mesh_UVs[x].x);
+				data->Mesh_Attributes.push_back(data->Mesh_UVs[x].y);
+		}							 
+
+		Ref<Mesh> orderedMesh(new Mesh());
+
+		orderedMesh->setMeshIndices(data->indices);
+		orderedMesh->setMeshData(data->Mesh_Attributes);
+
+		return orderedMesh;
+	}
+
+	MC::Ref<Mesh> MeshLoader::combineAttribs(Ref<MeshBuffers> data)
+	{
+		for (uint32_t x = 0; x < data->Mesh_Vertices.size(); x++)
+		{
+			data->Mesh_Attributes.push_back(data->Mesh_Vertices[x].x);
+			data->Mesh_Attributes.push_back(data->Mesh_Vertices[x].y);
+			data->Mesh_Attributes.push_back(data->Mesh_Vertices[x].z);
+									 
+			data->Mesh_Attributes.push_back(data->Mesh_Normals[x].x);
+			data->Mesh_Attributes.push_back(data->Mesh_Normals[x].y);
+			data->Mesh_Attributes.push_back(data->Mesh_Normals[x].z);
+									  
+			data->Mesh_Attributes.push_back(data->Mesh_UVs[x].x);
+			data->Mesh_Attributes.push_back(data->Mesh_UVs[x].y);
 		}
 
-		return data;
+		MC::Ref<Mesh> orderedMesh(new Mesh());
+
+		orderedMesh->setMeshIndices(data->indices);
+		orderedMesh->setMeshData(data->Mesh_Attributes);
+
+		return orderedMesh;
 	}
 
 }

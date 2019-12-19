@@ -15,3 +15,9 @@
 #include "MCP/LayerStack.h"
 
 #include "MCP/Object/Mesh/MeshLoader.h"
+
+#include "MCP/Renderer/Camera/Camera.h"
+#include "MCP/Renderer/Shader/Shader.h"
+
+#include "MCP/Maths/mat4.h"
+
