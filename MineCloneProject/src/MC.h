@@ -21,3 +21,5 @@
 
 #include "MCP/Maths/mat4.h"
 
+#include "MCP/Renderer/RenderCommand.h"
+#include "MCP/Renderer/Renderer.h"

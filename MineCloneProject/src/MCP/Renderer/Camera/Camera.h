@@ -10,10 +10,12 @@ namespace MC
 	class Camera
 	{
 	public:
-		Camera(vec3 position);
+		Camera(const vec3& position);
 		Camera() = default;
 
-		mat4 getViewMatrix();
+		const mat4 getViewMatrix() const;
+
+
 		void UpdateCameraVectors();
 
 		void Translate(const vec3& vec);

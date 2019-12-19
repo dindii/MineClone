@@ -111,8 +111,7 @@ namespace MC
 
 	void Window::onUpdate()
 	{
-		//Parte permanente.
-		swapBuffers(); //@TODO: Colocar pra Renderer fazer
+		swapBuffers();
 		pollEvents();
 	}
 

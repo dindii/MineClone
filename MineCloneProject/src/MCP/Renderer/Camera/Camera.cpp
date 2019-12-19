@@ -4,14 +4,14 @@
 
 namespace MC
 {
-	Camera::Camera(vec3 position) : m_Yaw(-90.0f), m_Pitch(0.0f), m_CameraUp({ 0.0f, 1.0f, 0.0f }), m_CameraTarget({ 0.0f, 0.0f, -1.0f }), m_CameraPosition(position), m_CameraSensitivity(0.1f),
+	Camera::Camera(const vec3& position) : m_Yaw(-90.0f), m_Pitch(0.0f), m_CameraUp({ 0.0f, 1.0f, 0.0f }), m_CameraTarget({ 0.0f, 0.0f, -1.0f }), m_CameraPosition(position), m_CameraSensitivity(0.1f),
 		m_CameraSpeed(5.0f)
 	{
 		UpdateCameraVectors();
 		CalculateViewMatrix();
 	}
 
-	mat4 Camera::getViewMatrix()
+	const mat4 Camera::getViewMatrix() const
 	{
 		return m_ViewMatrix;
 	}
