@@ -10,8 +10,10 @@ public:
 	void OnEvent(MC::Event& e) override;
 
 
+	MC::Chunk* singleChunk;
 
-	MC::Ref<MC::Shader> Shader;
-	MC::Ref<MC::Camera> Camera;
-	MC::Ref<MC::mat4> Projection;
+	MC::Shader* shader;
+	//MC::Ref<MC::Shader> shader;
+	MC::Camera camera;
+	MC::mat4 Projection;
 };

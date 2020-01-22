@@ -20,6 +20,9 @@
 #include "MCP/Renderer/Shader/Shader.h"
 
 #include "MCP/Maths/mat4.h"
+#include "MCP/Maths/bvec4.h"
 
 #include "MCP/Renderer/RenderCommand.h"
 #include "MCP/Renderer/Renderer.h"
+
+#include "MCP/Renderer/Voxel/Chunk.h"

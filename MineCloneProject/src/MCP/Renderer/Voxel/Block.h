@@ -11,7 +11,7 @@ namespace MC
 	class Block
 	{
 	public:
-		Block() : m_BlockType(BlockType::MC_Default) {};
+		Block() : m_BlockType(BlockType::MC_Default), m_Active(true) {};
 		~Block() = default;
 
 		inline bool isActive() const { return m_Active; };

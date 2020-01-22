@@ -3,7 +3,7 @@
 #include "Utils/Logger.h"
 #include "Core.h"
 #include "IO/InputHandler.h"
-
+#include "MCP/Renderer/Renderer.h"
 
 namespace MC
 {
@@ -18,6 +18,8 @@ namespace MC
 
 
 		m_Window->setEventCallback(BIND_EVENT_FN(Application::OnEvent));
+
+		Renderer::Init();
 
 	}
 
