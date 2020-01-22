@@ -25,7 +25,6 @@ namespace MC
 		void update();
 
 		uint8_t blocks[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE]; //types of blocks
-
 		bvec4 vertex[CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE * 6 * 6]; //mesh data
 
 		GLuint VBO;

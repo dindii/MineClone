@@ -13,21 +13,13 @@ WorldLayer::WorldLayer() : Layer("WorldLayer")
 
 	shader = new MC::Shader("D:/dev/MineCloneProject/MineCloneProject/res/Shaders/chunkVertex.shader", "D:/dev/MineCloneProject/MineCloneProject/res/Shaders/chunkFragment.shader");
 	shader->Bind();
-
 }
 
 void WorldLayer::OnUpdate()
 {
 	MC::Renderer::Clear();
 	MC::Renderer::BeginScene(camera, Projection);
-	static float zeta = 0.1f;
-	camera.Translate({ 0.0f, 0.0f, (zeta + 0.1f) });
 	MC::Renderer::Draw(singleChunk, shader);
-	
-
-
-	//Draw
-	//End
 }
 
 void WorldLayer::OnEvent(MC::Event& e)

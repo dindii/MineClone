@@ -102,7 +102,7 @@ namespace MC
 		}
 
 
-		elements = i; // ELEMENTOS FICANDO EM ZERO@@@
+		elements = i; 
 	}
 
 

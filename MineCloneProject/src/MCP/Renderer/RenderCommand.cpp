@@ -25,13 +25,6 @@ namespace MC
 
 		shader->Bind();
 		glDrawArrays(GL_TRIANGLES, 0, chunk->elements);
-
-		GLenum err;
-		while ((err = glGetError()) != GL_NO_ERROR)
-		{
-			std::cout << err << std::endl;
-		}
-	
 	}
 
 	void RenderCommand::Clear(const bool& ColorBuffer /*= true*/, const bool& DepthBuffer /*= true*/)

@@ -9,7 +9,6 @@ namespace MC
 
 	void Renderer::Draw(Chunk* chunk, Shader* shader)
 	{
-		
 		shader->Bind();
 		shader->UploadUniformMat4("u_ViewProjection", m_SceneData->ViewProjectionMatrix);
 
