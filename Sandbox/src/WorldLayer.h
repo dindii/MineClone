@@ -15,10 +15,8 @@ public:
 	void LookAround();
 	float cameraSpeed = 10.5f;
 	float cameraSens = 1.0f;
-	float lastX = 680, lastY = 380; //@TODO: MC::Aplication::GetWindow();
 
-	MC::vec2 mMouseDelta, m_PrevMouseCoords, m_MouseCoords;
-	//
+
 	MC::Chunk* singleChunk;
 
 	MC::Shader* shader;
