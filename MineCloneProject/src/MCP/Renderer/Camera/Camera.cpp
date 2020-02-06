@@ -4,11 +4,10 @@
 
 namespace MC
 {
-	Camera::Camera(const vec3& position) : m_Yaw(-90.0f), m_Pitch(0.0f), m_CameraUp({ 0.0f, 1.0f, 0.0f }), m_CameraTarget({ 0.0f, 0.0f, -1.0f }), m_CameraPosition(position), m_CameraSensitivity(0.1f),
+	Camera::Camera(const vec3& position) : m_Yaw(0), m_Pitch(0.0f), m_CameraTarget({ 0.0f, 0.0f, -1.0f }), m_CameraPosition(position), m_CameraSensitivity(0.1f),
 		m_CameraSpeed(5.0f)
 	{
 		UpdateCameraVectors();
-		CalculateViewMatrix();
 	}
 
 	const mat4 Camera::getViewMatrix() const
@@ -16,33 +15,18 @@ namespace MC
 		return m_ViewMatrix;
 	}
 
-	void Camera::CalculateViewMatrix()
-	{
-		m_ViewMatrix = mat4::LookAt(m_CameraPosition, m_CameraPosition + m_CameraTarget, m_CameraUp);
-	}
-
 	void Camera::UpdateCameraVectors()
 	{
+		mat4 yaw;
+		mat4 pitch;
 
-		vec3 Target; 
+		pitch = mat4::Rotate(m_Pitch, vec3(1.0f, 0.0f, 0.0f));
+		yaw = mat4::Rotate(m_Yaw, vec3(0.0f, 1.0f, 0.0f));
 
-		Target.x = cos(toRadians(m_Pitch)) * cos(toRadians(m_Yaw));
-		Target.y = sin(toRadians(m_Pitch));
-		Target.z = cos(toRadians(m_Pitch)) * sin(toRadians(m_Yaw));
+		rotation = pitch * yaw;
 
-		m_CameraTarget = Target.Normalized();
-
-		m_CameraRight = vec3::Normalize(vec3::Cross(m_CameraTarget, m_CameraUp));
-		m_CameraUp = vec3::Normalize(vec3::Cross(m_CameraRight, m_CameraTarget));
+		position = mat4::Translate(-m_CameraTarget);
+	    
+		m_ViewMatrix = rotation * position;
 	}
-
-	void Camera::Translate(const vec3& vec)
-	{
-		m_CameraPosition += { vec.x, vec.y, vec.z };
-		CalculateViewMatrix();
-	}
-
-	//@TODO: SetPosition, Rotation/Pitch/Yaw, Translate, Mouse affecting the Yaw/Pitch
-	// Talvez sobrecarregando os operadores * para o translate/rotate
-
 }

@@ -118,6 +118,15 @@ namespace MC
 		return *this;
 	}
 
+	MC::vec3& vec3::multiply(const float& other)
+	{
+		x *= other;
+		y *= other;
+		z *= other;
+
+		return *this;
+	}
+
 	vec3& vec3::divide(const vec3& other)
 	{
 		x /= other.x;
@@ -143,6 +152,7 @@ namespace MC
 	{
 		return multiply(other);
 	}
+
 
 	vec3& vec3::operator/=(const vec3& other)
 	{
@@ -182,6 +192,11 @@ namespace MC
 	vec3 operator/(vec3 left, const vec3& right)
 	{
 		return left.divide(right);
+	}
+
+	vec3 operator*(vec3 left, const float& other)
+	{
+		return left.multiply(other);
 	}
 
 }

@@ -143,18 +143,27 @@ namespace MC
 	class WindowInput
 	{
 	public:
-		WindowInput();
+		WindowInput(HWND windowHandler, float width, float height); //@TODO: Realmente deixar esse construtor aqui? .. Ver uma forma melhor de conseguir width e height
 		~WindowInput();
 
 		static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 		inline static Key* getKeys() { return Keys; }
 		inline static vec2* getMouseCoords() { return MouseCoords; }
-	public:
+		inline static vec2 getMouseDelta() { return MouseDelta; }
+		static void setMouseCoords(vec2 coords);
 
+		
+	public:
 		inline void setEventCallback(const EventCallbackFn& callback) { EventCallback = callback; }
+
+
 	private:
-		static Key* Keys;
+		static vec2 MouseDelta;
 		static vec2* MouseCoords;
+		static Key* Keys;
 		static EventCallbackFn EventCallback;
+
+	private:
+		static POINT currMousePos, lastMousePos, resetMousePos, resultPos;
 	};
 }

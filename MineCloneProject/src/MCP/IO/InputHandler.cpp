@@ -39,4 +39,16 @@ namespace MC
 		return { Coords->x, Coords->y };
 	}
 
+	MC::vec2 InputHandler::GetMouseDelta()
+	{
+		vec2 Delta = WindowInput::getMouseDelta();
+
+		return Delta;
+	}
+
+	void InputHandler::setMouseCoords(vec2 coords)
+	{
+		WindowInput::setMouseCoords(coords);
+	}
+
 }

@@ -103,16 +103,9 @@ namespace MC
 		float s = MC::sin(a);
 		float i = 1.0f - c;
 
-		//JUST A TEST
-		//const vec3 normalizedAxis = vec3::Normalize(axis);
-
  		float x = axis.x;
  		float y = axis.y;
  		float z = axis.z;
-// 
-// 		float x = normalizedAxis.x;
-// 		float y = normalizedAxis.y;
-//  	float z = normalizedAxis.z;
 
 		result[0 + 0 * 4] = x * x * i + c;
 		result[1 + 0 * 4] = x * y * i + z * s;
@@ -142,27 +135,6 @@ namespace MC
 
 	mat4 mat4::LookAt(const vec3& Position, const vec3& target, const vec3& up)
 	{
-// 		mat4 result = mat4::Identity();
-// 
-// 		vec3 cameraDir = (target - Position).Normalized();
-// 		vec3 cameraRight = vec3::Normalize(cameraDir.Cross(up));
-// 		vec3 cameraUp = cameraRight.Cross(cameraDir);
-// 
-// 		result[0 + 0 * 4] = cameraRight.x;
-// 		result[1 + 0 * 4] = cameraRight.y;
-// 		result[2 + 0 * 4] = cameraRight.z;
-// 
-// 		result[0 + 1 * 4] = cameraUp.x;
-// 		result[1 + 1 * 4] = cameraUp.y;
-// 		result[2 + 1 * 4] = cameraUp.z;
-// 
-// 		result[0 + 2 * 4] = -cameraDir.x;
-// 		result[1 + 2 * 4] = -cameraDir.y;
-// 		result[2 + 2 * 4] = -cameraDir.z;
-// 
-// 		return result * mat4::Translate(vec3(-Position.x, -Position.y, -Position.z));
-
-// 
 		mat4 result;
 
 		vec3 cameraDir = vec3::Normalize(target - Position);

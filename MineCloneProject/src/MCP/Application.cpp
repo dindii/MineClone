@@ -5,6 +5,7 @@
 #include "IO/InputHandler.h"
 #include "MCP/Renderer/Renderer.h"
 
+
 namespace MC
 {
 
@@ -14,7 +15,7 @@ namespace MC
 	{
 		s_Instance = this;
 
-		m_Window = new Window(1360, 720, "MClone!");
+		m_Window = new Window(1360, 768, "MClone!");
 
 
 		m_Window->setEventCallback(BIND_EVENT_FN(Application::OnEvent));
@@ -32,10 +33,12 @@ namespace MC
 	{
 		while (m_Running)
 		{
+			deltaTime.tick();
+
 			m_Window->onUpdate();	
 
 			for (Layer* layer : m_LayerStack)
-				layer->OnUpdate();
+				layer->OnUpdate(deltaTime);
 			
 			//@TODO: Call imgui layer.
 		}

@@ -2,6 +2,7 @@
 #include "WindowInput.h"
 #include "MCP/Utils/Logger.h"
 #include <windowsx.h>
+#include "MCP/Application.h"
 
 
 namespace MC
@@ -10,7 +11,14 @@ namespace MC
 	vec2* WindowInput::MouseCoords = nullptr;
 	EventCallbackFn WindowInput::EventCallback = nullptr;
 
-	WindowInput::WindowInput()
+   POINT WindowInput::currMousePos; 
+   POINT WindowInput::lastMousePos; 
+   POINT WindowInput::resetMousePos;
+   POINT WindowInput::resultPos;
+
+   vec2 WindowInput::MouseDelta;
+
+	WindowInput::WindowInput(HWND windowHandler, float width, float height)
 	{
 		Keys = new Key[MAX_KEYS];
 		MouseCoords = new vec2;
@@ -107,6 +115,24 @@ namespace MC
 		Keys[0xA1].KeyCode = MC_KEYS::MC_KEY_RSHIFT;
 		Keys[0xA2].KeyCode = MC_KEYS::MC_KEY_LCTRL;
 		Keys[0xA3].KeyCode = MC_KEYS::MC_KEY_RCTRL;
+
+
+
+		resetMousePos.x = (width) / 2;
+		resetMousePos.y = (height) / 2;
+
+		currMousePos.x = resetMousePos.x;
+		currMousePos.y = resetMousePos.y;
+		lastMousePos = currMousePos;
+
+		resultPos.x = 0;
+		resultPos.y = 0;
+
+		POINT temp = currMousePos;
+
+		ClientToScreen(windowHandler, &temp);
+
+		SetCursorPos(temp.x, temp.y);
 	}
 
 	WindowInput::~WindowInput()
@@ -194,13 +220,46 @@ namespace MC
 
 
 			case WM_MOUSEMOVE:
-			{				
+			{	
+				//Create event
 				MC::MouseMovedEvent event((lparam & 0xFFFF), ((lparam >> 16) & 0xFFFF)); //X em low order and Y em high order.
 
 				MouseCoords->x = event.GetX();
 				MouseCoords->y = event.GetY();
 
 				EventCallback(event);
+
+
+
+
+
+				//Mouse delta logic
+				currMousePos.x = MouseCoords->x;
+				currMousePos.y = MouseCoords->y;
+
+				POINT difference;
+				difference.x = currMousePos.x - lastMousePos.x;
+				difference.y = currMousePos.y - lastMousePos.y;
+
+				resultPos.x += difference.x;
+				resultPos.y += difference.y;
+
+				lastMousePos = currMousePos;
+
+				MouseDelta = vec2((float)resultPos.x, (float)resultPos.y);
+				
+
+				//Reset mouse to the middle of screen
+				POINT temp = resetMousePos;
+				ClientToScreen(hwnd, &temp);
+
+				// the new difference should be 0
+				currMousePos.x = resetMousePos.x;
+				currMousePos.y = resetMousePos.y;
+				lastMousePos = currMousePos;
+
+				SetCursorPos(temp.x, temp.y);
+	
 
 				break;
 			}
@@ -223,4 +282,8 @@ namespace MC
 	}
 
 
+	void WindowInput::setMouseCoords(vec2 coords)
+	{
+		SetCursorPos(coords.x, coords.y);
+	}
 }

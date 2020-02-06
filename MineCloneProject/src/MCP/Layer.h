@@ -2,6 +2,7 @@
 
 #include "MCP/Event/Event.h"
 #include <string>
+#include "MCP/Platform/DeltaTime.h"
 
 namespace MC
 {
@@ -13,7 +14,7 @@ namespace MC
 
 		virtual void OnAttach() {}; 
 		virtual void OnDetach() {};
-		virtual void OnUpdate() {};
+		virtual void OnUpdate(DeltaTime deltaTime) {};
 		virtual void OnImGuiRender() {};
 		virtual void OnEvent(Event& event) {};
 

@@ -1,6 +1,7 @@
 #pragma once
 #include "Window.h"
 #include "LayerStack.h"
+#include "MCP/Platform/DeltaTime.h"
 
 namespace MC
 {
@@ -25,6 +26,9 @@ namespace MC
 
 		void PushLayer(Layer* layer);
 		void PushOverLay(Layer* layer);
+
+		inline Window& GetWindow() { return *m_Window; }
+
 	private:
 		static Application* s_Instance;
 	
@@ -32,6 +36,8 @@ namespace MC
 		bool m_Running;
 		Window* m_Window;
 		LayerStack m_LayerStack;
+
+		DeltaTime deltaTime;
 
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);

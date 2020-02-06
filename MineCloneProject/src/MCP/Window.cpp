@@ -14,7 +14,7 @@ namespace MC
 		MC_LOG_TRACE("Initializing Engine!");
 
 		m_Details = new WindowProperties(Width, Height, Name);
-		m_WindowInput = new WindowInput();
+		m_WindowInput = new WindowInput(m_NativeWindow, /* @TODO: Tirar o width e height e deixar so o hwnd*/ m_Details->Width, m_Details->Height);
 
 
 		WNDCLASSEX wc;
@@ -113,6 +113,15 @@ namespace MC
 	{
 		swapBuffers();
 		pollEvents();
+		
+
+		// @TODO: Quando passar para MT, lockar a thread apos setar o clipcursor e atualizar o RECT em alguma mensagem de window resize.S
+
+		//RECT r;
+		//GetWindowRect(m_NativeWindow, &r);
+		//ClipCursor(&r);
+		//ShowCursor(false);
+
 	}
 
 	bool Window::pollEvents()
