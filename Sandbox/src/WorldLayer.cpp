@@ -5,7 +5,7 @@
 WorldLayer::WorldLayer() : Layer("WorldLayer")
 {
 	camera = MC::Camera({ 10.0f, 10.0f, 70.0f });
-	Projection = MC::mat4::Perspective(45.0f, 1360/768, 0.1f, 100.0f);
+	Projection = MC::mat4::Perspective(45.0f, 1360 / 768, 0.1f, 100.0f);
 
 	MC::RenderCommand::SetClearColor({ 1.0f, 0.0f, 0.5f, 1.0f });
 
@@ -18,7 +18,6 @@ WorldLayer::WorldLayer() : Layer("WorldLayer")
 void WorldLayer::OnUpdate(MC::DeltaTime deltaTime)
 {
 	LookAround();
-	camera.UpdateCameraVectors();
 	MovePlayer(deltaTime);
 
 
@@ -58,42 +57,27 @@ void WorldLayer::MovePlayer(MC::DeltaTime deltaTime)
 
 	if (MC::InputHandler::isKeyPressed(MC::MC_KEY_SPACE))
 	{
-		dy = 4;
+		dy = 2;
 	}
 
 	if (MC::InputHandler::isKeyPressed(MC::MC_KEY_CTRL))
 	{
-		dy = -4;
+		dy = -2;
 	}
 
-	//@TODO: Automatizar
-	//@TODO: Translate no Y ao inves de atualizar o Up junto? 
-
-	MC::mat4 mat = camera.getViewMatrix();
-
-	MC::vec3 forward(mat[2 + 0 * 4], mat[2 + 1 * 4], mat[2 + 2 * 4]);
-	MC::vec3 strafe(mat[0 + 0 * 4], mat[0 + 1 * 4], mat[0 + 2 * 4]);
-	MC::vec3 up(mat[1 + 0 * 4], mat[1 + 1 * 4], mat[1 + 2 * 4]);
-
-	const float speed = 0.12f;
-
-	MC::vec3 target = camera.GetCameraTarget();
-
-	target += ((forward * -dz) + (strafe * dx)) + (up * dy) * speed;
-
-	camera.SetCameraTarget(target);
-	camera.UpdateCameraVectors();
+	camera.AddCameraTargetPosition(MC::vec3(dx, dy, dz) * cameraSpeed * deltaTime);
 }
+
 
 void WorldLayer::LookAround()
 {
-  	float yaw = camera.GetCameraYaw();
- 	float pitch = camera.GetCameraPitch();
 
 	MC::vec2 Delta = MC::InputHandler::GetMouseDelta();
 
 	camera.SetCameraYaw(MC::toRadians(Delta.x));
 	camera.SetCameraPitch(MC::toRadians(Delta.y));
+	
+	float pitch = camera.GetCameraPitch();
 
 	if (pitch > 89.0f)
 		camera.SetCameraPitch(89.0f);

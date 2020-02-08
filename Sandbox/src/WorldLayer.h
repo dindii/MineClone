@@ -13,9 +13,12 @@ public:
 	//Gameplay Related Stuff
 	void MovePlayer(MC::DeltaTime deltaTime);
 	void LookAround();
+
+
+
 	float cameraSpeed = 10.5f;
 	float cameraSens = 1.0f;
-
+	float offset = 0;
 
 	MC::Chunk* singleChunk;
 
