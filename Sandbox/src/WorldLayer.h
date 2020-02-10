@@ -19,6 +19,9 @@ public:
 	float cameraSpeed = 10.5f;
 	float cameraSens = 1.0f;
 	float offset = 0;
+	MC::vec2 DeltaReverse;
+	bool mode = false;
+
 
 	MC::Chunk* singleChunk;
 

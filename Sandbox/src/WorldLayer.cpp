@@ -6,12 +6,11 @@ WorldLayer::WorldLayer() : Layer("WorldLayer")
 {
 	camera = MC::Camera({ 10.0f, 10.0f, 70.0f });
 	Projection = MC::mat4::Perspective(45.0f, 1360 / 768, 0.1f, 100.0f);
-
 	MC::RenderCommand::SetClearColor({ 1.0f, 0.0f, 0.5f, 1.0f });
 
 	singleChunk = new MC::Chunk();
 
-	shader = new MC::Shader("D:/dev/MineCloneProject/MineCloneProject/res/Shaders/chunkVertex.shader", "D:/dev/MineCloneProject/MineCloneProject/res/Shaders/chunkFragment.shader");
+	shader = new MC::Shader("res/Shaders/chunkVertex.shader", "res/Shaders/chunkFragment.shader");
 	shader->Bind();
 }
 
@@ -71,18 +70,10 @@ void WorldLayer::MovePlayer(MC::DeltaTime deltaTime)
 
 void WorldLayer::LookAround()
 {
-
 	MC::vec2 Delta = MC::InputHandler::GetMouseDelta();
 
-	camera.SetCameraYaw(MC::toRadians(Delta.x));
 	camera.SetCameraPitch(MC::toRadians(Delta.y));
-	
-	float pitch = camera.GetCameraPitch();
-
-	if (pitch > 89.0f)
-		camera.SetCameraPitch(89.0f);
-	if (pitch < -89.0f)
-		camera.SetCameraPitch(-89.0f);
+	camera.SetCameraYaw(MC::toRadians(Delta.x));
 
 	camera.UpdateCameraVectors();
 }
