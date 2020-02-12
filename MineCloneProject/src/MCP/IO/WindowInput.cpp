@@ -4,17 +4,18 @@
 #include <windowsx.h>
 #include "MCP/Application.h"
 
-
+//Hide in another namespace
 namespace MC
 {
+	bool WindowInput::deltaLock = false;
+	bool WindowInput::cursorLock = true;
 	Key* WindowInput::Keys = nullptr;
 	vec2* WindowInput::MouseCoords = nullptr;
 	EventCallbackFn WindowInput::EventCallback = nullptr;
-
-   POINT WindowInput::currMousePos; 
-   POINT WindowInput::lastMousePos; 
-   POINT WindowInput::resetMousePos;
-   POINT WindowInput::resultPos;
+	POINT WindowInput::currMousePos;
+	POINT WindowInput::lastMousePos;
+	POINT WindowInput::resetMousePos;
+	POINT WindowInput::resultPos;
 
    vec2 WindowInput::MouseDelta;
 
@@ -229,37 +230,38 @@ namespace MC
 
 				EventCallback(event);
 
-
-
-
-
 				//Mouse delta logic
-				currMousePos.x = MouseCoords->x;
-				currMousePos.y = MouseCoords->y;
+				if (!deltaLock)
+				{
+					currMousePos.x = MouseCoords->x;
+					currMousePos.y = MouseCoords->y;
 
-				POINT difference;
-				difference.x = currMousePos.x - lastMousePos.x;
-				difference.y = currMousePos.y - lastMousePos.y;
+					POINT difference;
+					difference.x = currMousePos.x - lastMousePos.x;
+					difference.y = currMousePos.y - lastMousePos.y;
 
-				resultPos.x += difference.x;
-				resultPos.y += difference.y;
+					resultPos.x += difference.x;
+					resultPos.y += difference.y;
 
-				lastMousePos = currMousePos;
+					lastMousePos = currMousePos;
 
-				MouseDelta = vec2((float)resultPos.x, (float)resultPos.y);
-				
+					MouseDelta = vec2((float)resultPos.x, (float)resultPos.y);
 
-				//Reset mouse to the middle of screen
-				POINT temp = resetMousePos;
-				ClientToScreen(hwnd, &temp);
 
-				// the new difference should be 0
-				currMousePos.x = resetMousePos.x;
-				currMousePos.y = resetMousePos.y;
-				lastMousePos = currMousePos;
+			
+				}
+				if (cursorLock)
+				{
+					// Reset mouse to the middle of screen
+					POINT temp = resetMousePos;
+					ClientToScreen(hwnd, &temp);
 
-				SetCursorPos(temp.x, temp.y);
-	
+					// the new difference should be 0
+					currMousePos.x = resetMousePos.x;
+					currMousePos.y = resetMousePos.y;
+					lastMousePos = currMousePos;
+					SetCursorPos(temp.x, temp.y);
+				}
 
 				break;
 			}

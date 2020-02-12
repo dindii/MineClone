@@ -12,5 +12,8 @@ namespace MC
 		static vec2 GetMouseDelta();
 
 		static void setMouseCoords(vec2 coords);
+		static void setMouseDelta(vec2 value);
+		static void lockCursorPosition(bool lock);
+		static void lockCursorDelta(bool lock);
 	};
 }

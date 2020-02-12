@@ -51,4 +51,19 @@ namespace MC
 		WindowInput::setMouseCoords(coords);
 	}
 
+	void InputHandler::setMouseDelta(vec2 value)
+	{
+		WindowInput::setMouseDelta(value);
+	}
+
+	void InputHandler::lockCursorPosition(bool lock)
+	{
+		WindowInput::lockCursor(lock);
+	}
+
+	void InputHandler::lockCursorDelta(bool lock)
+	{
+		WindowInput::lockDelta(lock);
+	}
+
 }
