@@ -240,12 +240,10 @@ namespace MC
 					difference.x = currMousePos.x - lastMousePos.x;
 					difference.y = currMousePos.y - lastMousePos.y;
 
-					resultPos.x += difference.x;
-					resultPos.y += difference.y;
+					MouseDelta.x += difference.x;
+					MouseDelta.y += difference.y;
 
 					lastMousePos = currMousePos;
-
-					MouseDelta = vec2((float)resultPos.x, (float)resultPos.y);
 
 
 			
