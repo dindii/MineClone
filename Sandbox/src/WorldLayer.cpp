@@ -72,29 +72,19 @@ void WorldLayer::LookAround()
 {
 	MC::vec2 Delta = MC::InputHandler::GetMouseDelta();
 
-	camera.SetCameraPitch(MC::toRadians(Delta.y));
-	camera.SetCameraYaw(MC::toRadians(Delta.x));
+	camera.SetCameraPitch(MC::toRadians(Delta.y * cameraSens));
+	camera.SetCameraYaw(MC::toRadians(Delta.x * cameraSens));
 
 	float pitch = camera.GetCameraPitch();
 
-	if (pitch > 89.0f)
-	{
-		MC::InputHandler::setMouseDelta(DeltaReverse);
-		MC::InputHandler::lockCursorDelta(true);
-	}
-	else if (pitch < -89.0f)
-	{
-		MC::InputHandler::setMouseDelta(DeltaReverse);
-		MC::InputHandler::lockCursorDelta(true);
-	}
-	else
-	{
-		MC::InputHandler::lockCursorDelta(false);
+ 	if (pitch > 89.0f || pitch < -89.0f)
+ 	{
+		DeltaReverse.x = Delta.x;
+ 		MC::InputHandler::setMouseDelta(DeltaReverse);
+ 	}
+ 	else
+ 	{
 		DeltaReverse = Delta;
-	}
-
-	MC_LOG_TRACE(Delta.y);
-	MC_LOG_TRACE(pitch);
-
+ 	}
 	camera.UpdateCameraVectors();
 }
