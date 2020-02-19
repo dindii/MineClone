@@ -8,7 +8,12 @@ WorldLayer::WorldLayer() : Layer("WorldLayer")
 	Projection = MC::mat4::Perspective(45.0f, 1360 / 768, 0.1f, 100.0f);
 	MC::RenderCommand::SetClearColor({ 1.0f, 0.0f, 0.5f, 1.0f });
 
-	singleChunk = new MC::Chunk();
+	superChunk = new MC::Superchunk();
+	
+	for (int x = 0; x < 256; x++)
+		for (int y = 0; y < 256; y++)
+		superChunk->Set(x, 0, y, 1);
+
 
 	shader = new MC::Shader("res/Shaders/chunkVertex.shader", "res/Shaders/chunkFragment.shader");
 	shader->Bind();
@@ -22,7 +27,7 @@ void WorldLayer::OnUpdate(MC::DeltaTime deltaTime)
 
 	MC::Renderer::Clear();
 	MC::Renderer::BeginScene(camera, Projection);
-	MC::Renderer::Draw(singleChunk, shader);
+	MC::Renderer::Draw(superChunk, shader);
 }
 
 void WorldLayer::OnEvent(MC::Event& e)
@@ -86,5 +91,6 @@ void WorldLayer::LookAround()
  	{
 		DeltaReverse = Delta;
  	}
+
 	camera.UpdateCameraVectors();
 }

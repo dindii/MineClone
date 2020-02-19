@@ -15,6 +15,22 @@ namespace MC
 		RenderCommand::Draw(chunk, shader);
 	}
 
+	void Renderer::Draw(Superchunk* superchunk, Shader* shader)
+	{
+
+		for (int x = 0; x < SUPER_CHUNK_SIZE; x++)
+			for (int y = 0; y < SUPER_CHUNK_SIZE; y++)
+				for (int z = 0; z < SUPER_CHUNK_SIZE; z++)
+					if (superchunk->c[x][y][z])
+					{
+						shader->Bind();
+						mat4 model;
+						model *= model.Translate(vec3(x * CHUNK_SIZE, y * CHUNK_SIZE, z * CHUNK_SIZE));
+						shader->UploadUniformMat4("u_Transform", model);
+						Draw(superchunk->c[x][y][z], shader);
+					}
+	}
+
 	void Renderer::BeginScene(const Camera& camera, const mat4& projection)
 	{
 		m_SceneData->ViewProjectionMatrix = projection * camera.getViewMatrix();

@@ -5,14 +5,15 @@
 #include "Camera/Camera.h"
 
 #include "MCP/Renderer/Voxel/Chunk.h"
+#include "MCP/Renderer/Voxel/Superchunk.h"
 
 namespace MC
 {
 	class Renderer
 	{
 	public:
-		//static void Draw(Chunk); 
 		static void Draw(Chunk* chunk, Shader* shader);
+		static void Draw(Superchunk* superchunk, Shader* shader);
 		static void BeginScene(const Camera& camera, const mat4& projection);
 
 		static void Clear(const bool& ColorBuffer = true, const bool& DepthBuffer = true);

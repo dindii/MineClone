@@ -20,7 +20,7 @@ public:
 	MC::vec2 DeltaReverse;
 
 
-	MC::Chunk* singleChunk;
+	MC::Superchunk* superChunk;
 
 	MC::Shader* shader;
 	MC::Camera camera;
