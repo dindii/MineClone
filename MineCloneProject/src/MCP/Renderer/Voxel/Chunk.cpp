@@ -7,7 +7,7 @@ namespace MC
 {
 	Chunk::Chunk()
 	{
-		memset(blocks, 1, sizeof(blocks));
+		memset(blocks, 0, sizeof(blocks));
 		memset(vertex, 0, sizeof(vertex));
 		elements = 0;
 		changed = true;

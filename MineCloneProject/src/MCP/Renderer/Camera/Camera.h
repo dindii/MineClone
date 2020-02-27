@@ -22,8 +22,8 @@ namespace MC
 		void AddCameraTargetPosition(vec3 pos);
 		inline void SetCameraTarget(vec3& target) { m_CameraTarget = target; } 
 		void SetCameraPosition(vec3& position);
-		inline void SetCameraYaw(float Yaw) { m_Yaw = Yaw; }
-		inline void SetCameraPitch(float Pitch) { m_Pitch = Pitch; }
+		inline void SetCameraYaw(float Yaw) { UpdateCameraVectors(); m_Yaw = Yaw; }
+		inline void SetCameraPitch(float Pitch) { UpdateCameraVectors(); m_Pitch = Pitch; }
 	
 		inline vec3 GetCameraTarget() const { return m_CameraTarget; }
 		inline vec3 GetCameraUp() const { return m_CameraUp; }

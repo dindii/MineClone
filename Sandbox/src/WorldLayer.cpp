@@ -10,9 +10,12 @@ WorldLayer::WorldLayer() : Layer("WorldLayer")
 
 	superChunk = new MC::Superchunk();
 	
-	for (int x = 0; x < 256; x++)
-		for (int y = 0; y < 256; y++)
-		superChunk->Set(x, 0, y, 1);
+
+	//16*16*16 chunks, 16*16*16*16 blocks.
+	for (int x = 0; x < 64; x++)
+		for (int y = 0; y < 64; y++)
+			for (int z = 0; z < 64; z++)
+				superChunk->Set(x, y, z, 1);
 
 
 	shader = new MC::Shader("res/Shaders/chunkVertex.shader", "res/Shaders/chunkFragment.shader");
@@ -91,6 +94,4 @@ void WorldLayer::LookAround()
  	{
 		DeltaReverse = Delta;
  	}
-
-	camera.UpdateCameraVectors();
 }
