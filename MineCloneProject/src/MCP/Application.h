@@ -31,10 +31,10 @@ namespace MC
 
 	private:
 		static Application* s_Instance;
-	
+	protected:
+		Window* m_Window;
 	private:
 		bool m_Running;
-		Window* m_Window;
 		LayerStack m_LayerStack;
 		bool m_Minimized;
 		DeltaTime deltaTime;

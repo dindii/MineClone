@@ -99,7 +99,7 @@ namespace MC
 
 		Renderer::SetViewport(0, 0, e.GetWidth(), e.GetHeight());
 
-		return true;
+		return false;
 	}
 
 	void Application::PushLayer(Layer* layer)

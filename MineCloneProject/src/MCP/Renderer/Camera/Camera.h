@@ -1,6 +1,6 @@
 #pragma once
 #include "MCP/Maths/mat4.h"
-
+#include "MCP/Event/Event.h"
 namespace MC
 {
 	//@TODO: Switch mode para alternar entre a criação de uma câmera perspectiva ou ortográfica.
@@ -12,7 +12,7 @@ namespace MC
 	class Camera
 	{
 	public:
-		Camera(const vec3& position);
+		Camera(const float AR, const vec3& position);
 		Camera() = default;
 
 		const mat4 getViewMatrix() const;
@@ -34,7 +34,12 @@ namespace MC
 		inline float GetCameraYaw() const { return m_Yaw; }
 		inline float GetCameraPitch() const { return m_Pitch; }
 
+		inline mat4 GetProjection() const { return m_Projection; }
+		inline void SetProjection(float AR);
+
 		inline void SetViewMatrix(mat4& view) { m_ViewMatrix = view; }
+
+		void OnEvent(Event& e);
 
 	private:
 		vec3 m_CameraTarget;
@@ -46,6 +51,6 @@ namespace MC
 
 	private:
 		mat4 m_CameraPosition, m_CameraRotation;
-		mat4 m_ViewMatrix;
+		mat4 m_ViewMatrix, m_Projection;
 	};
 }

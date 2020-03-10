@@ -26,5 +26,4 @@ public:
 
 	MC::Shader* shader;
 	MC::Camera camera;
-	MC::mat4 Projection;
 };

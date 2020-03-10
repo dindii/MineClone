@@ -1,11 +1,16 @@
 #include "mcpch.h"
 #include "Camera.h"
 #include "MCP/Maths/Maths.h"
+#include "MCP/Event/ApplicationEvent.h"
+#include "MCP/Maths/mat4.h"
+#include "MCP/Utils/Logger.h"
 
 namespace MC
 {
-	Camera::Camera(const vec3& position) : m_Yaw(0), m_Pitch(0.0f), m_CameraTarget({ 0.0f, 0.0f, -1.0f })
+	Camera::Camera(const float AR, const vec3& position) : m_Yaw(0), m_Pitch(0.0f), m_CameraTarget({ 0.0f, 0.0f, -1.0f })
 	{
+		m_Projection =  mat4::Perspective(45.0f /*zoom*/, AR, 0.1f, 100.0f);
+
 		m_CameraPosition = mat4::Translate(-position);
 		UpdateCameraVectors();
 	}
@@ -55,6 +60,24 @@ namespace MC
 
 		m_CameraPosition = mat4::Translate(-pos);
 		UpdateCameraVectors();
+	}
+
+	void Camera::SetProjection(float AR)
+	{
+		m_Projection = mat4::Perspective(45.0f /*zoom*/, AR, 0.1f, 100.0f);
+	}
+
+	void Camera::OnEvent(Event& e)
+	{
+		EventDispatcher dispatcher(e);
+		dispatcher.Dispatch<WindowResizeEvent>([&](WindowResizeEvent Event) -> bool
+		{
+			SetProjection(Event.GetWidth() / Event.GetHeight());
+
+			MC_LOG_TRACE((float)Event.GetWidth());
+
+			return false;
+		});
 	}
 
 }

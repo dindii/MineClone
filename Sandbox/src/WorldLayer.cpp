@@ -4,8 +4,7 @@
 
 WorldLayer::WorldLayer() : Layer("WorldLayer")
 {
-	camera = MC::Camera({ 10.0f, 10.0f, 70.0f });
-	Projection = MC::mat4::Perspective(45.0f, 1360 / 768, 0.1f, 100.0f);
+	camera = MC::Camera(1360 / 768, { 10.0f, 10.0f, 70.0f });
 	MC::Renderer::SetClearColor({ 1.0f, 0.0f, 0.5f, 1.0f });
 
 	superChunk = new MC::Superchunk();
@@ -30,13 +29,14 @@ void WorldLayer::OnUpdate(MC::DeltaTime deltaTime)
 
 
 	MC::Renderer::Clear();
-	MC::Renderer::BeginScene(camera, Projection);
+	MC::Renderer::BeginScene(camera);
 	MC::Renderer::Draw(superChunk, shader);
 }
 
 void WorldLayer::OnEvent(MC::Event& e)
 {
 	MC_LOG_TRACE(e);
+	camera.OnEvent(e);
 }
 
 void WorldLayer::MovePlayer(MC::DeltaTime deltaTime)

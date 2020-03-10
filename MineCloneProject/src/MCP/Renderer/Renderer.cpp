@@ -31,9 +31,9 @@ namespace MC
 					}
 	}
 
-	void Renderer::BeginScene(const Camera& camera, const mat4& projection)
+	void Renderer::BeginScene(const Camera& camera)
 	{
-		m_SceneData->ViewProjectionMatrix = projection * camera.getViewMatrix();
+		m_SceneData->ViewProjectionMatrix = camera.GetProjection() * camera.getViewMatrix();
 	}
 
 	void Renderer::Clear(const bool& ColorBuffer /*= true*/, const bool& DepthBuffer /*= true*/)
