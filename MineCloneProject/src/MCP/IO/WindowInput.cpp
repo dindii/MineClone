@@ -271,6 +271,17 @@ namespace MC
 				PostQuitMessage(0);
 			}
 
+			case WM_SIZE:
+			{
+				uint32_t width = (lparam & 0xFFFF);
+				uint32_t height = (lparam >> 16) & 0xFFFF;
+				
+				MC::WindowResizeEvent event(width, height);
+
+				//Making sure it's not nullptr
+				if(EventCallback)
+					EventCallback(event);
+			}
 
 			default:
 			{

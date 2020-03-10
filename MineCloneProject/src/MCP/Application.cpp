@@ -14,6 +14,7 @@ namespace MC
 	Application::Application() : m_Running(true)
 	{
 		s_Instance = this;
+		m_Minimized = false;
 
 		m_Window = new Window(1360, 768, "MClone!");
 
@@ -46,9 +47,10 @@ namespace MC
 
 	void Application::OnEvent(Event& event)
 	{
+		//Exra Cases
 		EventDispatcher dispatcher(event);
 		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::OnWindowClose));
-
+		dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(Application::OnWindowResize));
 		//@TODO: Bubble up event system, de certa que forma que o World Layer pode lidar um esc com um menu e a Application lida com o 
 		//fim da aplicação.
 
@@ -64,12 +66,13 @@ namespace MC
 		//temporary }
 #endif
 
-
+		if(!m_Minimized)
 		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin(); )
 		{
-			(*--it)->OnEvent(event);
 			if (event.Handled)
 				break;
+
+			(*--it)->OnEvent(event);
 		}
 	}
 
@@ -81,6 +84,23 @@ namespace MC
 		return true;
 	}
 
+
+	bool Application::OnWindowResize(WindowResizeEvent& e)
+	{
+		if (e.GetWidth() == 0 || e.GetHeight() == 0)
+		{
+			m_Minimized = true;
+			return false;
+		}
+		else
+		{
+			m_Minimized = false;
+		}
+
+		Renderer::SetViewport(0, 0, e.GetWidth(), e.GetHeight());
+
+		return true;
+	}
 
 	void Application::PushLayer(Layer* layer)
 	{

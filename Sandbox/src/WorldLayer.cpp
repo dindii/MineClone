@@ -6,20 +6,21 @@ WorldLayer::WorldLayer() : Layer("WorldLayer")
 {
 	camera = MC::Camera({ 10.0f, 10.0f, 70.0f });
 	Projection = MC::mat4::Perspective(45.0f, 1360 / 768, 0.1f, 100.0f);
-	MC::RenderCommand::SetClearColor({ 1.0f, 0.0f, 0.5f, 1.0f });
+	MC::Renderer::SetClearColor({ 1.0f, 0.0f, 0.5f, 1.0f });
 
 	superChunk = new MC::Superchunk();
 	
-
+	//@TODO: Fazer o Draw no SuperChunk ao invés de ficar desenhando cubos individuais. 
 	//16*16*16 chunks, 16*16*16*16 blocks.
 	for (int x = 0; x < 64; x++)
 		for (int y = 0; y < 64; y++)
 			for (int z = 0; z < 64; z++)
 				superChunk->Set(x, y, z, 1);
 
-
 	shader = new MC::Shader("res/Shaders/chunkVertex.shader", "res/Shaders/chunkFragment.shader");
 	shader->Bind();
+
+	MC::InputHandler::lockCursorPosition(false);
 }
 
 void WorldLayer::OnUpdate(MC::DeltaTime deltaTime)
@@ -44,35 +45,35 @@ void WorldLayer::MovePlayer(MC::DeltaTime deltaTime)
 
 	if (MC::InputHandler::isKeyPressed(MC::MC_KEY_W))
 	{
-		dz = 2;
+		dz = cameraSpeed;
 	}
 
 	if (MC::InputHandler::isKeyPressed(MC::MC_KEY_S))
 	{
-		dz = -2;
+		dz = -cameraSpeed;
 	}
 
 	if (MC::InputHandler::isKeyPressed(MC::MC_KEY_D))
 	{
-		dx = 2;
+		dx = cameraSpeed;
 	}
 
 	if (MC::InputHandler::isKeyPressed(MC::MC_KEY_A))
 	{
-		dx = -2;
+		dx = -cameraSpeed;
 	}
 
 	if (MC::InputHandler::isKeyPressed(MC::MC_KEY_SPACE))
 	{
-		dy = 2;
+		dy = cameraSpeed;
 	}
 
 	if (MC::InputHandler::isKeyPressed(MC::MC_KEY_CTRL))
 	{
-		dy = -2;
+		dy = -cameraSpeed;
 	}
 
-	camera.AddCameraTargetPosition(MC::vec3(dx, dy, dz) * cameraSpeed * deltaTime);
+	camera.AddCameraTargetPosition(MC::vec3(dx, dy, dz) * deltaTime);
 }
 
 

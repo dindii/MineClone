@@ -36,11 +36,12 @@ namespace MC
 		bool m_Running;
 		Window* m_Window;
 		LayerStack m_LayerStack;
-
+		bool m_Minimized;
 		DeltaTime deltaTime;
 
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);
+		bool OnWindowResize(WindowResizeEvent& e);
 	};
 
 	Application* CreateApplication();

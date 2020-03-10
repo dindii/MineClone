@@ -5,6 +5,7 @@ namespace MC
 {
 	//@TODO: Switch mode para alternar entre a criação de uma câmera perspectiva ou ortográfica.
 	//@TODO: Mudar para quarternions
+	//@TODO: Um modo para LookAt!
 	
 	/*    Very Primitive Camera */
 
@@ -20,6 +21,7 @@ namespace MC
 		void UpdateCameraVectors();
 
 		void AddCameraTargetPosition(vec3 pos);
+
 		inline void SetCameraTarget(vec3& target) { m_CameraTarget = target; } 
 		void SetCameraPosition(vec3& position);
 		inline void SetCameraYaw(float Yaw) { UpdateCameraVectors(); m_Yaw = Yaw; }

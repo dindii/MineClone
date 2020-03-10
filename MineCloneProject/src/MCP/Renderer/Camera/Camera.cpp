@@ -44,6 +44,7 @@ namespace MC
 
 		m_CameraPosition = mat4::Translate(-m_CameraTarget);
 
+
 		UpdateCameraVectors();
 	}
 

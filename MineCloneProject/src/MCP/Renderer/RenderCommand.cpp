@@ -41,6 +41,11 @@ namespace MC
 		glClearColor(color.r, color.g, color.b, color.a);
 	}
 
+	void RenderCommand::SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
+	{
+		glViewport(x, y, width, height);
+	}
+
 	unsigned int RenderCommand::GenMesh(unsigned int nMeshes)
 	{
 		unsigned int VBO = 0;
@@ -59,7 +64,6 @@ namespace MC
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
 	//	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		
 	}
 
 }
