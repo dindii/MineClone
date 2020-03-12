@@ -4,7 +4,7 @@
 
 WorldLayer::WorldLayer() : Layer("WorldLayer")
 {
-	camera = MC::Camera(1360 / 768, { 10.0f, 10.0f, 70.0f });
+	camera = MC::Camera(1362 / 701, { 10.0f, 10.0f, 500.0f });
 	MC::Renderer::SetClearColor({ 1.0f, 0.0f, 0.5f, 1.0f });
 
 	superChunk = new MC::Superchunk();
@@ -19,14 +19,14 @@ WorldLayer::WorldLayer() : Layer("WorldLayer")
 	shader = new MC::Shader("res/Shaders/chunkVertex.shader", "res/Shaders/chunkFragment.shader");
 	shader->Bind();
 
-	MC::InputHandler::lockCursorPosition(false);
+	//MC::InputHandler::lockCursorPosition(false);
+
 }
 
 void WorldLayer::OnUpdate(MC::DeltaTime deltaTime)
 {
 	LookAround();
 	MovePlayer(deltaTime);
-
 
 	MC::Renderer::Clear();
 	MC::Renderer::BeginScene(camera);
@@ -41,39 +41,39 @@ void WorldLayer::OnEvent(MC::Event& e)
 
 void WorldLayer::MovePlayer(MC::DeltaTime deltaTime)
 {
-	float dx = 0, dz = 0, dy = 0;
+	MC::vec3 gotoCamera;
 
 	if (MC::InputHandler::isKeyPressed(MC::MC_KEY_W))
 	{
-		dz = cameraSpeed;
+		gotoCamera.z = cameraSpeed;
 	}
 
 	if (MC::InputHandler::isKeyPressed(MC::MC_KEY_S))
 	{
-		dz = -cameraSpeed;
+		gotoCamera.z = -cameraSpeed;
 	}
 
 	if (MC::InputHandler::isKeyPressed(MC::MC_KEY_D))
 	{
-		dx = cameraSpeed;
+		gotoCamera.x = cameraSpeed;
 	}
 
 	if (MC::InputHandler::isKeyPressed(MC::MC_KEY_A))
 	{
-		dx = -cameraSpeed;
+		gotoCamera.x = -cameraSpeed;
 	}
 
 	if (MC::InputHandler::isKeyPressed(MC::MC_KEY_SPACE))
 	{
-		dy = cameraSpeed;
+		gotoCamera.y = cameraSpeed;
 	}
 
 	if (MC::InputHandler::isKeyPressed(MC::MC_KEY_CTRL))
 	{
-		dy = -cameraSpeed;
+		gotoCamera.y = -cameraSpeed;
 	}
 
-	camera.AddCameraTargetPosition(MC::vec3(dx, dy, dz) * deltaTime);
+	camera.AddCameraTargetPosition((gotoCamera) * deltaTime);	
 }
 
 

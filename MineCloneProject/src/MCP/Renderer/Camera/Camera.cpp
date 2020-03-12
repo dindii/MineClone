@@ -11,7 +11,7 @@ namespace MC
 	{
 		m_Projection =  mat4::Perspective(45.0f /*zoom*/, AR, 0.1f, 100.0f);
 
-		m_CameraPosition = mat4::Translate(-position);
+		m_CameraPos = position;
 		UpdateCameraVectors();
 	}
 
@@ -22,17 +22,17 @@ namespace MC
 
 	void Camera::UpdateCameraVectors()
 	{
-		mat4 yaw;
-		mat4 pitch;
+		mat4 m_CameraRotation, m_CameraPosition;
 
-		pitch = mat4::Rotate(m_Pitch, vec3(1.0f, 0.0f, 0.0f));
-		yaw = mat4::Rotate(m_Yaw, vec3(0.0f, 1.0f, 0.0f));
+		m_CameraRotation = mat4::Rotate(m_Pitch, vec3(1.0f, 0.0f, 0.0f));
+		m_CameraRotation *= mat4::Rotate(m_Yaw, vec3(0.0f, 1.0f, 0.0f));
 
-		m_CameraRotation = pitch * yaw;
+		m_CameraPosition = mat4::Translate(-m_CameraPos);
 	    
 		m_ViewMatrix = m_CameraRotation * m_CameraPosition;
 	}
 
+	//For Free look fps camera
 	void Camera::AddCameraTargetPosition(vec3 pos)
 	{
 		//@TODO: Translate no Y ao inves de atualizar o Up junto? 
@@ -47,19 +47,16 @@ namespace MC
 
 		m_CameraTarget = target;
 
-		m_CameraPosition = mat4::Translate(-m_CameraTarget);
-
-
-		UpdateCameraVectors();
+		SetCameraPosition(m_CameraTarget);
 	}
 
 	void Camera::SetCameraPosition(vec3& pos)
 	{
-		//I don't know if this will work good with fixed cameras (maybe yes) or fixed cameras that gets controlled (maybe not, but in this
-		//case, should be better lerp using AddCameraTargetPosition, so the Up, Right and Forward vectors should be updated as well).
-
-		m_CameraPosition = mat4::Translate(-pos);
+		m_CameraPos = pos;
 		UpdateCameraVectors();
+
+	
+			
 	}
 
 	void Camera::SetProjection(float AR)

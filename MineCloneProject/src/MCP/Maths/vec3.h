@@ -22,6 +22,8 @@ namespace MC
 		float Length2();
 		vec3 Normalized();
 
+		static vec3 lerp(const vec3& start, const vec3& end, float alpha);
+
 		static float Length(const vec3& vec);
 		static float Length2(const vec3& vec);
 		static vec3 Normalize(const vec3& vec);

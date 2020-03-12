@@ -134,6 +134,8 @@ namespace MC
 		ClientToScreen(windowHandler, &temp);
 
 		SetCursorPos(temp.x, temp.y);
+
+		ShowCursor(false);
 	}
 
 	WindowInput::~WindowInput()

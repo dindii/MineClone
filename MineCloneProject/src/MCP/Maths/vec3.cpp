@@ -74,6 +74,17 @@ namespace MC
 		}
 	}
 
+	MC::vec3 vec3::lerp(const vec3& start, const vec3& end, float alpha)
+	{
+		vec3 aux;
+		
+		aux.x = (start.x * (1.0f - alpha)) + (end.x * alpha);
+		aux.y = (start.y * (1.0f - alpha)) + (end.y * alpha);
+		aux.z = (start.z * (1.0f - alpha)) + (end.z * alpha);
+
+		return aux;
+	}
+
 	vec3  vec3::Cross(const vec3& other)
 	{
 		return vec3(y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x);

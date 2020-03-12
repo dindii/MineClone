@@ -2,6 +2,7 @@
 #include "Logger.h"
 
 
+
 namespace MC {
 	namespace Debug
 	{
@@ -60,6 +61,13 @@ namespace MC {
 		void Logger::Log(const char* string, const char* message, const Level level)
 		{
 			printf("%s: %s %s\n", levelLabels[level].c_str(), string, message);
+			Dispatch();
+			checkFatal(level);
+		}
+
+		void Logger::Log(const vec3& vec, const Level level)
+		{
+			printf("%s: vec3{ %f, %f, %f}\n", levelLabels[level].c_str(), vec.x, vec.y, vec.z);
 			Dispatch();
 			checkFatal(level);
 		}

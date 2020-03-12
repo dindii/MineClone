@@ -16,9 +16,8 @@ public:
 
 
 	float cameraSpeed = 100.5f;
-	float cameraSens = 0.5f;
-	float actualCameraSpeed = 0.0f;
-	float accelRate = 5.0f;
+	float cameraSens = 1.0f;
+
 	MC::vec2 DeltaReverse;
 
 
