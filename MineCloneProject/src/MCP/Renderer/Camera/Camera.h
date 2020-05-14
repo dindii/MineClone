@@ -15,7 +15,7 @@ namespace MC
 	{
 	public:
 		Camera(const float AR, const vec3& position);
-		Camera() = default;
+		Camera() : m_Yaw(0.0f), m_Pitch(0.0f) {};
 
 		const mat4 getViewMatrix() const;
 
@@ -48,7 +48,7 @@ namespace MC
 		//DEBUG
 	private:
 		bool m_CameraLag = false;
-		bool m_LagTime = 0.125f;
+		float m_LagTime = 0.125f;
 		vec3 m_DesiredPos;
 		//DEBUG
 

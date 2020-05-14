@@ -22,12 +22,12 @@ namespace MC
 
 		void onUpdate();
 		bool pollEvents();
+		void swapBuffers() const;
 		
 		inline uint32_t	getWidth() const {  m_Details->Width; }
 		inline uint32_t getHeight() const { m_Details->Height; }
 		inline const char* getName() const { m_Details->Name; }
 
-		void swapBuffers() const;
 
 		inline void setEventCallback(const EventCallbackFn& callback) { m_WindowInput->setEventCallback(callback); }
 
@@ -40,7 +40,7 @@ namespace MC
 		HGLRC m_OpenGLContext;
 
 		WindowProperties* m_Details;
-		WindowInput* m_WindowInput;
+		MC_INTERNAL::WindowInput* m_WindowInput;
 
 		EventCallbackFn EventCallback;
 	};

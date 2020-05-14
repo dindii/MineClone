@@ -6,7 +6,7 @@ namespace MC
 {
 	bool InputHandler::isKeyPressed(const MC_KEYS& key)
 	{
-		Key* aux = WindowInput::getKeys();
+		Key* aux = MC_INTERNAL::WindowInput::getKeys();
 
 		for (uint8_t x = 0; x< MAX_KEYS-1; x++ )
 		{
@@ -20,7 +20,7 @@ namespace MC
 
 	bool InputHandler::isKeyHeld(const MC_KEYS& key)
 	{
-		Key* aux = WindowInput::getKeys();
+		Key* aux = MC_INTERNAL::WindowInput::getKeys();
 
 		for (uint8_t x = 0; x < MAX_KEYS-1; x++)
 		{
@@ -34,36 +34,36 @@ namespace MC
 
 	MC::vec2 InputHandler::GetMouseCoords()
 	{
-		vec2* Coords = WindowInput::getMouseCoords();
+		vec2* Coords = MC_INTERNAL::WindowInput::getMouseCoords();
 
 		return { Coords->x, Coords->y };
 	}
 
 	MC::vec2 InputHandler::GetMouseDelta()
 	{
-		vec2 Delta = WindowInput::getMouseDelta();
+		vec2 Delta = MC_INTERNAL::WindowInput::getMouseDelta();
 
 		return Delta;
 	}
 
 	void InputHandler::setMouseCoords(vec2 coords)
 	{
-		WindowInput::setMouseCoords(coords);
+		MC_INTERNAL::WindowInput::setMouseCoords(coords);
 	}
 
 	void InputHandler::setMouseDelta(vec2 value)
 	{
-		WindowInput::setMouseDelta(value);
+		MC_INTERNAL::WindowInput::setMouseDelta(value);
 	}
 
 	void InputHandler::lockCursorPosition(bool lock)
 	{
-		WindowInput::lockCursor(lock);
+		MC_INTERNAL::WindowInput::lockCursor(lock);
 	}
 
 	void InputHandler::lockCursorDelta(bool lock)
 	{
-		WindowInput::lockDelta(lock);
+		MC_INTERNAL::WindowInput::lockDelta(lock);
 	}
 
 }

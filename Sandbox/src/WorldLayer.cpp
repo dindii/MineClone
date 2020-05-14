@@ -11,15 +11,16 @@ WorldLayer::WorldLayer() : Layer("WorldLayer")
 	
 	//@TODO: Fazer o Draw no SuperChunk ao invés de ficar desenhando cubos individuais. 
 	//16*16*16 chunks, 16*16*16*16 blocks.
-	for (int x = 0; x < 64; x++)
-		for (int y = 0; y < 64; y++)
-			for (int z = 0; z < 64; z++)
+	for (int x = 0; x < 4; x++)
+		for (int y = 0; y < 4; y++)
+			for (int z = 0; z < 4; z++)
 				superChunk->Set(x, y, z, 1);
-
+	
 	shader = new MC::Shader("res/Shaders/chunkVertex.shader", "res/Shaders/chunkFragment.shader");
 	shader->Bind();
 
 	//MC::InputHandler::lockCursorPosition(false);
+	
 
 }
 
@@ -35,7 +36,7 @@ void WorldLayer::OnUpdate(MC::DeltaTime deltaTime)
 
 void WorldLayer::OnEvent(MC::Event& e)
 {
-	MC_LOG_TRACE(e);
+	//MC_LOG_TRACE(e);
 	camera.OnEvent(e);
 }
 
@@ -43,32 +44,32 @@ void WorldLayer::MovePlayer(MC::DeltaTime deltaTime)
 {
 	MC::vec3 gotoCamera;
 
-	if (MC::InputHandler::isKeyPressed(MC::MC_KEY_W))
+	if (MC::InputHandler::isKeyPressed(MC::MC_KEYS::MC_KEY_W))
 	{
 		gotoCamera.z = cameraSpeed;
 	}
 
-	if (MC::InputHandler::isKeyPressed(MC::MC_KEY_S))
+	if (MC::InputHandler::isKeyPressed(MC::MC_KEYS::MC_KEY_S))
 	{
 		gotoCamera.z = -cameraSpeed;
 	}
 
-	if (MC::InputHandler::isKeyPressed(MC::MC_KEY_D))
+	if (MC::InputHandler::isKeyPressed(MC::MC_KEYS::MC_KEY_D))
 	{
 		gotoCamera.x = cameraSpeed;
 	}
 
-	if (MC::InputHandler::isKeyPressed(MC::MC_KEY_A))
+	if (MC::InputHandler::isKeyPressed(MC::MC_KEYS::MC_KEY_A))
 	{
 		gotoCamera.x = -cameraSpeed;
 	}
 
-	if (MC::InputHandler::isKeyPressed(MC::MC_KEY_SPACE))
+	if (MC::InputHandler::isKeyPressed(MC::MC_KEYS::MC_KEY_SPACE))
 	{
 		gotoCamera.y = cameraSpeed;
 	}
 
-	if (MC::InputHandler::isKeyPressed(MC::MC_KEY_CTRL))
+	if (MC::InputHandler::isKeyPressed(MC::MC_KEYS::MC_KEY_CTRL))
 	{
 		gotoCamera.y = -cameraSpeed;
 	}

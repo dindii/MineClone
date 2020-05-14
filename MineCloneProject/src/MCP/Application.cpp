@@ -57,7 +57,7 @@ namespace MC
 #ifdef MC_DEBUG
 	 //temporary {
 		KeyPressedEvent* evento = (KeyPressedEvent*)&event;
-		if (evento->GetKeyCode() == MC_KEY_ESC)
+		if (evento->GetKeyCode() == (int)MC_KEYS::MC_KEY_ESC)
 		{
 			evento->Handled = true;
 			WindowCloseEvent close;

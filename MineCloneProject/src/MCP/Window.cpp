@@ -14,7 +14,7 @@ namespace MC
 		MC_LOG_TRACE("Initializing Engine!");
 
 		m_Details = new WindowProperties(Width, Height, Name);
-		m_WindowInput = new WindowInput(m_NativeWindow, /* @TODO: Tirar o width e height e deixar so o hwnd*/ m_Details->Width, m_Details->Height);
+		m_WindowInput = new MC_INTERNAL::WindowInput(m_NativeWindow, /* @TODO: Tirar o width e height e deixar so o hwnd*/ (float)m_Details->Width, (float)m_Details->Height);
 
 
 		WNDCLASSEX wc;
@@ -29,7 +29,7 @@ namespace MC
 		wc.lpszClassName = "MCloneWindow";
 		wc.lpszMenuName = "";
 		wc.style = CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
-		wc.lpfnWndProc = &WindowInput::WndProc;
+		wc.lpfnWndProc = &MC_INTERNAL::WindowInput::WndProc;
 
 		if (!RegisterClassEx(&wc)) 
 		MC_LOG_FATAL("Failed to create Window!");
@@ -85,9 +85,8 @@ namespace MC
 			MC_LOG_FATAL("Failed to make OpenGL as current context.");
 
 		if (!gladLoadGL())
-		{
 			MC_LOG_FATAL("Failed to load OpenGL (Glad).");
-		}
+		
 
 
 		MC_LOG_TRACE((char*)glGetString(GL_VENDOR));

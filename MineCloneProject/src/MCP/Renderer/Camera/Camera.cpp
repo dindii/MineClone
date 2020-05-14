@@ -7,13 +7,14 @@
 
 namespace MC
 {
-	Camera::Camera(const float AR, const vec3& position) : m_Yaw(0), m_Pitch(0.0f), m_CameraTarget({ 0.0f, 0.0f, -1.0f })
+	Camera::Camera(const float AR, const vec3& position) : m_Yaw(0.0f), m_Pitch(0.0f), m_CameraTarget({ 0.0f, 0.0f, -1.0f })
 	{
 		m_Projection =  mat4::Perspective(45.0f /*zoom*/, AR, 0.1f, 100.0f);
 
 		m_CameraPos = position;
 		UpdateCameraVectors();
 	}
+
 
 	const mat4 Camera::getViewMatrix() const
 	{
@@ -69,7 +70,7 @@ namespace MC
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<WindowResizeEvent>([&](WindowResizeEvent Event) -> bool
 		{
-			SetProjection(Event.GetWidth() / Event.GetHeight());
+			SetProjection((float)(Event.GetWidth() / Event.GetHeight()));
 
 			MC_LOG_TRACE((float)Event.GetWidth());
 

@@ -25,7 +25,7 @@ namespace MC
 					{
 						shader->Bind();
 						mat4 model;
-						model *= model.Translate(vec3(x * CHUNK_SIZE, y * CHUNK_SIZE, z * CHUNK_SIZE));
+						model *= model.Translate(vec3(float(x * CHUNK_SIZE), float(y * CHUNK_SIZE), float(z * CHUNK_SIZE)));
 						shader->UploadUniformMat4("u_Transform", model);
 						Draw(superchunk->c[x][y][z], shader);
 					}

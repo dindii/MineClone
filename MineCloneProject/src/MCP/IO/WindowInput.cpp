@@ -7,19 +7,19 @@
 //Hide in another namespace
 namespace MC
 {
-	bool WindowInput::deltaLock = false;
-	bool WindowInput::cursorLock = true;
-	Key* WindowInput::Keys = nullptr;
-	vec2* WindowInput::MouseCoords = nullptr;
-	EventCallbackFn WindowInput::EventCallback = nullptr;
-	POINT WindowInput::currMousePos;
-	POINT WindowInput::lastMousePos;
-	POINT WindowInput::resetMousePos;
-	POINT WindowInput::resultPos;
+	bool MC_INTERNAL::WindowInput::deltaLock = false;
+	bool MC_INTERNAL::WindowInput::cursorLock = true;
+	Key* MC_INTERNAL::WindowInput::Keys = nullptr;
+	vec2* MC_INTERNAL::WindowInput::MouseCoords = nullptr;
+	EventCallbackFn MC_INTERNAL::WindowInput::EventCallback = nullptr;
+	POINT MC_INTERNAL::WindowInput::currMousePos;
+	POINT MC_INTERNAL::WindowInput::lastMousePos;
+	POINT MC_INTERNAL::WindowInput::resetMousePos;
+	POINT MC_INTERNAL::WindowInput::resultPos;
 
-   vec2 WindowInput::MouseDelta;
+   vec2 MC_INTERNAL::WindowInput::MouseDelta;
 
-	WindowInput::WindowInput(HWND windowHandler, float width, float height)
+   MC_INTERNAL::WindowInput::WindowInput(HWND windowHandler, float width, float height)
 	{
 		Keys = new Key[MAX_KEYS];
 		MouseCoords = new vec2;
@@ -119,8 +119,8 @@ namespace MC
 
 
 
-		resetMousePos.x = (width) / 2;
-		resetMousePos.y = (height) / 2;
+		resetMousePos.x = LONG((width) / 2);
+		resetMousePos.y = LONG((height) / 2);
 
 		currMousePos.x = resetMousePos.x;
 		currMousePos.y = resetMousePos.y;
@@ -138,14 +138,14 @@ namespace MC
 		ShowCursor(false);
 	}
 
-	WindowInput::~WindowInput()
+	MC_INTERNAL::WindowInput::~WindowInput()
 	{
 		delete[] Keys;
 		delete MouseCoords;
 	}
 
 	//Deixei o processo de mensagem do Windows aqui pois a ideia de "Input" da Window seria para inputs gerais, tanto em GUI quanto de Hardware.
-	LRESULT CALLBACK WindowInput::WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+	LRESULT CALLBACK MC_INTERNAL::WindowInput::WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	{
 		switch (msg)
 		{
@@ -155,7 +155,7 @@ namespace MC
 				Ki.lparam = lparam;
 
 				//Aqui gera o evento para o App
-				MC::KeyPressedEvent event(Keys[wparam].KeyCode, (bool)Ki.nPrevious);
+				MC::KeyPressedEvent event((int)Keys[wparam].KeyCode, (bool)Ki.nPrevious);
 				EventCallback(event);
 
 				//Aqui configura o state da tecla para qualquer momento que um usuário quiser saber o seu estado.
@@ -167,7 +167,7 @@ namespace MC
 
 			case WM_KEYUP:	
 			{
-				MC::KeyReleasedEvent event(Keys[wparam].KeyCode);
+				MC::KeyReleasedEvent event((int)Keys[wparam].KeyCode);
 				EventCallback(event);
 
 				Keys[wparam].isPressed = false;
@@ -179,7 +179,7 @@ namespace MC
 			case WM_LBUTTONDOWN:
 			{
 				//Usar o wparam para saber se alguma tecla especial estava sendo acionada no click (shift, control etc)
-				MC::MouseButtonPressedEvent event(MC_KEYS::MC_BUTTON_LBUTTON);
+				MC::MouseButtonPressedEvent event((int)MC_KEYS::MC_BUTTON_LBUTTON);
 				EventCallback(event);
 
 				Keys[wparam].isPressed = true;
@@ -191,7 +191,7 @@ namespace MC
 
 			case WM_LBUTTONUP:
 			{
-				MC::MouseButtoinReleasedEvent event(MC_KEYS::MC_BUTTON_LBUTTON);
+				MC::MouseButtoinReleasedEvent event((int)MC_KEYS::MC_BUTTON_LBUTTON);
 				EventCallback(event);
 
 				Keys[wparam].isPressed = false;
@@ -201,7 +201,7 @@ namespace MC
 
 			case WM_RBUTTONDOWN:
 			{
-				MC::MouseButtonPressedEvent event(MC_KEYS::MC_BUTTON_RBUTTON);
+				MC::MouseButtonPressedEvent event((int)MC_KEYS::MC_BUTTON_RBUTTON);
 				EventCallback(event);
 
 
@@ -212,7 +212,7 @@ namespace MC
 
 			case WM_RBUTTONUP:
 			{
-				MC::MouseButtoinReleasedEvent event(MC_KEYS::MC_BUTTON_RBUTTON);
+				MC::MouseButtoinReleasedEvent event((int)MC_KEYS::MC_BUTTON_RBUTTON);
 				EventCallback(event);
 
 
@@ -235,8 +235,8 @@ namespace MC
 				//Mouse delta logic
 				if (!deltaLock)
 				{
-					currMousePos.x = MouseCoords->x;
-					currMousePos.y = MouseCoords->y;
+					currMousePos.x = (LONG)MouseCoords->x;
+					currMousePos.y = (LONG)MouseCoords->y;
 
 					POINT difference;
 					difference.x = currMousePos.x - lastMousePos.x;
@@ -295,8 +295,8 @@ namespace MC
 	}
 
 
-	void WindowInput::setMouseCoords(vec2 coords)
+	void MC_INTERNAL::WindowInput::setMouseCoords(vec2 coords)
 	{
-		SetCursorPos(coords.x, coords.y);
+		SetCursorPos((int)coords.x, (int)coords.y);
 	}
 }
