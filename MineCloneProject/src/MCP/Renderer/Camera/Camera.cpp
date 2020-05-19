@@ -4,6 +4,7 @@
 #include "MCP/Event/ApplicationEvent.h"
 #include "MCP/Maths/mat4.h"
 #include "MCP/Utils/Logger.h"
+#include "MCP/IO/InputHandler.h"
 
 namespace MC
 {
@@ -53,11 +54,22 @@ namespace MC
 
 	void Camera::SetCameraPosition(vec3& pos)
 	{
-		m_CameraPos = pos;
-		UpdateCameraVectors();
+		if (m_CameraLag)
+		{
+			m_DesiredPos = pos;
+			vec3 lerped = vec3::lerp(m_CameraPos, m_DesiredPos, 0.015000f);
 
-	
-			
+			UpdateCameraVectors();
+
+			MC_LOG_TRACE(m_CameraPos);
+
+			m_CameraPos = lerped;
+		}
+		else
+		{
+			m_CameraPos = pos;
+			UpdateCameraVectors();
+		}		
 	}
 
 	void Camera::SetProjection(float AR)

@@ -15,7 +15,7 @@ public:
 	void LookAround();
 
 
-	float cameraSpeed = 100.5f;
+	float cameraSpeed = 50.5f;
 	float cameraSens = 1.0f;
 
 	MC::vec2 DeltaReverse;

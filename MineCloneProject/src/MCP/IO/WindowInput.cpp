@@ -7,15 +7,15 @@
 //Hide in another namespace
 namespace MC
 {
-	bool MC_INTERNAL::WindowInput::deltaLock = false;
-	bool MC_INTERNAL::WindowInput::cursorLock = true;
-	Key* MC_INTERNAL::WindowInput::Keys = nullptr;
-	vec2* MC_INTERNAL::WindowInput::MouseCoords = nullptr;
+	bool            MC_INTERNAL::WindowInput::deltaLock = false;
+	bool            MC_INTERNAL::WindowInput::cursorLock = true;
+	Key*            MC_INTERNAL::WindowInput::Keys = nullptr;
+	vec2*           MC_INTERNAL::WindowInput::MouseCoords = nullptr;
 	EventCallbackFn MC_INTERNAL::WindowInput::EventCallback = nullptr;
-	POINT MC_INTERNAL::WindowInput::currMousePos;
-	POINT MC_INTERNAL::WindowInput::lastMousePos;
-	POINT MC_INTERNAL::WindowInput::resetMousePos;
-	POINT MC_INTERNAL::WindowInput::resultPos;
+	POINT           MC_INTERNAL::WindowInput::currMousePos;
+	POINT           MC_INTERNAL::WindowInput::lastMousePos;
+	POINT           MC_INTERNAL::WindowInput::resetMousePos;
+	POINT           MC_INTERNAL::WindowInput::resultPos;
 
    vec2 MC_INTERNAL::WindowInput::MouseDelta;
 
@@ -299,4 +299,18 @@ namespace MC
 	{
 		SetCursorPos((int)coords.x, (int)coords.y);
 	}
+}
+
+//@TODO: REMAKE BELOW
+MC::MC_INTERNAL::Time::TimeProps MC::MC_INTERNAL::Time::getTime()
+{
+	SYSTEMTIME st;
+	GetSystemTime(&st);
+	
+	Time::TimeProps TP;
+	TP.Miliseconds = st.wMilliseconds;
+	TP.Seconds = st.wSecond;
+
+	return TP;
+
 }

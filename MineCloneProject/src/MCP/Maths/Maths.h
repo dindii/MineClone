@@ -5,6 +5,11 @@
 
 namespace MC
 {
+	inline float normalizeInRange(float val, float max, float min)
+	{
+		return (val - min) / (max - min);
+	}
+
 	inline float toDegrees(const float& radians) 
 	{
 		return (float)(radians * (180.0f / ED_PI));

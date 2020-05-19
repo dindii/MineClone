@@ -1,11 +1,13 @@
 #pragma once
 #include "MCP/Maths/mat4.h"
 #include "MCP/Event/Event.h"
+#include "MCP/Platform/DeltaTime.h"
 namespace MC
 {
 	//@TODO: Switch mode para alternar entre a criação de uma câmera perspectiva ou ortográfica.
 	//@TODO: Mudar para quarternions
 	//@TODO: Um modo para LookAt!
+	//@TODO: Camera Controller
 	
 	///@TODO: Derivar uma classe FPSCamera ou TPSCamera etc, assim a camera não fica tão presa apenas ao freelook. 
 
@@ -45,12 +47,9 @@ namespace MC
 
 		void OnEvent(Event& e);
 
-		//DEBUG
 	private:
-		bool m_CameraLag = false;
-		float m_LagTime = 0.125f;
 		vec3 m_DesiredPos;
-		//DEBUG
+		bool m_CameraLag = true;
 
 	private:
 		vec3 m_CameraTarget;

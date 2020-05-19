@@ -13,6 +13,8 @@ namespace MC
 #define MAX_KEYS 255
 
 	//@TODO: Convert to ASCII?
+
+
 	enum class MC_KEYS : unsigned char
 	{
 		MC_NO_KEY = 0,
@@ -173,5 +175,19 @@ namespace MC
 		private:
 			static POINT currMousePos, lastMousePos, resetMousePos, resultPos;
 		};
+
+
+		struct Time
+		{
+
+			struct TimeProps
+			{
+				int Seconds = 0;
+				float Miliseconds = 0;
+			};
+
+			static TimeProps getTime();
+		};
+
 	}
 }

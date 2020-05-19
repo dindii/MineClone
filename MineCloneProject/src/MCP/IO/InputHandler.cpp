@@ -6,10 +6,12 @@ namespace MC
 {
 	bool InputHandler::isKeyPressed(const MC_KEYS& key)
 	{
+		//Get "global" keys with its states
 		Key* aux = MC_INTERNAL::WindowInput::getKeys();
 
 		for (uint8_t x = 0; x< MAX_KEYS-1; x++ )
 		{
+			//Search for the asked key and return its
 			if (aux[x].KeyCode != MC_KEYS::MC_NO_KEY)
 				if(aux[x].KeyCode == key)
 					return aux[x].isPressed;
@@ -20,6 +22,7 @@ namespace MC
 
 	bool InputHandler::isKeyHeld(const MC_KEYS& key)
 	{
+		//Get "global" key array and check if the choosen key is repeated
 		Key* aux = MC_INTERNAL::WindowInput::getKeys();
 
 		for (uint8_t x = 0; x < MAX_KEYS-1; x++)
@@ -64,6 +67,11 @@ namespace MC
 	void InputHandler::lockCursorDelta(bool lock)
 	{
 		MC_INTERNAL::WindowInput::lockDelta(lock);
+	}
+
+	MC_INTERNAL::Time::TimeProps InputHandler::GetTime()
+	{
+		return MC::MC_INTERNAL::Time::getTime();
 	}
 
 }
