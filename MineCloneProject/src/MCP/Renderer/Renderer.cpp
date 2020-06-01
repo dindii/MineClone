@@ -15,19 +15,24 @@ namespace MC
 		RenderCommand::Draw(chunk, shader);
 	}
 
-	void Renderer::Draw(Superchunk* superchunk, Shader* shader)
+	void Renderer::Draw(Superchunk* superchunk, Shader* shader, float arr[4][4][4])
 	{
+		uint32_t aux = 0; 
 
 		for (int x = 0; x < SUPER_CHUNK_SIZE; x++)
 			for (int y = 0; y < SUPER_CHUNK_SIZE; y++)
 				for (int z = 0; z < SUPER_CHUNK_SIZE; z++)
 					if (superchunk->c[x][y][z])
 					{
+
 						shader->Bind();
 						mat4 model;
-						model *= model.Translate(vec3(float(x * CHUNK_SIZE), float(y * CHUNK_SIZE), float(z * CHUNK_SIZE)));
+					//	model *= model.Translate(vec3(arr[x][0][0], arr[x][y][0], arr[x][y][z]));
+						model *= model.Translate(vec3(90, 0, 0));
 						shader->UploadUniformMat4("u_Transform", model);
 						Draw(superchunk->c[x][y][z], shader);
+
+						aux++;
 					}
 	}
 

@@ -61,7 +61,7 @@ namespace MC
 
 			UpdateCameraVectors();
 
-			MC_LOG_TRACE(m_CameraPos);
+			//MC_LOG_TRACE(m_CameraPos);
 
 			m_CameraPos = lerped;
 		}

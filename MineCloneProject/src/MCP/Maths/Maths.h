@@ -35,4 +35,18 @@ namespace MC
 		return ::sin(angle);
 	}
 
+	inline float lerp(const float& start, const float& end, float alpha)
+	{
+		 return ((start * (1.0f - alpha)) + (end * alpha));	
+	}
+
+	//Module for doubles
+	template<typename T, typename U>
+	constexpr double dmod(T x, U mod)
+	{
+		return !mod ? x : x - mod * static_cast<long long>(x / mod);
+	}
+
+
+
 }

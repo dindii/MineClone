@@ -44,6 +44,13 @@ namespace MC {
 			checkFatal(level);
 		}
 
+		void Logger::Log(const double num, const Level level)
+		{
+			printf("%s %lf\n", levelLabels[level].c_str(), num);
+			Dispatch();
+			checkFatal(level);
+		}
+
 		void Logger::Log(std::string string, const Level level)
 		{
 			printf("%s:  %s\n", levelLabels[level].c_str(), string.c_str());

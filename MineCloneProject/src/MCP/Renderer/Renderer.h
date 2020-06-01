@@ -13,7 +13,7 @@ namespace MC
 	{
 	public:
 		static void Draw(Chunk* chunk, Shader* shader);
-		static void Draw(Superchunk* superchunk, Shader* shader);
+		static void Draw(Superchunk* superchunk, Shader* shader, float arr[4][4][4]);
 		static void BeginScene(const Camera& camera);
 
 		static void Clear(const bool& ColorBuffer = true, const bool& DepthBuffer = true);

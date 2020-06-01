@@ -7,6 +7,8 @@
 /*      @ TODO:
 * Mutex if needed.
 * Add all classes of the engine
+* Poll of loggers
+* avoid repeating the check
 */
 
 namespace MC {
@@ -31,6 +33,7 @@ namespace MC {
 			static void Log(std::string string, const Level level);
 			static void Log(const int num, const Level level);
 			static void Log(const float num, const Level level);
+			static void Log(const double num, const Level level);
 			static void Log(const vec3& vec, const Level level);
 
 		private:

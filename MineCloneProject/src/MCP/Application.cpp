@@ -22,7 +22,6 @@ namespace MC
 		m_Window->setEventCallback(BIND_EVENT_FN(Application::OnEvent));
 
 		Renderer::Init();
-
 	}
 
 	Application::~Application()
