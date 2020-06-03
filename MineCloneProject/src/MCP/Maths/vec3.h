@@ -52,6 +52,8 @@ namespace MC
 		vec3& operator*=(const vec3& other);
 		vec3& operator/=(const vec3& other);
 
+		vec3& operator*=(const float& other);
+
 
 		bool operator==(const vec3& other);
 		bool operator!=(const vec3& other);

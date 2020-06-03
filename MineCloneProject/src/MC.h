@@ -24,7 +24,7 @@
 #include "MCP/Maths/Maths.h"
 
 #include "MCP/Renderer/RenderCommand.h"
-#include "MCP/Renderer/Renderer.h"
+#include "MCP/Renderer/VoxelRenderer.h"
 
 #include "MCP/Renderer/Voxel/Chunk.h"
 

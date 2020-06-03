@@ -8,7 +8,7 @@
 
 namespace MC
 {
-	Camera::Camera(const float AR, const vec3& position) : m_Yaw(0.0f), m_Pitch(0.0f), m_CameraTarget({ 0.0f, 0.0f, -1.0f })
+	Camera::Camera(const float AR, const vec3& position) : m_Yaw(0.0f), m_Pitch(0.0f), m_CameraTarget({ 0.0f, 0.0f, -1.0f }), m_LagVal(0.15000f)
 	{
 		m_Projection =  mat4::Perspective(45.0f /*zoom*/, AR, 0.1f, 100.0f);
 
@@ -35,9 +35,11 @@ namespace MC
 	}
 
 	//For Free look fps camera
-	void Camera::AddCameraTargetPosition(vec3 pos)
+	void Camera::AddCameraTargetPosition(vec3 pos, DeltaTime& dt)
 	{
 		//@TODO: Translate no Y ao inves de atualizar o Up junto? 
+
+		pos *= dt;
 
 		MC::vec3 forward(m_ViewMatrix[2 + 0 * 4], m_ViewMatrix[2 + 1 * 4], m_ViewMatrix[2 + 2 * 4]);
 		MC::vec3 strafe(m_ViewMatrix[0 + 0 * 4], m_ViewMatrix[0 + 1 * 4], m_ViewMatrix[0 + 2 * 4]);
@@ -57,11 +59,9 @@ namespace MC
 		if (m_CameraLag)
 		{
 			m_DesiredPos = pos;
-			vec3 lerped = vec3::lerp(m_CameraPos, m_DesiredPos, 0.015000f);
+			vec3 lerped = vec3::lerp(m_CameraPos, m_DesiredPos, m_LagVal); 
 
 			UpdateCameraVectors();
-
-			//MC_LOG_TRACE(m_CameraPos);
 
 			m_CameraPos = lerped;
 		}

@@ -10,9 +10,14 @@ namespace MC
 {
 	Shader::Shader(const std::string& vertexSource, const std::string& fragmentSource)
 	{
-		ParseShaderFiles(vertexSource, fragmentSource);
+		Init(vertexSource, fragmentSource);
 	}
 	
+	void Shader::Init(const std::string& vertexSource, const std::string& fragmentSource)
+	{
+		ParseShaderFiles(vertexSource, fragmentSource);
+	}
+
 	void Shader::ParseShaderFiles(const std::string& vertexShaderPath, const std::string& fragmentShaderPath)
 	{
 		std::ifstream vertexShader, fragmentShader;
@@ -102,6 +107,7 @@ namespace MC
 	{
 		glDeleteProgram(m_RendererID);
 	}
+
 
 	void Shader::Bind()
 	{

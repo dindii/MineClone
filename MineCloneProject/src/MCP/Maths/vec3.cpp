@@ -154,6 +154,11 @@ namespace MC
 		return add(other);
 	}
 
+	MC::vec3& vec3::operator*=(const float& other)
+	{
+		return multiply(other);
+	}
+
 	vec3& vec3::operator-=(const vec3& other)
 	{
 		return subtract(other);

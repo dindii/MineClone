@@ -6,7 +6,7 @@
 namespace MC
 {
 
-	void RenderCommand::Draw(Chunk* chunk, Shader* shader)
+	void RenderCommand::Draw(Chunk* chunk)
 	{
 		if (chunk->changed)
 		{
@@ -23,7 +23,6 @@ namespace MC
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 4, GL_BYTE, GL_FALSE, sizeof(uint8_t) * 4, (void*)0);
 
-		shader->Bind();
 		glDrawArrays(GL_TRIANGLES, 0, chunk->elements);
 	}
 

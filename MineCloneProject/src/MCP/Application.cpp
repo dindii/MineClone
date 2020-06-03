@@ -3,7 +3,7 @@
 #include "Utils/Logger.h"
 #include "Core.h"
 #include "IO/InputHandler.h"
-#include "MCP/Renderer/Renderer.h"
+#include "MCP/Renderer/VoxelRenderer.h"
 
 
 namespace MC
@@ -21,12 +21,15 @@ namespace MC
 
 		m_Window->setEventCallback(BIND_EVENT_FN(Application::OnEvent));
 
-		Renderer::Init();
+		VoxelRenderer::Init();
 	}
 
 	Application::~Application()
 	{
+		VoxelRenderer::ShutDown();
+
 		delete m_Window;
+
 	}
 
 	void Application::Run()
@@ -96,7 +99,7 @@ namespace MC
 			m_Minimized = false;
 		}
 
-		Renderer::SetViewport(0, 0, e.GetWidth(), e.GetHeight());
+		VoxelRenderer::SetViewport(0, 0, e.GetWidth(), e.GetHeight());
 
 		return false;
 	}

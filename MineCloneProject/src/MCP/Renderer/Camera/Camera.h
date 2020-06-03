@@ -24,7 +24,7 @@ namespace MC
 
 		void UpdateCameraVectors();
 
-		void AddCameraTargetPosition(vec3 pos);
+		void AddCameraTargetPosition(vec3 pos, DeltaTime& dt);
 
 		inline void SetCameraTarget(vec3& target) { m_CameraTarget = target; } 
 		void SetCameraPosition(vec3& position);
@@ -44,12 +44,15 @@ namespace MC
 
 		inline void SetViewMatrix(mat4& view) { m_ViewMatrix = view; }
 
+		inline void SetLagVal(float& val) { m_CameraLag = val; }
+
 
 		void OnEvent(Event& e);
 
 	private:
-		vec3 m_DesiredPos;
-		bool m_CameraLag = true;
+		vec3  m_DesiredPos;
+		bool  m_CameraLag = true;
+		float m_LagVal;
 
 	private:
 		vec3 m_CameraTarget;
