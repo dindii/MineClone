@@ -22,7 +22,7 @@ WorldLayer::WorldLayer() : Layer("WorldLayer")
 				superChunk->Set(x, y, z, 1);
 
 				//perlinPos[x + 4 * (y + 4 * z)] = noise.Gen(x, y, z);
-				perlinPos[x][y][z] = noise.Gen(x, y, z);
+			//	perlinPos[x][y][z] = noise.Gen(x, y, z);
 		
 
 				//Aqui eu seto os cubos do chunk e depois no onUpdate eu renderizo o chunk, onde ele ira renderizar tudo, porém, apenas com os cubos setados.

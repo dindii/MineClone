@@ -153,14 +153,14 @@ namespace MC
 			~WindowInput();
 
 			static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
+			static void setMouseCoords(vec2 coords);
+			static void showCursor(bool showCursor);
 			inline static Key* getKeys() { return Keys; }
 			inline static vec2* getMouseCoords() { return MouseCoords; }
 			inline static vec2 getMouseDelta() { return MouseDelta; }
-			static void setMouseCoords(vec2 coords);
 			inline static void setMouseDelta(vec2 delta) { MouseDelta = delta; }
 			inline static void lockDelta(bool lock) { deltaLock = lock; }
 			inline static void lockCursor(bool lock) { cursorLock = lock; }
-
 
 		public:
 			inline void setEventCallback(const EventCallbackFn& callback) { EventCallback = callback; }

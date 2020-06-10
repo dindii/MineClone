@@ -25,7 +25,7 @@ public:
 	MC::Camera camera;
 
 
-	MC::PerlinNoise noise;
+
 	float perlinPos[4][4][4];
 
 

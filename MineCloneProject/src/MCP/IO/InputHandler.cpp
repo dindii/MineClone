@@ -69,6 +69,11 @@ namespace MC
 		MC_INTERNAL::WindowInput::lockDelta(lock);
 	}
 
+	void InputHandler::showCursor(bool show)
+	{
+		MC_INTERNAL::WindowInput::showCursor(show);
+	}
+
 	MC_INTERNAL::Time::TimeProps InputHandler::GetTime()
 	{
 		return MC::MC_INTERNAL::Time::getTime();

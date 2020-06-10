@@ -38,10 +38,13 @@ namespace MC
 		LayerStack m_LayerStack;
 		bool m_Minimized;
 		DeltaTime deltaTime;
+		bool wireframeMode = false;
+		bool lockCursor = true;
 
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);
 		bool OnWindowResize(WindowResizeEvent& e);
+		bool OnKeyPressed(KeyPressedEvent& e);
 	};
 
 	Application* CreateApplication();

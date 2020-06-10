@@ -53,20 +53,9 @@ namespace MC
 		EventDispatcher dispatcher(event);
 		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::OnWindowClose));
 		dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(Application::OnWindowResize));
+		dispatcher.Dispatch<KeyPressedEvent>(BIND_EVENT_FN(Application::OnKeyPressed));
 		//@TODO: Bubble up event system, de certa que forma que o World Layer pode lidar um esc com um menu e a Application lida com o 
 		//fim da aplicação.
-
-#ifdef MC_DEBUG
-	 //temporary {
-		KeyPressedEvent* evento = (KeyPressedEvent*)&event;
-		if (evento->GetKeyCode() == (int)MC_KEYS::MC_KEY_ESC)
-		{
-			evento->Handled = true;
-			WindowCloseEvent close;
-			this->OnEvent(close);
-		}
-		//temporary }
-#endif
 
 		if(!m_Minimized)
 		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin(); )
@@ -100,6 +89,39 @@ namespace MC
 		}
 
 		VoxelRenderer::SetViewport(0, 0, e.GetWidth(), e.GetHeight());
+
+		return false;
+	}
+
+	bool Application::OnKeyPressed(KeyPressedEvent& e)
+	{
+#ifdef MC_DEBUG
+		if (e.GetKeyCode() == (int)MC_KEYS::MC_KEY_ESC)
+		{
+			WindowCloseEvent close;
+			this->OnEvent(close);
+
+			return true;
+		}
+		else if (e.GetKeyCode() == (int)MC_KEYS::MC_KEY_F1)
+		{
+			wireframeMode = !wireframeMode;
+			VoxelRenderer::SetWireframeMode(wireframeMode);
+
+			return true;
+		}
+		else if (e.GetKeyCode() == (int)MC_KEYS::MC_KEY_F2)
+		{
+
+			InputHandler::showCursor(lockCursor);
+
+			lockCursor = !lockCursor;
+
+			InputHandler::lockCursorPosition(lockCursor);
+
+			return true;
+		}
+#endif
 
 		return false;
 	}

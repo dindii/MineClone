@@ -53,6 +53,14 @@ namespace MC
 		return VBO;
 	}
 
+	void RenderCommand::WireframeMode(bool cond)
+	{
+		if (cond)
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		else
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+
 	void RenderCommand::DelMesh(unsigned int nMeshes, unsigned int& Mesh)
 	{
 		glDeleteBuffers(nMeshes, &Mesh);
@@ -62,7 +70,6 @@ namespace MC
 	{
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
 
 }

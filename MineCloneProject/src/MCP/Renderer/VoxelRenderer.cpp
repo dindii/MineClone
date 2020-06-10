@@ -69,4 +69,9 @@ namespace MC
 		RenderCommand::SetViewport(x, y, width, height);
 	}
 
+	void VoxelRenderer::SetWireframeMode(bool cond)
+	{
+		RenderCommand::WireframeMode(cond);
+	}
+
 }

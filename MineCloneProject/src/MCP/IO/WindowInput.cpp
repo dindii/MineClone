@@ -299,6 +299,12 @@ namespace MC
 	{
 		SetCursorPos((int)coords.x, (int)coords.y);
 	}
+
+	void MC_INTERNAL::WindowInput::showCursor(bool showCursor)
+	{
+		ShowCursor(showCursor);
+	}
+
 }
 
 //@TODO: REMAKE BELOW

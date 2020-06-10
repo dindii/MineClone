@@ -15,6 +15,7 @@ namespace MC
 		static void setMouseDelta(vec2 value);
 		static void lockCursorPosition(bool lock);
 		static void lockCursorDelta(bool lock);
+		static void showCursor(bool show);
 
 		static MC::MC_INTERNAL::Time::TimeProps GetTime();
 	};
