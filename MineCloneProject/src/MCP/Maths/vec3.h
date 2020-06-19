@@ -26,10 +26,12 @@ namespace MC
 
 		static float Length(const vec3& vec);
 		static float Length2(const vec3& vec);
-		static vec3 Normalize(const vec3& vec);
+		static vec3 Normalize(const vec3& vec)
+			;
 		static vec3 Cross(const vec3& first, const vec3& second);
+		static float Dot(const vec3& first, const vec3& second);
 
-		float Dot(const vec3& other);
+		float Dot(const vec3& other) const;
 		vec3 Cross(const vec3& other);
 
 		//Retornando uma referencia para o proprio objeto a fim de evitar criar novos objetos e podermos com eficiencia

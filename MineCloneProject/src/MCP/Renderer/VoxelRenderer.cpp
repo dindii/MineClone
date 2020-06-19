@@ -2,6 +2,9 @@
 #include "VoxelRenderer.h"
 #include "RenderCommand.h"
 
+#include "MCP/Utils/Logger.h"
+#include "MCP/Maths/Maths.h"
+
 namespace MC
 {
 	struct VoxelRenderingResources
@@ -30,23 +33,24 @@ namespace MC
 		RenderCommand::Draw(chunk);
 	}
 
-	void VoxelRenderer::Draw(Superchunk* superchunk, float arr[4][4][4])
+	void VoxelRenderer::Draw(Superchunk* superchunk)
 	{
-		uint32_t aux = 0; 
+		uint32_t aux = 0;
 
 		for (int x = 0; x < SUPER_CHUNK_SIZE; x++)
 			for (int y = 0; y < SUPER_CHUNK_SIZE; y++)
 				for (int z = 0; z < SUPER_CHUNK_SIZE; z++)
+				{
 					if (superchunk->c[x][y][z])
 					{
 						mat4 model;
-						model *= model.Translate(vec3(0, 0, 0));
+						model *= model.Translate(vec3(x * SUPER_CHUNK_SIZE, y * SUPER_CHUNK_SIZE, z * SUPER_CHUNK_SIZE));
 						v_Data->voxelShader.UploadUniformMat4("u_Transform", model);
-
-						Draw(superchunk->c[0][0][0]);
+						Draw(superchunk->c[x][y][z]);
 
 						aux++;
 					}
+				}
 	}
 
 	void VoxelRenderer::BeginScene(const Camera& camera)

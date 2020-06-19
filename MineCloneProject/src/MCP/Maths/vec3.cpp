@@ -97,9 +97,14 @@ namespace MC
 					first.x * second.y - first.y * second.x);
 	}
 
-	float vec3::Dot(const vec3& other)
+	float vec3::Dot(const vec3& other) const
 	{
 		return x * other.x + y * other.y + z * other.z;
+	}
+
+	float vec3::Dot(const vec3& first, const vec3& second)
+	{
+		return first.x * second.x + first.y * second.y + first.z * second.z;
 	}
 
 	vec3& vec3::add(const vec3& other)

@@ -70,7 +70,6 @@ namespace MC
 
 	bool Application::OnWindowClose(WindowCloseEvent& e)
 	{
-		e.Handled = true;
 		m_Running = false;
 		return true;
 	}
@@ -90,7 +89,7 @@ namespace MC
 
 		VoxelRenderer::SetViewport(0, 0, e.GetWidth(), e.GetHeight());
 
-		return false;
+		return true;
 	}
 
 	bool Application::OnKeyPressed(KeyPressedEvent& e)

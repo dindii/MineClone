@@ -8,7 +8,9 @@ namespace MC
 {
 	typedef unsigned int GLuint;
 
-	constexpr int CHUNK_SIZE = 16;
+	constexpr unsigned int CHUNK_SIZE = 16;
+	constexpr unsigned int CUBE_FACES = 6;
+	constexpr unsigned int FACE_VERTICES_NUMBER = 6;
 
 	//Criar o enum : uint8_t com os tipos.
 
@@ -25,7 +27,7 @@ namespace MC
 		void update();
 
 		uint8_t blocks[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE]; //types of blocks
-		bvec4 vertex[CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE * 6 * 6]; //mesh data
+		bvec4 vertex[CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE * FACE_VERTICES_NUMBER * CUBE_FACES]; //mesh data
 
 		GLuint VBO;
 		int elements;

@@ -6,6 +6,8 @@ out vec4 v_textCoord;
 
 uniform mat4 u_ViewProjection;
 uniform mat4 u_Transform;
+uniform vec4 u_ChunkNumber;
+
 
 void main()
 {

@@ -1,33 +1,35 @@
-#include "WorldLayer.h"
+ï»¿#include "WorldLayer.h"
 
 #include <iostream>
 
+#include <stdlib.h>
+#include "MCP/Noise/PerlinNoise2D.h"
 //EXPERIMENTAL CODE
 
 WorldLayer::WorldLayer() : Layer("WorldLayer")
 {
 
+	MC::PerlinNoise Noise;
 
 	camera = MC::Camera(1362 / 701, { 10.0f, 10.0f, 500.0f });
 
 	superChunk = new MC::Superchunk();
 
-	// x + y + z * 4
-
-	//Colocar esse set numa função
-	for (int x = 0; x < 4; x++)
-		for (int y = 0; y < 4; y++)
-			for (int z = 0; z < 4; z++)
+	//Colocar esse set numa funÃ§Ã£o
+	for (int x = 0; x < 32; x++)
+		for (int y = 0; y < 64; y++)
+			for (int z = 0; z < 32; z++)
 			{ 
-				superChunk->Set(x, y, z, 1);
+				double should = Noise.GenOctave(x / 32.0f, y / 64.0f, z / 32.0f, 4, 1.5f, 0.25f);
 
-				//perlinPos[x + 4 * (y + 4 * z)] = noise.Gen(x, y, z);
-			//	perlinPos[x][y][z] = noise.Gen(x, y, z);
-		
+				 if(should * 32.0f > y)
+					 superChunk->Set(x, y, z, 1);
 
-				//Aqui eu seto os cubos do chunk e depois no onUpdate eu renderizo o chunk, onde ele ira renderizar tudo, porém, apenas com os cubos setados.
-			}
-	
+				 else
+					 superChunk->Set(x, y, z, 0);
+				 
+
+			}	
 }
 
 void WorldLayer::OnUpdate(MC::DeltaTime deltaTime)
@@ -37,7 +39,7 @@ void WorldLayer::OnUpdate(MC::DeltaTime deltaTime)
 
 	MC::VoxelRenderer::Clear();
 	MC::VoxelRenderer::BeginScene(camera);
-	MC::VoxelRenderer::Draw(superChunk, perlinPos);
+	MC::VoxelRenderer::Draw(superChunk);
 }
 
 void WorldLayer::OnEvent(MC::Event& e)
@@ -83,7 +85,7 @@ void WorldLayer::MovePlayer(MC::DeltaTime deltaTime)
 	camera.AddCameraTargetPosition(gotoCamera, deltaTime);	
 }
 
-//@TODO: mover também para um controller
+//@TODO: mover para um controller
 void WorldLayer::LookAround()
 {
 	MC::vec2 Delta = MC::InputHandler::GetMouseDelta();

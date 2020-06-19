@@ -23,10 +23,4 @@ public:
 	MC::Superchunk* superChunk;
 
 	MC::Camera camera;
-
-
-
-	float perlinPos[4][4][4];
-
-
 };

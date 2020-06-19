@@ -16,7 +16,7 @@ namespace MC
 		
 		//Debug // Testar enviar um uniform por draw call pra usar o perlin e depois começar a instanciar todo o array de perlin.
 		//Colocar esse array sendo 4*4*4 e fazer as operações dentro dele mesmo.
-		static void Draw(Superchunk* superchunk, float arr[4][4][4]);
+		static void Draw(Superchunk* superchunk);
 
 		static void BeginScene(const Camera& camera);
 
