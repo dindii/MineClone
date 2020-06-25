@@ -1,10 +1,8 @@
 ﻿#include "WorldLayer.h"
-
 #include <iostream>
-
-#include <stdlib.h>
 #include "MCP/Noise/PerlinNoise2D.h"
-//EXPERIMENTAL CODE
+
+#include "imgui/imgui.h"
 
 WorldLayer::WorldLayer() : Layer("WorldLayer")
 {
@@ -28,7 +26,6 @@ WorldLayer::WorldLayer() : Layer("WorldLayer")
 				 else
 					 superChunk->Set(x, y, z, 0);
 				 
-
 			}	
 }
 
@@ -44,8 +41,13 @@ void WorldLayer::OnUpdate(MC::DeltaTime deltaTime)
 
 void WorldLayer::OnEvent(MC::Event& e)
 {
-	//MC_LOG_TRACE(e);
 	camera.OnEvent(e);
+}
+
+void WorldLayer::OnImGuiRender()
+{
+	bool a = true;
+	ImGui::ShowDemoWindow(&a);
 }
 
 void WorldLayer::MovePlayer(MC::DeltaTime deltaTime)

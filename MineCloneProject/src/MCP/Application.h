@@ -2,6 +2,7 @@
 #include "Window.h"
 #include "LayerStack.h"
 #include "MCP/Platform/DeltaTime.h"
+#include "ImGuiLayer.h"
 
 namespace MC
 {
@@ -29,17 +30,22 @@ namespace MC
 
 		inline Window& GetWindow() { return *m_Window; }
 
-	private:
-		static Application* s_Instance;
+		static Application* Get() { return s_Instance; }
+
+	
+
 	protected:
 		Window* m_Window;
 	private:
+		static Application* s_Instance;
 		bool m_Running;
 		LayerStack m_LayerStack;
 		bool m_Minimized;
 		DeltaTime deltaTime;
 		bool wireframeMode = false;
 		bool lockCursor = true;
+
+		ImGuiLayer* m_ImGuiLayer;
 
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);

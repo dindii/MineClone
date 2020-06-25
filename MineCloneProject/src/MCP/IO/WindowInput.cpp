@@ -162,6 +162,9 @@ namespace MC
 				Keys[wparam].isPressed = true;
 				Keys[wparam].isRepeated = Ki.nPrevious;
 
+				//ImGui requires original WM key codes
+			//	KeyTypedEvent eventTyped((int)Keys[wparam].KeyCode);
+			//	EventCallback(eventTyped);
 				break;
 			}
 
@@ -191,7 +194,7 @@ namespace MC
 
 			case WM_LBUTTONUP:
 			{
-				MC::MouseButtoinReleasedEvent event((int)MC_KEYS::MC_BUTTON_LBUTTON);
+				MC::MouseButtonReleasedEvent event((int)MC_KEYS::MC_BUTTON_LBUTTON);
 				EventCallback(event);
 
 				Keys[wparam].isPressed = false;
@@ -212,7 +215,7 @@ namespace MC
 
 			case WM_RBUTTONUP:
 			{
-				MC::MouseButtoinReleasedEvent event((int)MC_KEYS::MC_BUTTON_RBUTTON);
+				MC::MouseButtonReleasedEvent event((int)MC_KEYS::MC_BUTTON_RBUTTON);
 				EventCallback(event);
 
 

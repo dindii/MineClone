@@ -22,6 +22,9 @@ namespace MC
 		m_Window->setEventCallback(BIND_EVENT_FN(Application::OnEvent));
 
 		VoxelRenderer::Init();
+
+		m_ImGuiLayer = new ImGuiLayer;
+		PushOverLay(m_ImGuiLayer);
 	}
 
 	Application::~Application()
@@ -38,12 +41,18 @@ namespace MC
 		{
 			deltaTime.tick();
 
-			m_Window->onUpdate();	
 
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate(deltaTime);
 			
-			//@TODO: Call imgui layer.
+
+			/* Temos um memory leak vindo do imGui */
+			m_ImGuiLayer->Begin();
+			for (Layer* layer : m_LayerStack)
+				layer->OnImGuiRender();
+			m_ImGuiLayer->End();
+
+			m_Window->onUpdate();	
 		}
 	}
 

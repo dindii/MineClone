@@ -41,6 +41,7 @@ namespace MC
 
 	class MouseScrolledEvent : public Event
 	{
+	public:
 		/**
 		* @brief Constructor, takes two f32 so i can track the X and Y wheel offset. Also used to set m_XOffset and m_YOffset.
 		* @param xOffset - How much was scrolled horizontally.
@@ -107,10 +108,10 @@ namespace MC
 		EVENT_CLASS_TYPE(MouseButtonPressed)
 	};
 
-	class MouseButtoinReleasedEvent : public MouseButtonEvent
+	class MouseButtonReleasedEvent : public MouseButtonEvent
 	{
 	public:
-		MouseButtoinReleasedEvent(int button) : MouseButtonEvent(button) {};
+		MouseButtonReleasedEvent(int button) : MouseButtonEvent(button) {};
 
 		std::string ToString() const override
 		{

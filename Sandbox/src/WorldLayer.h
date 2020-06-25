@@ -8,6 +8,7 @@ public:
 	WorldLayer();
 	void OnUpdate(MC::DeltaTime deltaTime) override;
 	void OnEvent(MC::Event& e) override;
+	void OnImGuiRender() override;
 
 
 	//Gameplay Related Stuff

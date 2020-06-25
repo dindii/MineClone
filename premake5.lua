@@ -14,9 +14,11 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
  IncludeDir = {}
   IncludeDir["Glad"] = "MineCloneProject/vendor/Glad/include"
+  IncludeDir["ImGui"] = "MineCloneProject/vendor/imgui"
 
   group "Dependencies"
   include "MineCloneProject/vendor/Glad"
+  include "MineCloneProject/vendor/imgui"
   group ""
 
 project "MineCloneProject"
@@ -41,13 +43,15 @@ project "MineCloneProject"
 	includedirs
 	{
 		"%{prj.name}/src",
-		"%{IncludeDir.Glad}"
+		"%{IncludeDir.Glad}",
+                "%{IncludeDir.ImGui}"
 
 	}
 	
 	links
 	{
 		"Glad",
+                "ImGui",
 		"opengl32.lib"
 	}
 
@@ -97,7 +101,8 @@ project "MineCloneProject"
 	includedirs
 	{
 		"%{prj.name}/src",
-		"MineCloneProject/src"
+		"MineCloneProject/src",
+                "MineCloneProject/vendor"
 	}
 
 	links                      -- Linkamos a Engine no Sandbox também
