@@ -29,7 +29,6 @@ namespace MC
 
 	void VoxelRenderer::Draw(Chunk* chunk)
 	{
-		v_Data->voxelShader.Bind();
 		RenderCommand::Draw(chunk);
 	}
 
@@ -45,12 +44,18 @@ namespace MC
 					{
 						mat4 model;
 						model *= model.Translate(vec3(x * SUPER_CHUNK_SIZE, y * SUPER_CHUNK_SIZE, z * SUPER_CHUNK_SIZE));
+						v_Data->voxelShader.Bind();
 						v_Data->voxelShader.UploadUniformMat4("u_Transform", model);
 						Draw(superchunk->c[x][y][z]);
 
 						aux++;
 					}
 				}
+	}
+
+	void VoxelRenderer::Draw(VoxelTerrain& vt)
+	{
+		Draw(vt.GetTerrainData());
 	}
 
 	void VoxelRenderer::BeginScene(const Camera& camera)

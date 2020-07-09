@@ -1,12 +1,13 @@
 #include "mcpch.h"
 #include "Application.h"
 #include "imgui.h"
-#include "imgui_impl_win32.h"
-#include "imgui_impl_opengl3.h"
+#include "examples/imgui_impl_win32.h"
+#include "examples/imgui_impl_opengl3.h"
 #include "imgui_internal.h"
 #include <tchar.h>
 #include "MCP/Renderer/RenderCommand.h"
 
+#include <glad/glad.h>
 
 namespace MC
 {
@@ -36,6 +37,8 @@ namespace MC
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
 		io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
 		io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
+		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+		io.ConfigDockingWithShift = false;
 
 		ImGui_ImplWin32_Init(Application::Get()->GetWindow().GetNativeWindow());
 		ImGui_ImplOpenGL3_Init("#version 410");

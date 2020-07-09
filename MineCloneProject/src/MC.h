@@ -28,8 +28,9 @@
 
 #include "MCP/Renderer/Voxel/Chunk.h"
 
+#include "MCP/Renderer/Voxel/VoxelTerrain.h"
+
 #include "MCP/Platform/DeltaTime.h"
 
 #include "MCP/ImGuiLayer.h"
-
 

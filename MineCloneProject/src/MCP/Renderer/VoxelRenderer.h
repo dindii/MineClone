@@ -6,6 +6,7 @@
 
 #include "MCP/Renderer/Voxel/Chunk.h"
 #include "MCP/Renderer/Voxel/Superchunk.h"
+#include "MCP/Renderer/Voxel/VoxelTerrain.h"
 
 namespace MC
 {
@@ -13,10 +14,8 @@ namespace MC
 	{
 	public:
 		static void Draw(Chunk* chunk);
-		
-		//Debug // Testar enviar um uniform por draw call pra usar o perlin e depois começar a instanciar todo o array de perlin.
-		//Colocar esse array sendo 4*4*4 e fazer as operações dentro dele mesmo.
 		static void Draw(Superchunk* superchunk);
+		static void Draw(VoxelTerrain& vt);
 
 		static void BeginScene(const Camera& camera);
 

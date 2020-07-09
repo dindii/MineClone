@@ -6,27 +6,8 @@
 
 WorldLayer::WorldLayer() : Layer("WorldLayer")
 {
-
-	MC::PerlinNoise Noise;
-
 	camera = MC::Camera(1362 / 701, { 10.0f, 10.0f, 500.0f });
-
-	superChunk = new MC::Superchunk();
-
-	//Colocar esse set numa função
-	for (int x = 0; x < 32; x++)
-		for (int y = 0; y < 64; y++)
-			for (int z = 0; z < 32; z++)
-			{ 
-				double should = Noise.GenOctave(x / 32.0f, y / 64.0f, z / 32.0f, 4, 1.5f, 0.25f);
-
-				 if(should * 32.0f > y)
-					 superChunk->Set(x, y, z, 1);
-
-				 else
-					 superChunk->Set(x, y, z, 0);
-				 
-			}	
+	terrain.GenNoiseTerrain(32, 64, 32);
 }
 
 void WorldLayer::OnUpdate(MC::DeltaTime deltaTime)
@@ -36,7 +17,7 @@ void WorldLayer::OnUpdate(MC::DeltaTime deltaTime)
 
 	MC::VoxelRenderer::Clear();
 	MC::VoxelRenderer::BeginScene(camera);
-	MC::VoxelRenderer::Draw(superChunk);
+	MC::VoxelRenderer::Draw(terrain);
 }
 
 void WorldLayer::OnEvent(MC::Event& e)

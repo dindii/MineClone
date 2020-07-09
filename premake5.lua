@@ -10,6 +10,8 @@ configurations
 	"Dist"
 }
 
+characterset ("MBCS")
+
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
  IncludeDir = {}
@@ -44,15 +46,14 @@ project "MineCloneProject"
 	{
 		"%{prj.name}/src",
 		"%{IncludeDir.Glad}",
-                "%{IncludeDir.ImGui}"
-
+                "%{IncludeDir.ImGui}",
 	}
 	
 	links
 	{
 		"Glad",
                 "ImGui",
-		"opengl32.lib"
+                "opengl32.lib"
 	}
 
 	filter "system:windows"
@@ -102,7 +103,7 @@ project "MineCloneProject"
 	{
 		"%{prj.name}/src",
 		"MineCloneProject/src",
-                "MineCloneProject/vendor"
+        "MineCloneProject/vendor"
 	}
 
 	links                      -- Linkamos a Engine no Sandbox também
