@@ -10,15 +10,12 @@ namespace MC
 {
 		Texture2D::Texture2D(uint32_t width, uint32_t height) : m_Width(width), m_Height(height)
 		{
-			
-
 			m_InternalFormat = GL_RGBA8;
 			m_DataFormat = GL_RGBA;
 
 			glGenTextures(1, &m_RendererID);
 			glBindTexture(GL_TEXTURE_2D, m_RendererID);
 
-			//	glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
 			glTextureStorage2D(m_RendererID, 1, m_InternalFormat, m_Width, m_Height);
 
 			glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -28,8 +25,6 @@ namespace MC
 			glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 			glBindTexture(GL_TEXTURE_2D, 0);
-
-
 		}
 
 		Texture2D::Texture2D(const uint8_t* data, const uint32_t width, const uint32_t height, const uint32_t channels /*= 4*/)
@@ -39,12 +34,25 @@ namespace MC
 
 			GLenum internalFormat = 0, dataFormat = 0;
 
+			glGenTextures(1, &m_RendererID);
+			glBindTexture(GL_TEXTURE_2D, m_RendererID);
+
 			switch (channels)
 			{
 				case 1:
 				{
 					internalFormat = GL_R8;
 					dataFormat = GL_RED;
+
+					/*    Por mais que seja uma imagem de apenas um canal (grayscale), o imgui estava setando o vec4 de cor para esses dados
+						  então, haviamos no fim, uma cor (N, 0, 0, 0) fazendo com que saísse com um color tint vermelho. Com essa função
+						  podemos aplicar para os outros canais, o mesmo valor de N, ficando então (N, N, N, 1) e obtemos o resultado desejado.
+					*/
+					glTextureParameteri(m_RendererID, GL_TEXTURE_SWIZZLE_R, GL_RED);
+					glTextureParameteri(m_RendererID, GL_TEXTURE_SWIZZLE_G, GL_RED);
+					glTextureParameteri(m_RendererID, GL_TEXTURE_SWIZZLE_B, GL_RED);
+					glTextureParameteri(m_RendererID, GL_TEXTURE_SWIZZLE_A, GL_ONE);
+
 					break;
 				}
 				case 3:
@@ -72,9 +80,6 @@ namespace MC
 
 			MC_ASSERT((internalFormat & dataFormat));
 
-			glGenTextures(1, &m_RendererID);
-			glBindTexture(GL_TEXTURE_2D, m_RendererID);
-
 			glTextureStorage2D(m_RendererID, 1, internalFormat, m_Width, m_Height);
 
 			glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -82,11 +87,14 @@ namespace MC
 
 			glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GL_REPEAT);
 			glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-			glPixelStorei(GL_UNPACK_ROW_LENGTH, 0); // Esse aqui é necessário pro imgui ler a textura e não splitar ela
-			glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, dataFormat, GL_UNSIGNED_BYTE, data);
 		
 
+			// Necessário pro imgui ler a textura e não pular a row muito tarde
+			// Um setup adicional necessário se caso os dados foram gerados por nós e estejam crus 
+			glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+
+			glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, dataFormat, GL_UNSIGNED_BYTE, data);
+		
 			glBindTexture(GL_TEXTURE_2D, 0);
 		}
 
@@ -102,12 +110,25 @@ namespace MC
 
 			GLenum internalFormat = 0, dataFormat = 0;
 
+			glGenTextures(1, &m_RendererID);
+			glBindTexture(GL_TEXTURE_2D, m_RendererID);
+
 			switch (channels)
 			{
 				case 1:
 				{
 					internalFormat = GL_R8;
 					dataFormat = GL_RED;
+
+					/*    Por mais que seja uma imagem de apenas um canal (grayscale), o imgui estava setando o vec4 de cor para esses dados
+						  então, haviamos no fim, uma cor (N, 0, 0, 0) fazendo com que saísse com um color tint vermelho. Com essa função
+						  podemos aplicar para os outros canais, o mesmo valor de N, ficando então (N, N, N, 1) e obtemos o resultado desejado.
+					*/
+					glTextureParameteri(m_RendererID, GL_TEXTURE_SWIZZLE_R, GL_RED);
+					glTextureParameteri(m_RendererID, GL_TEXTURE_SWIZZLE_G, GL_RED);
+					glTextureParameteri(m_RendererID, GL_TEXTURE_SWIZZLE_B, GL_RED);
+					glTextureParameteri(m_RendererID, GL_TEXTURE_SWIZZLE_A, GL_ONE);
+
 					break;
 				}
 				case 3:
@@ -133,9 +154,6 @@ namespace MC
 			m_DataFormat = dataFormat;
 
 			MC_ASSERT((internalFormat & dataFormat));
-
-			glGenTextures(1, &m_RendererID);
-			glBindTexture(GL_TEXTURE_2D, m_RendererID);
 
 			glTextureStorage2D(m_RendererID, 1, internalFormat, m_Width, m_Height);
 
@@ -166,8 +184,4 @@ namespace MC
 		{
 			glBindTextureUnit(slot, m_RendererID);
 		}
-
-	
-
-
 }

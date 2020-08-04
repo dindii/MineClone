@@ -22,9 +22,7 @@ namespace MC
 		uint32_t m_Width, m_Height;
 		uint32_t m_RendererID;
 		std::string m_Path;
-		unsigned int m_InternalFormat, m_DataFormat;
-
-
+		uint32_t m_InternalFormat, m_DataFormat;
 	};
 
 }
