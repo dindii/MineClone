@@ -2,12 +2,12 @@
 #include <string>
 #include "MCP/Event/Event.h"
 #include "MCP/Maths/vec3.h"
-
+#include "MCP/Core.h"
 
 /*      @ TODO:
 * Mutex if needed.
 * Add all classes of the engine
-* Poll of loggers
+* Poll loggers
 * avoid repeating the check
 */
 
@@ -60,6 +60,4 @@ namespace MC {
 
 #endif
 
-#define MC_ASSERT(x) if(x) { }\
-else {__debugbreak();}
 

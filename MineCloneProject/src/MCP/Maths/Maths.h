@@ -1,10 +1,33 @@
 #pragma once
 #include "mcpch.h"
-
+#include <stdint.h>
 #define ED_PI 3.14159265359
 
 namespace MC
 {
+	inline int clamp(const int& min, const int& max,  const int& val)
+	{
+		int aux = 0;
+
+		if (val < min)
+		{
+			aux = min;
+			return aux;
+		}
+		else if (val > max)
+		{
+			aux = max;
+			return aux;
+		}
+
+		return val;
+	}
+
+	inline uint8_t floatToByte(const float& f)
+	{
+		return (f >= 1.0f ? 255 : (f <= 0.0f ? 0 : (int)floor(f * 256.0f)));
+	}
+
 	inline float normalizeInRange(float val, float max, float min)
 	{
 		return (val - min) / (max - min);

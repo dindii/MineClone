@@ -38,7 +38,7 @@ namespace MC
 		io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
 		io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-		io.ConfigDockingWithShift = false;
+		io.ConfigDockingWithShift = true;
 
 		ImGui_ImplWin32_Init(Application::Get()->GetWindow().GetNativeWindow());
 		ImGui_ImplOpenGL3_Init("#version 410");

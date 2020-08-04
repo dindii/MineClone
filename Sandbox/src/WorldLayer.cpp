@@ -1,13 +1,10 @@
 ﻿#include "WorldLayer.h"
-#include <iostream>
-#include "MCP/Noise/PerlinNoise2D.h"
-
 #include "imgui/imgui.h"
 
 WorldLayer::WorldLayer() : Layer("WorldLayer")
 {
 	camera = MC::Camera(1362 / 701, { 10.0f, 10.0f, 500.0f });
-	terrain.GenNoiseTerrain(32, 64, 32);
+	terrain.Gen2DNoiseTerrain(128 , 128, 1); //Passar pro client side
 }
 
 void WorldLayer::OnUpdate(MC::DeltaTime deltaTime)
@@ -27,8 +24,16 @@ void WorldLayer::OnEvent(MC::Event& e)
 
 void WorldLayer::OnImGuiRender()
 {
-	bool a = true;
-	ImGui::ShowDemoWindow(&a);
+    static float test = 290.0f;
+	ImGui::ShowMetricsWindow();
+
+	ImGui::SliderFloat("label", &test, 0, 1000);
+
+	ImGui::Image((void*)(intptr_t)terrain.GetTerrainPreview()->GetID(), 
+		ImVec2{ test, test });
+
+	ImGui::Text("pointer = %p", terrain.GetTerrainPreview()->GetID());
+	ImGui::Text("size = %d x %d", terrain.GetTerrainPreview()->GetWidth(), terrain.GetTerrainPreview()->GetHeight());
 }
 
 void WorldLayer::MovePlayer(MC::DeltaTime deltaTime)

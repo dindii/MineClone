@@ -11,7 +11,6 @@ public:
 	void OnEvent(MC::Event& e) override;
 	void OnImGuiRender() override;
 
-
 	//Gameplay Related Stuff
 	void MovePlayer(MC::DeltaTime deltaTime);
 	void LookAround();
@@ -21,7 +20,6 @@ public:
 
 	MC::VoxelTerrain terrain;
 	MC::Camera camera;
-
 
 	MC::vec2 DeltaReverse; //@TDO: Improve the mouse input system and get rid of this.
 

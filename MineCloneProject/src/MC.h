@@ -34,3 +34,4 @@
 
 #include "MCP/ImGuiLayer.h"
 
+#include "MCP/Renderer/Misc/PNGimageWriter.h"
