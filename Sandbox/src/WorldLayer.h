@@ -23,4 +23,8 @@ public:
 
 	MC::vec2 DeltaReverse; //@TDO: Improve the mouse input system and get rid of this.
 
+	int octaves = 0;
+	float persistence = 0, frequency = 0, previewSize = 290.0f;
+	bool shoudTerrainChange = false;
+
 };

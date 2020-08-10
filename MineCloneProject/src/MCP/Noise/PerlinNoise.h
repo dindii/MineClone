@@ -11,7 +11,7 @@ namespace MC
 
 		//For 3D
 		double Gen(double x, double y, double z);
-		double GenOctave(double x, double y, double z, int octaves, double frequency, double persistence);
+		double GenOctave(double x, double y, double z, uint32_t octaves, float frequency, float persistence);
 	private:
 		double fade(double t);
 		int inc(int num);

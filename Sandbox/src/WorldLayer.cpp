@@ -4,7 +4,7 @@
 WorldLayer::WorldLayer() : Layer("WorldLayer")
 {
 	camera = MC::Camera(1362 / 701, { 10.0f, 10.0f, 500.0f });
-	terrain.Gen2DNoiseTerrain(128 , 128, 1); //Passar pro client side
+	terrain.Gen2DNoiseTerrain(64, 64, 10, octaves, frequency, persistence); //Passar pro client side
 }
 
 void WorldLayer::OnUpdate(MC::DeltaTime deltaTime)
@@ -15,6 +15,12 @@ void WorldLayer::OnUpdate(MC::DeltaTime deltaTime)
 	MC::VoxelRenderer::Clear();
 	MC::VoxelRenderer::BeginScene(camera);
 	MC::VoxelRenderer::Draw(terrain);
+
+	if (shoudTerrainChange)
+	{
+		terrain.Gen2DNoiseTerrain(64, 64, 10, octaves, frequency, persistence);
+		shoudTerrainChange = false;
+	}
 }
 
 void WorldLayer::OnEvent(MC::Event& e)
@@ -24,16 +30,21 @@ void WorldLayer::OnEvent(MC::Event& e)
 
 void WorldLayer::OnImGuiRender()
 {
-    static float test = 290.0f;
-	ImGui::ShowMetricsWindow();
-
-	ImGui::SliderFloat("label", &test, 0, 1000);
-
 	ImGui::Image((void*)(intptr_t)terrain.GetTerrainPreview()->GetID(), 
-		ImVec2{ test, test });
+		ImVec2{ previewSize , previewSize });
 
-	ImGui::Text("pointer = %p", terrain.GetTerrainPreview()->GetID());
 	ImGui::Text("size = %d x %d", terrain.GetTerrainPreview()->GetWidth(), terrain.GetTerrainPreview()->GetHeight());
+	ImGui::SliderFloat("Preview Size", &previewSize, 0, 1000);
+
+	ImGui::NewLine();
+
+	//#TODO Generate 2D images without interference of the terrain.
+	if(ImGui::SliderInt("Octaves", &octaves, 0, 8) ||
+	   ImGui::SliderFloat("Frequency", &frequency, 0.0f, 10.0f) ||
+	   ImGui::SliderFloat("Persistance", &persistence, 0.0f, 1.0f))
+	{
+		shoudTerrainChange = true;
+	}
 }
 
 void WorldLayer::MovePlayer(MC::DeltaTime deltaTime)

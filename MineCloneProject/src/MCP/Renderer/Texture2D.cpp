@@ -88,10 +88,9 @@ namespace MC
 			glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GL_REPEAT);
 			glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		
-
-			// Necessário pro imgui ler a textura e não pular a row muito tarde
-			// Um setup adicional necessário se caso os dados foram gerados por nós e estejam crus 
-			glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+			//This will give support to every dimension, even those like that are not even.
+			if(! ( (width % 2) == 0) )
+				glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
 			glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, dataFormat, GL_UNSIGNED_BYTE, data);
 		

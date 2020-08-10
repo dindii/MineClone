@@ -1,8 +1,6 @@
 #include "mcpch.h"
 #include "VoxelTerrain.h"
-
-#include "MCP/Utils/Logger.h"
-
+#include "MCP/Noise/PerlinNoise.h"
 #include "MCP/Renderer/Misc/PNGimageWriter.h"
 
 namespace MC
@@ -20,7 +18,8 @@ namespace MC
 
 	//@TODO: INICIALIZADOR DA IMAGEM NA FUNÇÃO DE NOISE. PARA IMAGEM TER O MESMO TAMANHO DO TERRENO. (OU FIXO?)
 
-	void VoxelTerrain::Gen3DNoiseTerrain(uint32_t xt, uint32_t yt, uint32_t zt)
+	//#TODO fix 3D noise terrain.
+	void VoxelTerrain::Gen3DNoiseTerrain(uint32_t xt, uint32_t yt, uint32_t zt, uint32_t octaves, float frequency, float persistence)
 	{
 		PerlinNoise Noise;
 
@@ -44,7 +43,7 @@ namespace MC
 		//terrainPreview.Write();
 	}
 
-	void VoxelTerrain::Gen2DNoiseTerrain(uint32_t xt, uint32_t yt, uint32_t zt)
+	void VoxelTerrain::Gen2DNoiseTerrain(uint32_t xt, uint32_t yt, uint32_t zt, uint32_t octaves, float frequency, float persistence)
 	{
 		PerlinNoise Noise;
 
@@ -61,7 +60,7 @@ namespace MC
 				terrainPreview.Set(should);
 				for (int z = 0; z <= zt; z++)
 				{
-					should = Noise.GenOctave(x / xf, y / yf, 0.0f, 8, 5.0f, 0.15f);
+					should = Noise.GenOctave(x / xf, y / yf, 0.0f, octaves, frequency, persistence);
 					(should * yf) > y ? superChunk->Set(x, y, z, 1) : superChunk->Set(x, y, z, 0);
 				}
 			}

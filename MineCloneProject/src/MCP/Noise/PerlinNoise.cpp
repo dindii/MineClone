@@ -86,7 +86,7 @@ namespace MC
 		return ((h & 1) == 0 ? u : -u) + ((h & 2) == 0 ? v : -v);
 	}
 
-	double PerlinNoise::GenOctave(double x, double y, double z, int octaves, double frequency, double persistence)
+	double PerlinNoise::GenOctave(double x, double y, double z, uint32_t octaves, float frequency, float persistence)
 	{
 // 		double total = 0;
 // 		double amplitude = 1;
