@@ -14,17 +14,17 @@ public:
 	//Gameplay Related Stuff
 	void MovePlayer(MC::DeltaTime deltaTime);
 	void LookAround();
+	void ReGenTerrain();
 
-	float cameraSpeed = 50.5f;
-	float cameraSens = 1.0f;
+	float cameraSpeed = 50.5f, cameraSens = 1.0f;
 
 	MC::VoxelTerrain terrain;
 	MC::Camera camera;
 
-	MC::vec2 DeltaReverse; //@TDO: Improve the mouse input system and get rid of this.
-
 	int octaves = 0;
 	float persistence = 0, frequency = 0, previewSize = 290.0f;
-	bool shoudTerrainChange = false;
 
+	
+	
+	MC::vec2 DeltaReverse; //@TDO: Improve the mouse input system and get rid of this.
 };

@@ -15,10 +15,10 @@ namespace MC
 		void GenFlatTerrain(uint32_t xt, uint32_t yt, uint32_t zt);
 
 		Superchunk* GetTerrainData() { return superChunk; }
+		Texture2D GetTerrainPreview() { return m_terrainPreviewTex; }
 
-		Texture2D* GetTerrainPreview() { return terrainPreviewTex; }
 	private:
 		Superchunk* superChunk; //@TODO: extent to multiple superchunks
-		Texture2D* terrainPreviewTex;
+		Texture2D m_terrainPreviewTex;
 	};
 }

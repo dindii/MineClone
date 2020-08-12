@@ -9,7 +9,7 @@ namespace MC
 		return a + x * (b - a);
 	}
 
-	PerlinNoise::PerlinNoise() //: repeat(false)
+	PerlinNoise::PerlinNoise()
 	{
 		uint32_t p[256] = { 151,160,137,91,90,15,
 	131,13,201,95,96,53,194,233,7,225,140,36,103,30,69,142,8,99,37,240,21,10,23,
@@ -28,9 +28,6 @@ namespace MC
 
 		for (int x = 0; x < 512; x++)
 			permutation[x] = p[x % 256];
-
-
-
 	}
 
 	double PerlinNoise::fade(double t)

@@ -2,6 +2,7 @@
 #include "VoxelTerrain.h"
 #include "MCP/Noise/PerlinNoise.h"
 #include "MCP/Renderer/Misc/PNGimageWriter.h"
+#include "MCP/Utils/Logger.h"
 
 namespace MC
 {
@@ -13,36 +14,11 @@ namespace MC
 	VoxelTerrain::~VoxelTerrain()
 	{
 		delete superChunk;
-		delete terrainPreviewTex;
 	}
 
-	//@TODO: INICIALIZADOR DA IMAGEM NA FUNÇÃO DE NOISE. PARA IMAGEM TER O MESMO TAMANHO DO TERRENO. (OU FIXO?)
-
-	//#TODO fix 3D noise terrain.
 	void VoxelTerrain::Gen3DNoiseTerrain(uint32_t xt, uint32_t yt, uint32_t zt, uint32_t octaves, float frequency, float persistence)
 	{
-		PerlinNoise Noise;
-
-		float xf = xt;
-		float yf = yt;
-		float zf = zt;
-
-
-		for (int x = 0; x < xt; x++)
-			for (int y = 0; y < yt; y++)
-				for (int z = 0; z < zt; z++)
-				{
-					float should = Noise.GenOctave(x / xf, y / yf, z / zf, 4, 1.5f, 0.25f);
-
-					(should * xf) > y ? superChunk->Set(x, y, z, 1) : superChunk->Set(x, y, z, 0);
-
-					
-		
-				}	
-
-		//terrainPreview.Write();
 	}
-
 	void VoxelTerrain::Gen2DNoiseTerrain(uint32_t xt, uint32_t yt, uint32_t zt, uint32_t octaves, float frequency, float persistence)
 	{
 		PerlinNoise Noise;
@@ -51,8 +27,8 @@ namespace MC
 
 		float xf = xt;
 		float yf = yt;
-		float should = 0.0f;
-
+		float should = 0.0f; //This will be part of the process to select which type of block will be spawned.
+		//#TODO criar um enum e alternar os modos, melhor do que copiar codigo.
 		for (int y = 0; y < yt; y++)
 		{		
 			for (int x = 0; x < xt; x++)
@@ -65,10 +41,11 @@ namespace MC
 				}
 			}
 		}
-		terrainPreview.Write();
-		terrainPreviewTex = new Texture2D(terrainPreview.GetData(), terrainPreview.getWidth(), terrainPreview.getHeight(), 1);
-	}
 
+		terrainPreview.Write();
+
+		m_terrainPreviewTex = Texture2D(terrainPreview.GetData(), terrainPreview.getWidth(), terrainPreview.getHeight(), 1);
+	}
 
 	void VoxelTerrain::GenFlatTerrain(uint32_t xt, uint32_t yt, uint32_t zt)
 	{
@@ -77,5 +54,4 @@ namespace MC
 				for (int z = 0; z < zt; z++)		
 						superChunk->Set(x, y, z, 1);	
 	}
-
 }

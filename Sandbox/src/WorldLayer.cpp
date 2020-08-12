@@ -4,7 +4,7 @@
 WorldLayer::WorldLayer() : Layer("WorldLayer")
 {
 	camera = MC::Camera(1362 / 701, { 10.0f, 10.0f, 500.0f });
-	terrain.Gen2DNoiseTerrain(64, 64, 10, octaves, frequency, persistence); //Passar pro client side
+	terrain.Gen2DNoiseTerrain(64, 64, 0, 1, frequency, persistence);
 }
 
 void WorldLayer::OnUpdate(MC::DeltaTime deltaTime)
@@ -15,12 +15,6 @@ void WorldLayer::OnUpdate(MC::DeltaTime deltaTime)
 	MC::VoxelRenderer::Clear();
 	MC::VoxelRenderer::BeginScene(camera);
 	MC::VoxelRenderer::Draw(terrain);
-
-	if (shoudTerrainChange)
-	{
-		terrain.Gen2DNoiseTerrain(64, 64, 10, octaves, frequency, persistence);
-		shoudTerrainChange = false;
-	}
 }
 
 void WorldLayer::OnEvent(MC::Event& e)
@@ -30,21 +24,28 @@ void WorldLayer::OnEvent(MC::Event& e)
 
 void WorldLayer::OnImGuiRender()
 {
-	ImGui::Image((void*)(intptr_t)terrain.GetTerrainPreview()->GetID(), 
+
+	ImGui::Image((void*)(intptr_t)terrain.GetTerrainPreview().GetID(), 
 		ImVec2{ previewSize , previewSize });
-
-	ImGui::Text("size = %d x %d", terrain.GetTerrainPreview()->GetWidth(), terrain.GetTerrainPreview()->GetHeight());
+	
+	ImGui::Text("size = %d x %d", terrain.GetTerrainPreview().GetWidth(), terrain.GetTerrainPreview().GetHeight());
+	ImGui::Text("ID = %i", terrain.GetTerrainPreview().GetID());
 	ImGui::SliderFloat("Preview Size", &previewSize, 0, 1000);
-
+	
 	ImGui::NewLine();
-
-	//#TODO Generate 2D images without interference of the terrain.
+	
+	//#TODO Generate 2D images without interference of the Z-terrain.
 	if(ImGui::SliderInt("Octaves", &octaves, 0, 8) ||
 	   ImGui::SliderFloat("Frequency", &frequency, 0.0f, 10.0f) ||
 	   ImGui::SliderFloat("Persistance", &persistence, 0.0f, 1.0f))
 	{
-		shoudTerrainChange = true;
+		ReGenTerrain();
 	}
+}
+
+void WorldLayer::ReGenTerrain()
+{
+	terrain.Gen2DNoiseTerrain(64, 64, 0, octaves, frequency, persistence);
 }
 
 void WorldLayer::MovePlayer(MC::DeltaTime deltaTime)
@@ -84,7 +85,7 @@ void WorldLayer::MovePlayer(MC::DeltaTime deltaTime)
 	camera.AddCameraTargetPosition(gotoCamera, deltaTime);	
 }
 
-//@TODO: mover para um controller
+//#TODO: mover para um controller
 void WorldLayer::LookAround()
 {
 	MC::vec2 Delta = MC::InputHandler::GetMouseDelta();

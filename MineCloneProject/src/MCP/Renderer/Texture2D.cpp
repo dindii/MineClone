@@ -8,13 +8,26 @@
 
 namespace MC
 {
-		Texture2D::Texture2D(uint32_t width, uint32_t height) : m_Width(width), m_Height(height)
+		Texture2D::Texture2D() : m_Width(0), m_Height(0), m_InternalFormat(0), m_DataFormat(0), m_RendererID(0)
 		{
-			m_InternalFormat = GL_RGBA8;
-			m_DataFormat = GL_RGBA;
+			//If someone's misses to set a texture, will display a nice placeholder
+			LoadErrorTexture();
+		}
+
+		void Texture2D::LoadErrorTexture()
+		{
+			int width, height, channels;
+			stbi_uc* data = stbi_load("../MineCloneProject/res/Textures/texerror.png", &width, &height, &channels, 0);
+
+			m_Width = width;
+			m_Height = height;
 
 			glGenTextures(1, &m_RendererID);
 			glBindTexture(GL_TEXTURE_2D, m_RendererID);
+
+			m_InternalFormat = GL_RGB8;
+			m_DataFormat = GL_RGB;
+
 
 			glTextureStorage2D(m_RendererID, 1, m_InternalFormat, m_Width, m_Height);
 
@@ -24,18 +37,27 @@ namespace MC
 			glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GL_REPEAT);
 			glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
+			glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, m_DataFormat, GL_UNSIGNED_BYTE, data);
+
 			glBindTexture(GL_TEXTURE_2D, 0);
+
+			stbi_image_free(data);
 		}
+
 
 		Texture2D::Texture2D(const uint8_t* data, const uint32_t width, const uint32_t height, const uint32_t channels /*= 4*/)
 		{
+			if (!data)
+			{
+				MC_LOG_ERROR("Could not load the texture!");
+				LoadErrorTexture();
+				return;
+			}
+
 			m_Width = width;
 			m_Height = height;
 
 			GLenum internalFormat = 0, dataFormat = 0;
-
-			glGenTextures(1, &m_RendererID);
-			glBindTexture(GL_TEXTURE_2D, m_RendererID);
 
 			switch (channels)
 			{
@@ -43,16 +65,6 @@ namespace MC
 				{
 					internalFormat = GL_R8;
 					dataFormat = GL_RED;
-
-					/*    Por mais que seja uma imagem de apenas um canal (grayscale), o imgui estava setando o vec4 de cor para esses dados
-						  então, haviamos no fim, uma cor (N, 0, 0, 0) fazendo com que saísse com um color tint vermelho. Com essa função
-						  podemos aplicar para os outros canais, o mesmo valor de N, ficando então (N, N, N, 1) e obtemos o resultado desejado.
-					*/
-					glTextureParameteri(m_RendererID, GL_TEXTURE_SWIZZLE_R, GL_RED);
-					glTextureParameteri(m_RendererID, GL_TEXTURE_SWIZZLE_G, GL_RED);
-					glTextureParameteri(m_RendererID, GL_TEXTURE_SWIZZLE_B, GL_RED);
-					glTextureParameteri(m_RendererID, GL_TEXTURE_SWIZZLE_A, GL_ONE);
-
 					break;
 				}
 				case 3:
@@ -69,18 +81,30 @@ namespace MC
 				}
 				default:
 				{
-					MC_LOG_FATAL("Unknown format type!");
-					break;
+					MC_LOG_ERROR("Unknown texture format type!");
+					LoadErrorTexture();
+					return;
 				}
 			}
 
+			glGenTextures(1, &m_RendererID);
+			glBindTexture(GL_TEXTURE_2D, m_RendererID);
 
 			m_InternalFormat = internalFormat;
 			m_DataFormat = dataFormat;
 
-			MC_ASSERT((internalFormat & dataFormat));
-
 			glTextureStorage2D(m_RendererID, 1, internalFormat, m_Width, m_Height);
+
+			if (channels == 1)
+			{
+				// Parameters to avoid ImGui messing up grayscale textures.	
+				// This will make sure that the ImGui's shader can output
+				// Color(val, val, val, 1.0) instead of Color(1.0, 0.0, 0.0, 1.0).
+				glTextureParameteri(m_RendererID, GL_TEXTURE_SWIZZLE_R, GL_RED);
+				glTextureParameteri(m_RendererID, GL_TEXTURE_SWIZZLE_G, GL_RED);
+				glTextureParameteri(m_RendererID, GL_TEXTURE_SWIZZLE_B, GL_RED);
+				glTextureParameteri(m_RendererID, GL_TEXTURE_SWIZZLE_A, GL_ONE);
+			}
 
 			glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -88,7 +112,7 @@ namespace MC
 			glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GL_REPEAT);
 			glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		
-			//This will give support to every dimension, even those like that are not even.
+			//This will give support to every dimension, even those that aren't even.
 			if(! ( (width % 2) == 0) )
 				glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
@@ -100,9 +124,15 @@ namespace MC
 
 		Texture2D::Texture2D(const std::string& path) : m_Path(path)
 		{
-			int width, height, channels;
-			//stbi_set_flip_vertically_on_load(1);
+			int width = 0, height = 0, channels = 0;
 			stbi_uc* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
+
+			if (!data)
+			{
+				MC_LOG_ERROR("Could not load the texture!");
+				LoadErrorTexture();
+				return;
+			}
 
 			m_Width = width;
 			m_Height = height;
@@ -118,16 +148,6 @@ namespace MC
 				{
 					internalFormat = GL_R8;
 					dataFormat = GL_RED;
-
-					/*    Por mais que seja uma imagem de apenas um canal (grayscale), o imgui estava setando o vec4 de cor para esses dados
-						  então, haviamos no fim, uma cor (N, 0, 0, 0) fazendo com que saísse com um color tint vermelho. Com essa função
-						  podemos aplicar para os outros canais, o mesmo valor de N, ficando então (N, N, N, 1) e obtemos o resultado desejado.
-					*/
-					glTextureParameteri(m_RendererID, GL_TEXTURE_SWIZZLE_R, GL_RED);
-					glTextureParameteri(m_RendererID, GL_TEXTURE_SWIZZLE_G, GL_RED);
-					glTextureParameteri(m_RendererID, GL_TEXTURE_SWIZZLE_B, GL_RED);
-					glTextureParameteri(m_RendererID, GL_TEXTURE_SWIZZLE_A, GL_ONE);
-
 					break;
 				}
 				case 3:
@@ -144,23 +164,38 @@ namespace MC
 				}
 				default:
 				{
-					MC_LOG_FATAL("Unknown format type!");
-					break;
+					MC_LOG_ERROR("Unknown texture format type!");
+					LoadErrorTexture();
+					return;	
 				}
 			}
 
 			m_InternalFormat = internalFormat;
 			m_DataFormat = dataFormat;
 
-			MC_ASSERT((internalFormat & dataFormat));
-
 			glTextureStorage2D(m_RendererID, 1, internalFormat, m_Width, m_Height);
+
+			if (channels == 1)
+			{
+				// Parameters to avoid ImGui messing up grayscale textures.	
+		     	// This will make sure that the ImGui's shader can output
+			    // Color(val, val, val, 1.0) instead of Color(1.0, 0.0, 0.0, 1.0).
+				glTextureParameteri(m_RendererID, GL_TEXTURE_SWIZZLE_R, GL_RED);
+				glTextureParameteri(m_RendererID, GL_TEXTURE_SWIZZLE_G, GL_RED);
+				glTextureParameteri(m_RendererID, GL_TEXTURE_SWIZZLE_B, GL_RED);
+				glTextureParameteri(m_RendererID, GL_TEXTURE_SWIZZLE_A, GL_ONE);
+			}
+
 
 			glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 			glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GL_REPEAT);
 			glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+			//This will give support to every dimension, even those that aren't even.
+			if (!((width % 2) == 0))
+				glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
 			glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, dataFormat, GL_UNSIGNED_BYTE, data);
 
