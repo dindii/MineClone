@@ -14,11 +14,14 @@ namespace MC
 		uint32_t GetHeight()  const { return m_Height; }
 		uint32_t GetID()      const { return m_RendererID; }
 
-		virtual void SetData(void* data, uint32_t size);
+		virtual void SetData(void* data);
 
 		virtual void Bind(uint32_t slot = 0) const;
 
+		bool operator!() { return m_RendererID == 0; }
+
 	private:
+		void LoadTextureFromData(const uint8_t* data, const uint32_t width, const uint32_t height, const uint32_t channels);
 		void LoadErrorTexture();
 	private:
 		uint32_t m_Width, m_Height;

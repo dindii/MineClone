@@ -14,6 +14,11 @@ namespace MC
 			LoadErrorTexture();
 		}
 
+		void Texture2D::LoadTextureFromData(const uint8_t* data, const uint32_t width, const uint32_t height, const uint32_t channels)
+		{
+
+		}
+
 		void Texture2D::LoadErrorTexture()
 		{
 			int width, height, channels;
@@ -47,15 +52,15 @@ namespace MC
 
 		Texture2D::Texture2D(const uint8_t* data, const uint32_t width, const uint32_t height, const uint32_t channels /*= 4*/)
 		{
+			m_Width = width;
+			m_Height = height;
+
 			if (!data)
 			{
 				MC_LOG_ERROR("Could not load the texture!");
 				LoadErrorTexture();
 				return;
 			}
-
-			m_Width = width;
-			m_Height = height;
 
 			GLenum internalFormat = 0, dataFormat = 0;
 
@@ -127,15 +132,15 @@ namespace MC
 			int width = 0, height = 0, channels = 0;
 			stbi_uc* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
 
+			m_Width = width;
+			m_Height = height;
+
 			if (!data)
 			{
 				MC_LOG_ERROR("Could not load the texture!");
 				LoadErrorTexture();
 				return;
 			}
-
-			m_Width = width;
-			m_Height = height;
 
 			GLenum internalFormat = 0, dataFormat = 0;
 
@@ -209,7 +214,7 @@ namespace MC
 			glDeleteTextures(1, &m_RendererID);
 		}
 
-		void Texture2D::SetData(void* data, uint32_t size)
+		void Texture2D::SetData(void* data)
 		{	
 			glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, m_DataFormat, GL_UNSIGNED_BYTE, data);
 		}

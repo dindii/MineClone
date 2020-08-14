@@ -6,9 +6,10 @@
 
 namespace MC
 {
-	VoxelTerrain::VoxelTerrain()
+	VoxelTerrain::VoxelTerrain(uint32_t c_width, uint32_t c_height, uint32_t c_depth) : width(c_width), height(c_height), depth(c_depth)
 	{
 		superChunk = new Superchunk;
+		m_terrainPreviewTex = new Texture2D(0, width, height, 1);
 	}
 
 	VoxelTerrain::~VoxelTerrain()
@@ -16,42 +17,49 @@ namespace MC
 		delete superChunk;
 	}
 
-	void VoxelTerrain::Gen3DNoiseTerrain(uint32_t xt, uint32_t yt, uint32_t zt, uint32_t octaves, float frequency, float persistence)
-	{
-	}
-	void VoxelTerrain::Gen2DNoiseTerrain(uint32_t xt, uint32_t yt, uint32_t zt, uint32_t octaves, float frequency, float persistence)
+	void VoxelTerrain::GenNoiseTerrain(uint32_t octaves, float frequency, float persistence, TerrainType type)
 	{
 		PerlinNoise Noise;
 
-		PNGimageWriter terrainPreview("terrainpreview.png", xt, yt);
+		PNGimageWriter terrainPreview("terrainpreview.png", width, height);
 
-		float xf = xt;
-		float yf = yt;
+		float xf = width;
+		float yf = height;
+		float zf = depth;
+
 		float should = 0.0f; //This will be part of the process to select which type of block will be spawned.
-		//#TODO criar um enum e alternar os modos, melhor do que copiar codigo.
-		for (int y = 0; y < yt; y++)
+
+		for (int y = 0; y < height; y++)
 		{		
-			for (int x = 0; x < xt; x++)
+			for (int x = 0; x < width; x++)
 			{
 				terrainPreview.Set(should);
-				for (int z = 0; z <= zt; z++)
-				{
-					should = Noise.GenOctave(x / xf, y / yf, 0.0f, octaves, frequency, persistence);
-					(should * yf) > y ? superChunk->Set(x, y, z, 1) : superChunk->Set(x, y, z, 0);
+
+				for (int z = 0; z <= depth; z++)
+				{	
+					if(type == TerrainType::Terrain2D)
+						should = Noise.GenOctave(x / xf, y / yf, 0.0f, octaves, frequency, persistence);
+					else if (type == TerrainType::Terrain3D)
+						should = Noise.GenOctave(x / xf, y / yf, z / zf, octaves, frequency, persistence);
+
+					(should * xf) > y ? superChunk->Set(x, y, z, 1) : superChunk->Set(x, y, z, 0);
 				}
 			}
 		}
 
 		terrainPreview.Write();
 
-		m_terrainPreviewTex = Texture2D(terrainPreview.GetData(), terrainPreview.getWidth(), terrainPreview.getHeight(), 1);
+	//	m_terrainPreviewTex->SetData(terrainPreview.GetData());
+		m_terrainPreviewTex =  new Texture2D(terrainPreview.GetData(), 64, 64, 1);
+		
+		MC_LOG_TRACE((int)m_terrainPreviewTex->GetID());
 	}
 
-	void VoxelTerrain::GenFlatTerrain(uint32_t xt, uint32_t yt, uint32_t zt)
+	void VoxelTerrain::GenFlatTerrain()
 	{
-		for (int x = 0; x < xt; x++)
-			for (int y = 0; y < yt; y++)
-				for (int z = 0; z < zt; z++)		
+		for (int x = 0; x < width; x++)
+			for (int y = 0; y < height; y++)
+				for (int z = 0; z < depth; z++)		
 						superChunk->Set(x, y, z, 1);	
 	}
 }

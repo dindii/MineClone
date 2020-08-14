@@ -7,18 +7,26 @@ namespace MC
 	class VoxelTerrain
 	{
 	public:
-		VoxelTerrain();
+		VoxelTerrain(uint32_t c_width, uint32_t c_height, uint32_t c_depth);
 		~VoxelTerrain();
 
-		void Gen2DNoiseTerrain(uint32_t x, uint32_t y, uint32_t z, uint32_t octaves, float frequency, float persistence);
-		void Gen3DNoiseTerrain(uint32_t x, uint32_t y, uint32_t z, uint32_t octaves, float frequency, float persistence);
-		void GenFlatTerrain(uint32_t xt, uint32_t yt, uint32_t zt);
+		enum class TerrainType : uint8_t
+		{
+			Terrain2D   = 2,
+			Terrain3D   = 3
+		};
+
+		void GenNoiseTerrain(uint32_t octaves, float frequency, float persistence, TerrainType type);
+		void GenFlatTerrain();
+		void ResizeTerrain(uint32_t newWidth, uint32_t newHeight, uint32_t newDepth) { width = newWidth; height = newHeight, depth = newDepth; }
+		
 
 		Superchunk* GetTerrainData() { return superChunk; }
-		Texture2D GetTerrainPreview() { return m_terrainPreviewTex; }
-
+		Texture2D* GetTerrainPreview() { return m_terrainPreviewTex; }
 	private:
+		uint32_t width, height, depth;
+
 		Superchunk* superChunk; //@TODO: extent to multiple superchunks
-		Texture2D m_terrainPreviewTex;
+		Texture2D* m_terrainPreviewTex;
 	};
 }

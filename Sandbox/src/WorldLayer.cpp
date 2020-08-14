@@ -1,10 +1,10 @@
 ﻿#include "WorldLayer.h"
 #include "imgui/imgui.h"
 
-WorldLayer::WorldLayer() : Layer("WorldLayer")
+WorldLayer::WorldLayer() : Layer("WorldLayer"), terrain(64, 64, 1)
 {
 	camera = MC::Camera(1362 / 701, { 10.0f, 10.0f, 500.0f });
-	terrain.Gen2DNoiseTerrain(64, 64, 0, 1, frequency, persistence);
+	terrain.GenNoiseTerrain(1, 0.4f, 0.25f, MC::VoxelTerrain::TerrainType::Terrain3D);
 }
 
 void WorldLayer::OnUpdate(MC::DeltaTime deltaTime)
@@ -25,11 +25,11 @@ void WorldLayer::OnEvent(MC::Event& e)
 void WorldLayer::OnImGuiRender()
 {
 
-	ImGui::Image((void*)(intptr_t)terrain.GetTerrainPreview().GetID(), 
+	ImGui::Image((void*)(intptr_t)terrain.GetTerrainPreview()->GetID(),
 		ImVec2{ previewSize , previewSize });
 	
-	ImGui::Text("size = %d x %d", terrain.GetTerrainPreview().GetWidth(), terrain.GetTerrainPreview().GetHeight());
-	ImGui::Text("ID = %i", terrain.GetTerrainPreview().GetID());
+	ImGui::Text("size = %d x %d", terrain.GetTerrainPreview()->GetWidth(), terrain.GetTerrainPreview()->GetHeight());
+	ImGui::Text("ID = %i", terrain.GetTerrainPreview()->GetID());
 	ImGui::SliderFloat("Preview Size", &previewSize, 0, 1000);
 	
 	ImGui::NewLine();
@@ -45,7 +45,7 @@ void WorldLayer::OnImGuiRender()
 
 void WorldLayer::ReGenTerrain()
 {
-	terrain.Gen2DNoiseTerrain(64, 64, 0, octaves, frequency, persistence);
+	terrain.GenNoiseTerrain(octaves, frequency, persistence, MC::VoxelTerrain::TerrainType::Terrain3D);
 }
 
 void WorldLayer::MovePlayer(MC::DeltaTime deltaTime)
