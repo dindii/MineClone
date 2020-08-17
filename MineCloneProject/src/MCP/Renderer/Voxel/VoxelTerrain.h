@@ -18,15 +18,16 @@ namespace MC
 
 		void GenNoiseTerrain(uint32_t octaves, float frequency, float persistence, TerrainType type);
 		void GenFlatTerrain();
-		void ResizeTerrain(uint32_t newWidth, uint32_t newHeight, uint32_t newDepth) { width = newWidth; height = newHeight, depth = newDepth; }
+
+		inline void ResizeTerrain(uint32_t newWidth, uint32_t newHeight, uint32_t newDepth) { width = newWidth; height = newHeight, depth = newDepth; }
 		
 
-		Superchunk* GetTerrainData() { return superChunk; }
-		Texture2D* GetTerrainPreview() { return m_terrainPreviewTex; }
+		inline Superchunk* GetTerrainData() { return superChunk; }
+		inline Texture2D& GetTerrainPreview() { return m_terrainPreviewTex; }
 	private:
 		uint32_t width, height, depth;
 
 		Superchunk* superChunk; //@TODO: extent to multiple superchunks
-		Texture2D* m_terrainPreviewTex;
+		Texture2D m_terrainPreviewTex;
 	};
 }

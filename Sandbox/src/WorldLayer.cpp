@@ -4,6 +4,9 @@
 WorldLayer::WorldLayer() : Layer("WorldLayer"), terrain(64, 64, 1)
 {
 	camera = MC::Camera(1362 / 701, { 10.0f, 10.0f, 500.0f });
+	camera.SetCameraLag(true);
+	camera.SetCameraLagValue(0.15000f);
+
 	terrain.GenNoiseTerrain(1, 0.4f, 0.25f, MC::VoxelTerrain::TerrainType::Terrain3D);
 }
 
@@ -24,20 +27,18 @@ void WorldLayer::OnEvent(MC::Event& e)
 
 void WorldLayer::OnImGuiRender()
 {
+	ImGui::Image((void*)(intptr_t)terrain.GetTerrainPreview().GetID(),
+	ImVec2{ previewSize , previewSize });
 
-	ImGui::Image((void*)(intptr_t)terrain.GetTerrainPreview()->GetID(),
-		ImVec2{ previewSize , previewSize });
-	
-	ImGui::Text("size = %d x %d", terrain.GetTerrainPreview()->GetWidth(), terrain.GetTerrainPreview()->GetHeight());
-	ImGui::Text("ID = %i", terrain.GetTerrainPreview()->GetID());
-	ImGui::SliderFloat("Preview Size", &previewSize, 0, 1000);
-	
+	ImGui::Text("Terrain size: %i x %i", terrain.GetTerrainPreview().GetWidth(), terrain.GetTerrainPreview().GetHeight());
+	ImGui::SliderFloat("Image preview size", &previewSize, 0, 1000);
+
 	ImGui::NewLine();
-	
+
 	//#TODO Generate 2D images without interference of the Z-terrain.
-	if(ImGui::SliderInt("Octaves", &octaves, 0, 8) ||
-	   ImGui::SliderFloat("Frequency", &frequency, 0.0f, 10.0f) ||
-	   ImGui::SliderFloat("Persistance", &persistence, 0.0f, 1.0f))
+	if (ImGui::SliderInt("Octaves", &octaves, 0, 8) ||
+		ImGui::SliderFloat("Frequency", &frequency, 0.0f, 10.0f) ||
+		ImGui::SliderFloat("Persistance", &persistence, 0.0f, 1.0f))
 	{
 		ReGenTerrain();
 	}
@@ -53,36 +54,31 @@ void WorldLayer::MovePlayer(MC::DeltaTime deltaTime)
 	MC::vec3 gotoCamera;
 
 	if (MC::InputHandler::isKeyPressed(MC::MC_KEYS::MC_KEY_W))
-	{
 		gotoCamera.z = cameraSpeed;
-	}
+	
 
 	if (MC::InputHandler::isKeyPressed(MC::MC_KEYS::MC_KEY_S))
-	{
 		gotoCamera.z = -cameraSpeed;
-	}
+	
 
 	if (MC::InputHandler::isKeyPressed(MC::MC_KEYS::MC_KEY_D))
-	{
 		gotoCamera.x = cameraSpeed;
-	}
+	
 
 	if (MC::InputHandler::isKeyPressed(MC::MC_KEYS::MC_KEY_A))
-	{
 		gotoCamera.x = -cameraSpeed;
-	}
+	
 
 	if (MC::InputHandler::isKeyPressed(MC::MC_KEYS::MC_KEY_SPACE))
-	{
 		gotoCamera.y = cameraSpeed;
-	}
+	
 
 	if (MC::InputHandler::isKeyPressed(MC::MC_KEYS::MC_KEY_CTRL))
-	{
 		gotoCamera.y = -cameraSpeed;
-	}
+	
 
 	camera.AddCameraTargetPosition(gotoCamera, deltaTime);	
+//	camera.SetCameraPosition(MC::vec3(camera.GetCameraPos().x - gotoCamera.x,camera.GetCameraPos().y + gotoCamera.y, camera.GetCameraPos().z + gotoCamera.z));
 }
 
 //#TODO: mover para um controller
@@ -92,16 +88,4 @@ void WorldLayer::LookAround()
 
 	camera.SetCameraPitch(MC::toRadians(Delta.y * cameraSens));
 	camera.SetCameraYaw(MC::toRadians(Delta.x * cameraSens));
-
-	float pitch = camera.GetCameraPitch();
-
- 	if (pitch > 89.0f || pitch < -89.0f)
- 	{
-		DeltaReverse.x = Delta.x;
- 		MC::InputHandler::setMouseDelta(DeltaReverse);
- 	}
- 	else
- 	{
-		DeltaReverse = Delta;
- 	}
 }

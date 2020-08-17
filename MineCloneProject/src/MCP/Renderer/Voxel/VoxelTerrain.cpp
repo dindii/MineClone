@@ -6,10 +6,10 @@
 
 namespace MC
 {
-	VoxelTerrain::VoxelTerrain(uint32_t c_width, uint32_t c_height, uint32_t c_depth) : width(c_width), height(c_height), depth(c_depth)
+	VoxelTerrain::VoxelTerrain(uint32_t c_width, uint32_t c_height, uint32_t c_depth) : width(c_width), height(c_height), depth(c_depth),
+		m_terrainPreviewTex(0, width, height, 1)
 	{
 		superChunk = new Superchunk;
-		m_terrainPreviewTex = new Texture2D(0, width, height, 1);
 	}
 
 	VoxelTerrain::~VoxelTerrain()
@@ -49,10 +49,7 @@ namespace MC
 
 		terrainPreview.Write();
 
-	//	m_terrainPreviewTex->SetData(terrainPreview.GetData());
-		m_terrainPreviewTex =  new Texture2D(terrainPreview.GetData(), 64, 64, 1);
-		
-		MC_LOG_TRACE((int)m_terrainPreviewTex->GetID());
+		m_terrainPreviewTex.SetData((void*)terrainPreview.GetData());
 	}
 
 	void VoxelTerrain::GenFlatTerrain()

@@ -8,7 +8,7 @@
 
 namespace MC
 {
-	Camera::Camera(const float AR, const vec3& position) : m_Yaw(0.0f), m_Pitch(0.0f), m_CameraTarget({ 0.0f, 0.0f, -1.0f }), m_LagVal(0.15000f)
+	Camera::Camera(const float AR, const vec3& position) : m_Yaw(0.0f), m_Pitch(0.0f), m_CameraTarget({ 0.0f, 0.0f, -1.0f })
 	{
 		m_Projection =  mat4::Perspective(45.0f /*zoom*/, AR, 0.1f, 100.0f);
 

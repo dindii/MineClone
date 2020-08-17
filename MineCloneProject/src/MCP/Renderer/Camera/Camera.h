@@ -44,14 +44,15 @@ namespace MC
 
 		inline void SetViewMatrix(mat4& view) { m_ViewMatrix = view; }
 
-		inline void SetLagVal(float& val) { m_CameraLag = val; }
+		inline void SetCameraLag(bool val) { m_CameraLag = val; }
+		inline void SetCameraLagValue(float LagVal) { m_LagVal = LagVal; }
 
 
 		void OnEvent(Event& e);
 
 	private:
 		vec3  m_DesiredPos;
-		bool  m_CameraLag = true;
+		bool  m_CameraLag = false;
 		float m_LagVal;
 
 	private:
