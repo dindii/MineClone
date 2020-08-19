@@ -12,10 +12,11 @@
 
 namespace MC
 {
-	PNGimageWriter::PNGimageWriter(const char* file, const uint32_t& width, const uint32_t& height) : m_filename(file), m_width(width), m_height(height), m_index(0),
+	PNGimageWriter::PNGimageWriter(const char* file, const uint32_t& width, const uint32_t& height) : m_filename(file), m_width(width), m_height(height),
 		m_data(nullptr)
 	{
 		m_data = new uint8_t[m_width * m_height];
+		m_index = (m_height * m_height) - 1;
 	}
 
 	PNGimageWriter::~PNGimageWriter()
@@ -30,14 +31,14 @@ namespace MC
 
 	void PNGimageWriter::Set(const float& value)
 	{
-		if (!(m_index >= (m_height * m_width)))
-			m_data[m_index++] = floatToByte(value);
+		if (!(m_index < 0))
+			m_data[m_index--] = floatToByte(value);
 	}
 
 	void PNGimageWriter::Set(const int& value)
 	{
-		if (!(m_index >= (m_height * m_width)))
-			m_data[m_index++] =  clamp(0, 255, value);
+		if (!(m_index < 0))
+			m_data[m_index--] =  clamp(0, 255, value);
 	}
 
 }

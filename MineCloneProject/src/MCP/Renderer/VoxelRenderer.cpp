@@ -53,11 +53,6 @@ namespace MC
 				}
 	}
 
-	void VoxelRenderer::Draw(VoxelTerrain& vt)
-	{
-		Draw(vt.GetTerrainData());
-	}
-
 	void VoxelRenderer::BeginScene(const Camera& camera)
 	{
 		v_Data->voxelShader.UploadUniformMat4("u_ViewProjection", (camera.GetProjection() * camera.getViewMatrix()));

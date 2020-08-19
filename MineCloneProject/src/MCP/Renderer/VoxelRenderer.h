@@ -15,7 +15,6 @@ namespace MC
 	public:
 		static void Draw(Chunk* chunk);
 		static void Draw(Superchunk* superchunk);
-		static void Draw(VoxelTerrain& vt);
 
 		static void BeginScene(const Camera& camera);
 

@@ -7,7 +7,7 @@ WorldLayer::WorldLayer() : Layer("WorldLayer"), terrain(64, 64, 1)
 	camera.SetCameraLag(true);
 	camera.SetCameraLagValue(0.15000f);
 
-	terrain.GenNoiseTerrain(MC::VoxelTerrain::TerrainType::Terrain3D, 1, 0.4f, 0.25f);
+	terrain.GenNoiseTerrain(MC::VoxelTerrain::TerrainType::Terrain3D, 1, 0.4f, 0.25f, 0.0f, 0.0f);
 }
 
 void WorldLayer::OnUpdate(MC::DeltaTime deltaTime)
@@ -17,7 +17,7 @@ void WorldLayer::OnUpdate(MC::DeltaTime deltaTime)
 
 	MC::VoxelRenderer::Clear();
 	MC::VoxelRenderer::BeginScene(camera);
-	MC::VoxelRenderer::Draw(terrain);
+	MC::VoxelRenderer::Draw(terrain.GetTerrainData());
 }
 
 void WorldLayer::OnEvent(MC::Event& e)
