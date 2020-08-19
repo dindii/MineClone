@@ -16,9 +16,9 @@ namespace MC
 	    void Set(const float& value);
 	    void Set(const int& value);
 
-		uint8_t* GetData() { return m_data; }
-		uint32_t getHeight(){ return m_height; }
-		uint32_t getWidth(){ return m_width; }
+		inline	uint8_t* GetData() { return m_data; }
+		inline	uint32_t getHeight() const { return m_height; }
+		inline	uint32_t getWidth()  const { return m_width; }
 
 	private:
 		uint32_t m_index;

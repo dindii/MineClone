@@ -30,13 +30,13 @@ namespace MC
 			permutation[x] = p[x % 256];
 	}
 
-	double PerlinNoise::fade(double t)
+	double PerlinNoise::fade(double t) const
 	{
 		return t * t * t * (t * (t * 6 - 15) + 10);
 
 	}
 
-	int PerlinNoise::inc(int num)
+	int PerlinNoise::inc(int num) const
 	{
 		num++;
 		//if (repeat > 0) num %= repeat;
@@ -44,7 +44,7 @@ namespace MC
 		return num;
 	}
 
-	double PerlinNoise::grad(int hash, double x, double y, double z)
+	double PerlinNoise::grad(int hash, double x, double y, double z) const
 	{
 // 		switch (hash & 0xF)
 // 		{
@@ -66,7 +66,6 @@ namespace MC
 // 			case 0xF: return -y - z;
 // 			default: return 0;
 // 		}
-
 		int h = hash & 15;									// Take the hashed value and take the first 4 bits of it (15 == 0b1111)
 		double u = h < 8 /* 0b1000 */ ? x : y;				// If the most significant bit (MSB) of the hash is 0 then set u = x.  Otherwise y.
 
@@ -83,38 +82,25 @@ namespace MC
 		return ((h & 1) == 0 ? u : -u) + ((h & 2) == 0 ? v : -v);
 	}
 
-	double PerlinNoise::GenOctave(double x, double y, double z, uint32_t octaves, float frequency, float persistence)
+	double PerlinNoise::GenOctave(double x, double y, double z, uint32_t octaves, float frequency, float persistence, float xOffset, float yOffset) const
 	{
-// 		double total = 0;
-// 		double amplitude = 1;
-// 
-// 		for (int i = 0; i < octaves; i++) {
-// 			total += Gen(x * frequency, y * frequency, z * frequency) * amplitude; //Add offset a(z * frequency + offset)
-// 
-// 			amplitude *= persistence;
-// 			frequency *= 1.5f; //Lacunarity goes here
-// 		}
-// 
-// 		return total;
-
 		double total = 0;
 		double amplitude = 1;
 		double maxValue = 0;			// Used for normalizing result to 0.0 - 1.0
 		for (int i = 0; i < octaves; i++) {
-			total += Gen(x * frequency, y * frequency, z * frequency) * amplitude;
+			total += Gen((x + xOffset) * frequency, (y + yOffset) * frequency, z * frequency) * amplitude;
 
 			maxValue += amplitude;
 
 			amplitude *= persistence;
-			frequency *= 2;
+			frequency *= 2; //Lacunarity goes here
 		}
 
 		return total / maxValue;
-
 	}
 
 
-	double PerlinNoise::Gen(double x, double y, double z)
+	double PerlinNoise::Gen(double x, double y, double z) const
 	{
 		//if (repeat > 0) {                                    // If we have any repeat on, change the coordinates to their "local" repetitions
 		//	x = dmod(x, repeat);

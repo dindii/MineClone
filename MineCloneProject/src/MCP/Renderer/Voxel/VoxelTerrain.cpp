@@ -17,7 +17,7 @@ namespace MC
 		delete superChunk;
 	}
 
-	void VoxelTerrain::GenNoiseTerrain(uint32_t octaves, float frequency, float persistence, TerrainType type)
+	void VoxelTerrain::GenNoiseTerrain(TerrainType type, uint32_t octaves, float frequency, float persistence, float xOffset, float yOffset)
 	{
 		PerlinNoise Noise;
 
@@ -38,9 +38,9 @@ namespace MC
 				for (int z = 0; z <= depth; z++)
 				{	
 					if(type == TerrainType::Terrain2D)
-						should = Noise.GenOctave(x / xf, y / yf, 0.0f, octaves, frequency, persistence);
+						should = Noise.GenOctave(x / xf, y / yf, 0.0f, octaves, frequency, persistence, xOffset, yOffset);
 					else if (type == TerrainType::Terrain3D)
-						should = Noise.GenOctave(x / xf, y / yf, z / zf, octaves, frequency, persistence);
+						should = Noise.GenOctave(x / xf, y / yf, z / zf, octaves, frequency, persistence, xOffset, yOffset);
 
 					(should * xf) > y ? superChunk->Set(x, y, z, 1) : superChunk->Set(x, y, z, 0);
 				}
@@ -49,10 +49,10 @@ namespace MC
 
 		terrainPreview.Write();
 
-		m_terrainPreviewTex.SetData((void*)terrainPreview.GetData());
+		m_terrainPreviewTex.SetData(terrainPreview.GetData());
 	}
 
-	void VoxelTerrain::GenFlatTerrain()
+	void VoxelTerrain::GenFlatTerrain() const
 	{
 		for (int x = 0; x < width; x++)
 			for (int y = 0; y < height; y++)

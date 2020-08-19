@@ -7,7 +7,7 @@ WorldLayer::WorldLayer() : Layer("WorldLayer"), terrain(64, 64, 1)
 	camera.SetCameraLag(true);
 	camera.SetCameraLagValue(0.15000f);
 
-	terrain.GenNoiseTerrain(1, 0.4f, 0.25f, MC::VoxelTerrain::TerrainType::Terrain3D);
+	terrain.GenNoiseTerrain(MC::VoxelTerrain::TerrainType::Terrain3D, 1, 0.4f, 0.25f);
 }
 
 void WorldLayer::OnUpdate(MC::DeltaTime deltaTime)
@@ -38,7 +38,9 @@ void WorldLayer::OnImGuiRender()
 	//#TODO Generate 2D images without interference of the Z-terrain.
 	if (ImGui::SliderInt("Octaves", &octaves, 0, 8) ||
 		ImGui::SliderFloat("Frequency", &frequency, 0.0f, 10.0f) ||
-		ImGui::SliderFloat("Persistance", &persistence, 0.0f, 1.0f))
+		ImGui::SliderFloat("Persistance", &persistence, 0.0f, 1.0f) ||
+		ImGui::SliderFloat(" X Offset", &xOffset, 0.0f, 10.0f) ||
+		ImGui::SliderFloat(" Y Offset", &yOffset, 0.0f, 10.0f))
 	{
 		ReGenTerrain();
 	}
@@ -46,7 +48,7 @@ void WorldLayer::OnImGuiRender()
 
 void WorldLayer::ReGenTerrain()
 {
-	terrain.GenNoiseTerrain(octaves, frequency, persistence, MC::VoxelTerrain::TerrainType::Terrain3D);
+	terrain.GenNoiseTerrain(MC::VoxelTerrain::TerrainType::Terrain3D, octaves, frequency, persistence, xOffset, yOffset);
 }
 
 void WorldLayer::MovePlayer(MC::DeltaTime deltaTime)
@@ -56,23 +58,18 @@ void WorldLayer::MovePlayer(MC::DeltaTime deltaTime)
 	if (MC::InputHandler::isKeyPressed(MC::MC_KEYS::MC_KEY_W))
 		gotoCamera.z = cameraSpeed;
 	
-
 	if (MC::InputHandler::isKeyPressed(MC::MC_KEYS::MC_KEY_S))
 		gotoCamera.z = -cameraSpeed;
 	
-
 	if (MC::InputHandler::isKeyPressed(MC::MC_KEYS::MC_KEY_D))
 		gotoCamera.x = cameraSpeed;
 	
-
 	if (MC::InputHandler::isKeyPressed(MC::MC_KEYS::MC_KEY_A))
 		gotoCamera.x = -cameraSpeed;
 	
-
 	if (MC::InputHandler::isKeyPressed(MC::MC_KEYS::MC_KEY_SPACE))
 		gotoCamera.y = cameraSpeed;
 	
-
 	if (MC::InputHandler::isKeyPressed(MC::MC_KEYS::MC_KEY_CTRL))
 		gotoCamera.y = -cameraSpeed;
 	

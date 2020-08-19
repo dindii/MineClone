@@ -22,7 +22,6 @@ public:
 	MC::Camera camera;
 
 	int octaves = 1;
-	float persistence = 0.25f, frequency = 0.4f, previewSize = 290.0f;
+	float persistence = 0.25f, frequency = 0.4f, previewSize = 290.0f, xOffset = 0.0f, yOffset = 0.0f;
 
-	MC::vec2 DeltaReverse; //@TDO: Improve the mouse input system and get rid of this.
 };

@@ -1,6 +1,7 @@
 #pragma once
 #include "MCP/Renderer/Voxel/Superchunk.h"
 #include "MCP/Renderer/Texture2D.h"
+#include "MCP/Noise/PerlinNoise.h"
 
 namespace MC
 {
@@ -16,11 +17,10 @@ namespace MC
 			Terrain3D   = 3
 		};
 
-		void GenNoiseTerrain(uint32_t octaves, float frequency, float persistence, TerrainType type);
-		void GenFlatTerrain();
+		void GenNoiseTerrain(TerrainType type, uint32_t octaves, float frequency, float persistence, float xOffset, float yOffset);
+		void GenFlatTerrain() const;
 
 		inline void ResizeTerrain(uint32_t newWidth, uint32_t newHeight, uint32_t newDepth) { width = newWidth; height = newHeight, depth = newDepth; }
-		
 
 		inline Superchunk* GetTerrainData() { return superChunk; }
 		inline Texture2D& GetTerrainPreview() { return m_terrainPreviewTex; }
