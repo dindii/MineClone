@@ -1,13 +1,13 @@
 ﻿#include "WorldLayer.h"
 #include "imgui/imgui.h"
 
-WorldLayer::WorldLayer() : Layer("WorldLayer"), terrain(64, 64, 1)
+WorldLayer::WorldLayer() : Layer("WorldLayer"), terrain(64, 64, 64)
 {
 	camera = MC::Camera(1362 / 701, { 10.0f, 10.0f, 500.0f });
 	camera.SetCameraLag(true);
 	camera.SetCameraLagValue(0.15000f);
 
-	terrain.GenNoiseTerrain(MC::VoxelTerrain::TerrainType::Terrain3D, 1, 0.4f, 0.25f, 0.0f, 0.0f);
+	terrain.GenNoiseTerrain(MC::VoxelTerrain::TerrainType::Terrain2D, 1, 0.4f, 0.25f, 0.0f, 0.0f);
 }
 
 void WorldLayer::OnUpdate(MC::DeltaTime deltaTime)
@@ -48,7 +48,7 @@ void WorldLayer::OnImGuiRender()
 
 void WorldLayer::ReGenTerrain()
 {
-	terrain.GenNoiseTerrain(MC::VoxelTerrain::TerrainType::Terrain3D, octaves, frequency, persistence, xOffset, yOffset);
+	terrain.GenNoiseTerrain(MC::VoxelTerrain::TerrainType::Terrain2D, octaves, frequency, persistence, xOffset, yOffset);
 }
 
 void WorldLayer::MovePlayer(MC::DeltaTime deltaTime)
