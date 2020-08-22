@@ -14,9 +14,6 @@ namespace MC
 
 		std::string ToString() const;
 
-		float Dot(const bvec4& other);
-
-
 		//Retornando uma referencia para o proprio objeto a fim de evitar criar novos objetos e podermos com eficiencia
 		//juntar uma operação na outra
 		bvec4& add(const bvec4& other);

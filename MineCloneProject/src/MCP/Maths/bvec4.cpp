@@ -5,7 +5,7 @@
 
 namespace MC
 {
-	bvec4::bvec4() : x(0.0f), y(0.0f), z(0.0f), w(0.0f)
+	bvec4::bvec4() : x(0), y(0), z(0), w(0)
 	{
 	}
 
@@ -22,11 +22,6 @@ namespace MC
 		std::stringstream ss;
 		ss << "bvec4: (" << x << ", " << y << ", " << z << ", " << w << ")";
 		return ss.str();
-	}
-
-	float bvec4::Dot(const bvec4& other)
-	{
-		return x * other.x + y * other.y + z * other.z + w * other.w;
 	}
 
 	bvec4& bvec4::add(const bvec4& other)

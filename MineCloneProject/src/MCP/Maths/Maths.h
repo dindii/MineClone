@@ -5,7 +5,7 @@
 
 namespace MC
 {
-	inline int clamp(const int& min, const int& max,  const int& val)
+	inline int clamp(const int min, const int max,  const int val)
 	{
 		int aux = 0;
 
@@ -23,7 +23,7 @@ namespace MC
 		return val;
 	}
 
-	inline uint8_t floatToByte(const float& f)
+	inline uint8_t floatToByte(const float f)
 	{
 		return (f >= 1.0f ? 255 : (f <= 0.0f ? 0 : (int)floor(f * 256.0f)));
 	}
@@ -33,32 +33,32 @@ namespace MC
 		return (val - min) / (max - min);
 	}
 
-	inline float toDegrees(const float& radians) 
+	inline float toDegrees(const float radians) 
 	{
 		return (float)(radians * (180.0f / ED_PI));
 	}
 
-	inline float toRadians(const float& degrees)
+	inline float toRadians(const float degrees)
 	{
 		return (float)(degrees * (ED_PI / 180.0f));
 	}
 
-	inline float tan(const float& angle)
+	inline float tan(const float angle)
 	{
 		return ::tan(angle);
 	}
 
-	inline float cos(const float& angle)
+	inline float cos(const float angle)
 	{
 		return ::cos(angle);
 	}
 
-	inline float sin(const float& angle)
+	inline float sin(const float angle)
 	{
 		return ::sin(angle);
 	}
 
-	inline float lerp(const float& start, const float& end, float alpha)
+	inline float lerp(const float start, const float end, float alpha)
 	{
 		 return ((start * (1.0f - alpha)) + (end * alpha));	
 	}

@@ -23,22 +23,22 @@ namespace MC
 
 		PNGimageWriter terrainPreview("terrainpreview.png", width, height);
 
-		float xf = width;
-		float yf = height;
-		float zf = depth;
+		float xf = (float)width;
+		float yf = (float)height;
+		float zf = (float)depth;
 
 		float should = 0.0f; //This will be part of the process to select which type of block will be spawned.
 
-		for (int x = 0; x < width; x++)
-			for (int y = 0; y < height; y++)
+		for (uint32_t x = 0; x < width; x++)
+			for (uint32_t y = 0; y < height; y++)
 			{
 			
 				if (type == TerrainType::Terrain2D)
-					should = Noise.GenOctave(x / xf, y / yf, 0.0f, octaves, frequency, persistence, xOffset, yOffset);
+					should = (float)Noise.GenOctave(x / xf, y / yf, 0.0f, octaves, frequency, persistence, xOffset, yOffset);
 		
 				 terrainPreview.Set(should);
 
-				 for (int z = 0; z <= depth; z++)
+				 for (uint32_t z = 0; z <= depth; z++)
 				 {
 					 (should * yf) > z ? superChunk->Set(x, z, y, 1) : superChunk->Set(x, z, y, 0);
 				 }
@@ -51,9 +51,9 @@ namespace MC
 
 	void VoxelTerrain::GenFlatTerrain() const
 	{
-		for (int x = 0; x < width; x++)
-			for (int y = 0; y < height; y++)
-				for (int z = 0; z < depth; z++)		
+		for (uint32_t x = 0; x < width; x++)
+			for (uint32_t y = 0; y < height; y++)
+				for (uint32_t z = 0; z < depth; z++)
 						superChunk->Set(x, y, z, 1);	
 	}
 }

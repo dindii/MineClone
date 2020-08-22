@@ -1,5 +1,4 @@
 #pragma once
-#include "Block.h"
 
 #include "MCP/Renderer/Shader/Shader.h"
 #include "MCP/Maths/bvec4.h"
@@ -8,7 +7,7 @@ namespace MC
 {
 	typedef unsigned int GLuint;
 
-	constexpr unsigned int CHUNK_SIZE = 16;
+	constexpr unsigned int CHUNK_SIZE = 64;
 	constexpr unsigned int CUBE_FACES = 6;
 	constexpr unsigned int FACE_VERTICES_NUMBER = 6;
 

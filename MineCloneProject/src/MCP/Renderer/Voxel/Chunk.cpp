@@ -34,63 +34,81 @@ namespace MC
 	{
 		changed = false;
 
-		int i = 0;
+		uint32_t i = 0;
 
-		for (unsigned int x = 0; x < CHUNK_SIZE; x++)
-			for (unsigned int y = 0; y < CHUNK_SIZE; y++)
-				for (unsigned int z = 0; z < CHUNK_SIZE; z++) {
+		for (uint32_t x = 0; x < CHUNK_SIZE; x++)
+			for (uint32_t y = 0; y < CHUNK_SIZE; y++)
+				for (uint32_t z = 0; z < CHUNK_SIZE; z++) {
 					uint8_t type = blocks[x][y][z];
 
 					if (!type)
 						continue;
 
 					  // View from negative x
-					vertex[i++] = bvec4(x, y, z, type);
-					vertex[i++] = bvec4(x, y, z + 1, type);
-					vertex[i++] = bvec4(x, y + 1, z, type);
-					vertex[i++] = bvec4(x, y + 1, z, type);
-					vertex[i++] = bvec4(x, y, z + 1, type);
-					vertex[i++] = bvec4(x, y + 1, z + 1, type);
-									
-					// View from positive x
-					vertex[i++] = bvec4(x + 1, y, z, type);
-					vertex[i++] = bvec4(x + 1, y + 1, z, type);
-					vertex[i++] = bvec4(x + 1, y, z + 1, type);
-					vertex[i++] = bvec4(x + 1, y + 1, z, type);
-					vertex[i++] = bvec4(x + 1, y + 1, z + 1, type);
-					vertex[i++] = bvec4(x + 1, y, z + 1, type);
+					if (x > 0 && !blocks[x - 1][y][z])
+					{
+						vertex[i++] = bvec4(x, y, z, type);
+						vertex[i++] = bvec4(x, y, z + 1, type);
+						vertex[i++] = bvec4(x, y + 1, z, type);
+						vertex[i++] = bvec4(x, y + 1, z, type);
+						vertex[i++] = bvec4(x, y, z + 1, type);
+						vertex[i++] = bvec4(x, y + 1, z + 1, type);
+					}
 
-					// View from negative y
-					vertex[i++] = bvec4(x, y, z, type);
-					vertex[i++] = bvec4(x + 1, y, z, type);
-					vertex[i++] = bvec4(x, y, z + 1, type);
-					vertex[i++] = bvec4(x + 1, y, z, type);
-					vertex[i++] = bvec4(x + 1, y, z + 1, type);
-					vertex[i++] = bvec4(x, y, z + 1, type);
+					if (!blocks[x + 1][y][z])
+					{
+						// View from positive x
+						vertex[i++] = bvec4(x + 1, y, z, type);
+						vertex[i++] = bvec4(x + 1, y + 1, z, type);
+						vertex[i++] = bvec4(x + 1, y, z + 1, type);
+						vertex[i++] = bvec4(x + 1, y + 1, z, type);
+						vertex[i++] = bvec4(x + 1, y + 1, z + 1, type);
+						vertex[i++] = bvec4(x + 1, y, z + 1, type);
+					}
 
-					// View from positive y
-					vertex[i++] = bvec4(x, y + 1, z, type);
-					vertex[i++] = bvec4(x, y + 1, z + 1, type);
-					vertex[i++] = bvec4(x + 1, y + 1, z, type);
-					vertex[i++] = bvec4(x + 1, y + 1, z, type);
-					vertex[i++] = bvec4(x, y + 1, z + 1, type);
-					vertex[i++] = bvec4(x + 1, y + 1, z + 1, type);
+					if (y > 0 && !blocks[x][y-1][z])
+					{
+						// View from negative y
+						vertex[i++] = bvec4(x, y, z, type);
+						vertex[i++] = bvec4(x + 1, y, z, type);
+						vertex[i++] = bvec4(x, y, z + 1, type);
+						vertex[i++] = bvec4(x + 1, y, z, type);
+						vertex[i++] = bvec4(x + 1, y, z + 1, type);
+						vertex[i++] = bvec4(x, y, z + 1, type);
+					}
+
+					if (!blocks[x][y+1][z])
+					{
+						// View from positive y
+						vertex[i++] = bvec4(x, y + 1, z, type);
+						vertex[i++] = bvec4(x, y + 1, z + 1, type);
+						vertex[i++] = bvec4(x + 1, y + 1, z, type);
+						vertex[i++] = bvec4(x + 1, y + 1, z, type);
+						vertex[i++] = bvec4(x, y + 1, z + 1, type);
+						vertex[i++] = bvec4(x + 1, y + 1, z + 1, type);
+					}
 
 					// View from negative z
-					vertex[i++] = bvec4(x, y, z, type);
-					vertex[i++] = bvec4(x, y + 1, z, type);
-					vertex[i++] = bvec4(x + 1, y, z, type);
-					vertex[i++] = bvec4(x, y + 1, z, type);
-					vertex[i++] = bvec4(x + 1, y + 1, z, type);
-					vertex[i++] = bvec4(x + 1, y, z, type);
+					if (z > 0 && !blocks[x][y][z-1])
+					{
+						vertex[i++] = bvec4(x, y, z, type);
+						vertex[i++] = bvec4(x, y + 1, z, type);
+						vertex[i++] = bvec4(x + 1, y, z, type);
+						vertex[i++] = bvec4(x, y + 1, z, type);
+						vertex[i++] = bvec4(x + 1, y + 1, z, type);
+						vertex[i++] = bvec4(x + 1, y, z, type);
+					}
 
-					// View from positive z
-					vertex[i++] = bvec4(x, y, z + 1, type);
-					vertex[i++] = bvec4(x + 1, y, z + 1, type);
-					vertex[i++] = bvec4(x, y + 1, z + 1, type);
-					vertex[i++] = bvec4(x, y + 1, z + 1, type);
-					vertex[i++] = bvec4(x + 1, y, z + 1, type);
-					vertex[i++] = bvec4(x + 1, y + 1, z + 1, type);
+					if (!blocks[x][y][z+1])
+					{
+						// View from positive z
+						vertex[i++] = bvec4(x, y, z + 1, type);
+						vertex[i++] = bvec4(x + 1, y, z + 1, type);
+						vertex[i++] = bvec4(x, y + 1, z + 1, type);
+						vertex[i++] = bvec4(x, y + 1, z + 1, type);
+						vertex[i++] = bvec4(x + 1, y, z + 1, type);
+						vertex[i++] = bvec4(x + 1, y + 1, z + 1, type);
+					}
 
 		}
 

@@ -43,7 +43,7 @@ namespace MC
 					if (superchunk->c[x][y][z])
 					{
 						mat4 model;
-						model *= model.Translate(vec3(x * SUPER_CHUNK_SIZE, y * SUPER_CHUNK_SIZE, z * SUPER_CHUNK_SIZE));
+						model *= model.Translate(vec3((float(x * SUPER_CHUNK_SIZE), float(y * SUPER_CHUNK_SIZE), float(z * SUPER_CHUNK_SIZE))));
 						v_Data->voxelShader.Bind();
 						v_Data->voxelShader.UploadUniformMat4("u_Transform", model);
 						Draw(superchunk->c[x][y][z]);

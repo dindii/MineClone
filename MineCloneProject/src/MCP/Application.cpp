@@ -16,7 +16,7 @@ namespace MC
 		s_Instance = this;
 		m_Minimized = false;
 
-		m_Window = new Window(1360, 768, "MClone!");
+		m_Window = new Window(1360, 768, "MCP");
 
 
 		m_Window->setEventCallback(BIND_EVENT_FN(Application::OnEvent));
