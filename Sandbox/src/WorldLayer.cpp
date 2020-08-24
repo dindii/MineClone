@@ -51,7 +51,7 @@ void WorldLayer::OnImGuiRender()
 
 void WorldLayer::ReGenTerrain()
 {
-	terrain.GenNoiseTerrain(MC::VoxelTerrain::TerrainType::Terrain2D, octaves, frequency, persistence, xOffset, yOffset);
+	terrain.GenNoiseTerrain(MC::VoxelTerrain::TerrainType::Terrain3D, octaves, frequency, persistence, xOffset, yOffset);
 }
 
 void WorldLayer::MovePlayer(MC::DeltaTime deltaTime)

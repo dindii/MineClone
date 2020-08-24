@@ -32,7 +32,7 @@ namespace MC
 		for (uint32_t x = 0; x < width; x++)
 			for (uint32_t y = 0; y < height; y++)
 			{
-			
+
 				if (type == TerrainType::Terrain2D)
 					should = (float)Noise.GenOctave(x / xf, y / yf, 0.0f, octaves, frequency, persistence, xOffset, yOffset);
 		
@@ -40,9 +40,11 @@ namespace MC
 
 				 for (uint32_t z = 0; z <= depth; z++)
 				 {
+					 if (type == TerrainType::Terrain3D)
+						 should = (float)Noise.GenOctave(x / xf, y / yf, z / zf, octaves, frequency, persistence, xOffset, yOffset);
+
 					 (should * yf) > z ? superChunk->Set(x, z, y, 1) : superChunk->Set(x, z, y, 0);
 				 }
-			
 			}
 
 		terrainPreview.Write();

@@ -16,7 +16,6 @@ namespace MC
 	struct Chunk
 	{
 	public:
-
 		Chunk();
 		~Chunk();
 
