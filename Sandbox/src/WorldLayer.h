@@ -22,6 +22,6 @@ public:
 	MC::Camera camera;
 
 	int octaves = 1;
-	float persistence = 0.25f, frequency = 0.4f, previewSize = 290.0f, xOffset = 0.0f, yOffset = 0.0f;
+	float persistence = 0.25f, frequency = 2.865f, previewSize = 290.0f, xOffset = 0.0f, yOffset = 0.0f;
 
 };

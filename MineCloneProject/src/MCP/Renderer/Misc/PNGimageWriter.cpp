@@ -29,15 +29,16 @@ namespace MC
 		stbi_write_png(m_filename, m_width, m_height, 1, m_data, m_width);
 	}
 
+	//#TODO: Fix error for non-equal terrain
 	void PNGimageWriter::Set(const float& value)
 	{
-		if (!(m_index < 0))
+		if ((m_index >= 0))
 			m_data[m_index--] = floatToByte(value);
 	}
 
 	void PNGimageWriter::Set(const int& value)
 	{
-		if (!(m_index < 0))
+		if ((m_index >= 0))
 			m_data[m_index--] =  clamp(0, 255, value);
 	}
 

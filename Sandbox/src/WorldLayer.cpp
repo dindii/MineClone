@@ -1,21 +1,19 @@
 ﻿#include "WorldLayer.h"
 #include "imgui/imgui.h"
 
-#include <thread>
-
 WorldLayer::WorldLayer() : Layer("WorldLayer"), terrain(64, 64, 64)
 {
-	camera = MC::Camera(1362 / 701, { 10.0f, 10.0f, 500.0f });
+	camera = MC::Camera(1362 / 701, { 0.0f, 0.0f, 500.0f });
 	camera.SetCameraLag(true);
 	camera.SetCameraLagValue(0.15000f);
 
-	terrain.GenNoiseTerrain(MC::VoxelTerrain::TerrainType::Terrain2D, 1, 0.4f, 0.25f, 0.0f, 0.0f);
+	terrain.GenNoiseTerrain(MC::VoxelTerrain::TerrainType::Terrain3D, 1, 2.865f, 0.25f, 0.0f, 0.0f);
 }
 
 void WorldLayer::OnUpdate(MC::DeltaTime deltaTime)
 {
 	LookAround();
-
+	
 	MovePlayer(deltaTime);
 
 	MC::VoxelRenderer::Clear();

@@ -34,23 +34,20 @@ namespace MC
 
 	void VoxelRenderer::Draw(Superchunk* superchunk)
 	{
-		uint32_t aux = 0;
-
-		for (int x = 0; x < SUPER_CHUNK_SIZE; x++)
-			for (int y = 0; y < SUPER_CHUNK_SIZE; y++)
-				for (int z = 0; z < SUPER_CHUNK_SIZE; z++)
-				{
-					if (superchunk->c[x][y][z])
-					{
-						mat4 model;
-						model *= model.Translate(vec3((float(x * SUPER_CHUNK_SIZE), float(y * SUPER_CHUNK_SIZE), float(z * SUPER_CHUNK_SIZE))));
-						v_Data->voxelShader.Bind();
-						v_Data->voxelShader.UploadUniformMat4("u_Transform", model);
-						Draw(superchunk->c[x][y][z]);
-
-						aux++;
-					}
-				}
+ 
+ 		for (int x = 0; x < SUPER_CHUNK_SIZE; x++)
+ 			for (int y = 0; y < SUPER_CHUNK_SIZE; y++)
+ 				for (int z = 0; z < SUPER_CHUNK_SIZE; z++)
+ 				{
+ 					if (superchunk->c[x][y][z])
+ 					{
+ 						mat4 model;
+ 						model *= model.Translate(vec3(float(x * CHUNK_SIZE), float(y  * CHUNK_SIZE), float(z  * CHUNK_SIZE)));
+ 						v_Data->voxelShader.Bind();
+ 						v_Data->voxelShader.UploadUniformMat4("u_Transform", model);
+ 						Draw(superchunk->c[x][y][z]);
+ 					}
+ 				}
 	}
 
 	void VoxelRenderer::BeginScene(const Camera& camera)

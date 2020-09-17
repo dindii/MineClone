@@ -34,16 +34,17 @@ namespace MC
 			{
 
 				if (type == TerrainType::Terrain2D)
-					should = (float)Noise.GenOctave(x / xf, y / yf, 0.0f, octaves, frequency, persistence, xOffset, yOffset);
+					should = (float)Noise.GenOctave(x / xf, 0.0f, y / yf, octaves, frequency, persistence, xOffset, yOffset);
 		
 				 terrainPreview.Set(should);
 
-				 for (uint32_t z = 0; z <= depth; z++)
+				 for (uint32_t z = 0; z < depth; z++)
 				 {
 					 if (type == TerrainType::Terrain3D)
 						 should = (float)Noise.GenOctave(x / xf, y / yf, z / zf, octaves, frequency, persistence, xOffset, yOffset);
 
-					 (should * yf) > z ? superChunk->Set(x, z, y, 1) : superChunk->Set(x, z, y, 0);
+					 //Only one type of block for now
+					 (should * yf) > y ? superChunk->Set(x, y, z, 1) : superChunk->Set(x, y, z, 0);
 				 }
 			}
 

@@ -1,16 +1,15 @@
 #include "mcpch.h"
 #include "Chunk.h"
-
 #include "MCP/Renderer/RenderCommand.h"
+
+#include "MCP/Utils/Logger.h"
 
 namespace MC
 {
-	Chunk::Chunk()
+	Chunk::Chunk() : elements(0), changed(true)
 	{
 		memset(blocks, 0, sizeof(blocks));
 		memset(vertex, 0, sizeof(vertex));
-		elements = 0;
-		changed = true;
 		VBO = RenderCommand::GenMesh(1);
 	}
 
@@ -44,79 +43,119 @@ namespace MC
 					if (!type)
 						continue;
 
-					  // View from negative x
-					if (x > 0 && !blocks[x - 1][y][z])
+					if (x == 0 && nc.left_Chunk && nc.left_Chunk->blocks[CHUNK_SIZE-1][y][z])
 					{
-						vertex[i++] = bvec4(x, y, z, type);
-						vertex[i++] = bvec4(x, y, z + 1, type);
-						vertex[i++] = bvec4(x, y + 1, z, type);
-						vertex[i++] = bvec4(x, y + 1, z, type);
-						vertex[i++] = bvec4(x, y, z + 1, type);
-						vertex[i++] = bvec4(x, y + 1, z + 1, type);
 					}
+					else if (x == 0 || (x > 0 && !blocks[x - 1][y][z]))
+						GenCubeFace(x, y, z, type, i, ECubeFace::LEFT);
 
-					if (!blocks[x + 1][y][z])
+					if (x == CHUNK_SIZE-1 && nc.right_Chunk && nc.right_Chunk->blocks[0][y][z])
 					{
-						// View from positive x
-						vertex[i++] = bvec4(x + 1, y, z, type);
-						vertex[i++] = bvec4(x + 1, y + 1, z, type);
-						vertex[i++] = bvec4(x + 1, y, z + 1, type);
-						vertex[i++] = bvec4(x + 1, y + 1, z, type);
-						vertex[i++] = bvec4(x + 1, y + 1, z + 1, type);
-						vertex[i++] = bvec4(x + 1, y, z + 1, type);
 					}
+					else if (x == CHUNK_SIZE - 1 || (!blocks[x + 1][y][z]))
+						GenCubeFace(x, y, z, type, i, ECubeFace::RIGHT);
 
-					if (y > 0 && !blocks[x][y-1][z])
+					if (y == 0 && nc.below_Chunk && nc.below_Chunk->blocks[x][CHUNK_SIZE-1][z])
 					{
-						// View from negative y
-						vertex[i++] = bvec4(x, y, z, type);
-						vertex[i++] = bvec4(x + 1, y, z, type);
-						vertex[i++] = bvec4(x, y, z + 1, type);
-						vertex[i++] = bvec4(x + 1, y, z, type);
-						vertex[i++] = bvec4(x + 1, y, z + 1, type);
-						vertex[i++] = bvec4(x, y, z + 1, type);
 					}
+					else if (y == 0 || (y > 0 && !blocks[x][y - 1][z]))
+						GenCubeFace(x, y, z, type, i, ECubeFace::DOWN);
 
-					if (!blocks[x][y+1][z])
+
+					if (y == CHUNK_SIZE-1 && nc.upper_Chunk&& nc.upper_Chunk->blocks[x][0][z])
 					{
-						// View from positive y
-						vertex[i++] = bvec4(x, y + 1, z, type);
-						vertex[i++] = bvec4(x, y + 1, z + 1, type);
-						vertex[i++] = bvec4(x + 1, y + 1, z, type);
-						vertex[i++] = bvec4(x + 1, y + 1, z, type);
-						vertex[i++] = bvec4(x, y + 1, z + 1, type);
-						vertex[i++] = bvec4(x + 1, y + 1, z + 1, type);
 					}
+					else if (y == CHUNK_SIZE - 1 || !blocks[x][y + 1][z])
+						GenCubeFace(x, y, z, type, i, ECubeFace::UP);
+					
 
-					// View from negative z
-					if (z > 0 && !blocks[x][y][z-1])
+					if (z == 0 && nc.back_Chunk && nc.back_Chunk->blocks[x][y][CHUNK_SIZE-1])
 					{
-						vertex[i++] = bvec4(x, y, z, type);
-						vertex[i++] = bvec4(x, y + 1, z, type);
-						vertex[i++] = bvec4(x + 1, y, z, type);
-						vertex[i++] = bvec4(x, y + 1, z, type);
-						vertex[i++] = bvec4(x + 1, y + 1, z, type);
-						vertex[i++] = bvec4(x + 1, y, z, type);
 					}
+					else if (z == 0 || (z > 0 && !blocks[x][y][z - 1]))
+						GenCubeFace(x, y, z, type, i, ECubeFace::BACK);
 
-					if (!blocks[x][y][z+1])
+
+					if (z == CHUNK_SIZE-1 && nc.front_Chunk && nc.front_Chunk->blocks[x][y][0])
 					{
-						// View from positive z
-						vertex[i++] = bvec4(x, y, z + 1, type);
-						vertex[i++] = bvec4(x + 1, y, z + 1, type);
-						vertex[i++] = bvec4(x, y + 1, z + 1, type);
-						vertex[i++] = bvec4(x, y + 1, z + 1, type);
-						vertex[i++] = bvec4(x + 1, y, z + 1, type);
-						vertex[i++] = bvec4(x + 1, y + 1, z + 1, type);
 					}
-
-		}
-
+					else if (z == CHUNK_SIZE - 1 || !blocks[x][y][z + 1])
+						GenCubeFace(x, y, z, type, i, ECubeFace::FRONT);				
+				}
 
 		elements = i; 
 	}
 
+	void Chunk::GenCubeFace(const int x, const int y, const int z, const uint8_t type, uint32_t& vertexIterator, ECubeFace face)
+	{
+		switch (face)
+		{
+			case ECubeFace::BACK:
+			{
+				vertex[vertexIterator++] = bvec4(x, y, z, type);
+				vertex[vertexIterator++] = bvec4(x, y + 1, z, type);
+				vertex[vertexIterator++] = bvec4(x + 1, y, z, type);
+				vertex[vertexIterator++] = bvec4(x, y + 1, z, type);
+				vertex[vertexIterator++] = bvec4(x + 1, y + 1, z, type);
+				vertex[vertexIterator++] = bvec4(x + 1, y, z, type);
+				
+				break;
+			}
+			case ECubeFace::FRONT:
+			{
+				vertex[vertexIterator++] = bvec4(x, y, z + 1, type);
+				vertex[vertexIterator++] = bvec4(x + 1, y, z + 1, type);
+				vertex[vertexIterator++] = bvec4(x, y + 1, z + 1, type);
+				vertex[vertexIterator++] = bvec4(x, y + 1, z + 1, type);
+				vertex[vertexIterator++] = bvec4(x + 1, y, z + 1, type);
+				vertex[vertexIterator++] = bvec4(x + 1, y + 1, z + 1, type);
 
+				break;
+			}
+			case ECubeFace::LEFT:
+			{
+				vertex[vertexIterator++] = bvec4(x, y, z, type);
+				vertex[vertexIterator++] = bvec4(x, y, z + 1, type);
+				vertex[vertexIterator++] = bvec4(x, y + 1, z, type);
+				vertex[vertexIterator++] = bvec4(x, y + 1, z, type);
+				vertex[vertexIterator++] = bvec4(x, y, z + 1, type);
+				vertex[vertexIterator++] = bvec4(x, y + 1, z + 1, type);
 
+				break;
+			}
+			case ECubeFace::RIGHT:
+			{
+				vertex[vertexIterator++] = bvec4(x + 1, y, z, type);
+				vertex[vertexIterator++] = bvec4(x + 1, y + 1, z, type);
+				vertex[vertexIterator++] = bvec4(x + 1, y, z + 1, type);
+				vertex[vertexIterator++] = bvec4(x + 1, y + 1, z, type);
+				vertex[vertexIterator++] = bvec4(x + 1, y + 1, z + 1, type);
+				vertex[vertexIterator++] = bvec4(x + 1, y, z + 1, type);
 
+				break;
+			}
+			case ECubeFace::UP:
+			{
+				vertex[vertexIterator++] = bvec4(x, y + 1, z, type);
+				vertex[vertexIterator++] = bvec4(x, y + 1, z + 1, type);
+				vertex[vertexIterator++] = bvec4(x + 1, y + 1, z, type);
+				vertex[vertexIterator++] = bvec4(x + 1, y + 1, z, type);
+				vertex[vertexIterator++] = bvec4(x, y + 1, z + 1, type);
+				vertex[vertexIterator++] = bvec4(x + 1, y + 1, z + 1, type);
+
+				break;
+			}
+			case ECubeFace::DOWN:
+			{
+				vertex[vertexIterator++] = bvec4(x, y, z, type);
+				vertex[vertexIterator++] = bvec4(x + 1, y, z, type);
+				vertex[vertexIterator++] = bvec4(x, y, z + 1, type);
+				vertex[vertexIterator++] = bvec4(x + 1, y, z, type);
+				vertex[vertexIterator++] = bvec4(x + 1, y, z + 1, type);
+				vertex[vertexIterator++] = bvec4(x, y, z + 1, type);
+
+				break;
+			}
+		}
+	}
 }
