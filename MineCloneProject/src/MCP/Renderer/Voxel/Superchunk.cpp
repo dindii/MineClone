@@ -31,8 +31,9 @@ namespace MC
 
 		if (!c[cx][cy][cz])
 			return 0;
-		else
-			return c[cx][cy][cz]->get(x, y, z);
+		
+
+		return c[cx][cy][cz]->get(x, y, z);
 	}
 
 	void Superchunk::Set(int x, int y, int z, uint8_t type)

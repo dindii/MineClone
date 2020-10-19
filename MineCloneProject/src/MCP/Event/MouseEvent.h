@@ -53,7 +53,7 @@ namespace MC
 		inline float GetYOffset() const { return m_YOffset; }
 
 		/**
-		* @brief Stringfy the event so i can be printed easily.
+		* @brief Stringfy the event so it can be printed easily.
 		*/
 		std::string ToString() const override
 		{
@@ -96,8 +96,14 @@ namespace MC
 	class MouseButtonPressedEvent : public MouseButtonEvent
 	{
 	public:
+		/**
+		* @brief Constructor, takes an uint32_t for m_Button initialization.
+		*/
 		MouseButtonPressedEvent(int button) : MouseButtonEvent(button) {};
 
+		/**
+		* @brief Stringfy the event so it can be logged easier
+		*/
 		std::string ToString() const override
 		{
 			std::stringstream ss;
@@ -111,8 +117,14 @@ namespace MC
 	class MouseButtonReleasedEvent : public MouseButtonEvent
 	{
 	public:
+		/**
+		* @brief Constructor, takes an uint32_t for m_Button initialization.
+		*/
 		MouseButtonReleasedEvent(int button) : MouseButtonEvent(button) {};
 
+		/**
+		* @brief Stringfy the event so it can be logged easier
+		*/
 		std::string ToString() const override
 		{
 			std::stringstream ss;

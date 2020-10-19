@@ -162,9 +162,6 @@ namespace MC
 				Keys[wparam].isPressed = true;
 				Keys[wparam].isRepeated = Ki.nPrevious;
 
-				//ImGui requires original WM key codes
-			//	KeyTypedEvent eventTyped((int)Keys[wparam].KeyCode);
-			//	EventCallback(eventTyped);
 				break;
 			}
 
@@ -186,8 +183,6 @@ namespace MC
 				EventCallback(event);
 
 				Keys[wparam].isPressed = true;
-
-				//@TODO: process drag
 
 				break;
 			}

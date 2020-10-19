@@ -10,11 +10,17 @@
 namespace MC
 {
 
+	/**
+	*  This is where i handle Windows window input. It's quite simple since i don't expect to have multiple windows/windows inputs and i didn't worry much
+	*  about hidding some stuff from the user but this class is for internal purposes only, the input interface which the user can retrieve states and info 
+	*  is the WindowInput class.
+	*/ 
+
 #define MAX_KEYS 255
 
-	//@TODO: Convert to ASCII?
-
-
+	/**
+	* Initializing our own keycodes. This is not better or worse than win32api native keycodes but i decided to make my own keycodes just for test purposes. 
+	*/
 	enum class MC_KEYS : unsigned char
 	{
 		MC_NO_KEY = 0,
@@ -114,6 +120,10 @@ namespace MC
 	};
 
 
+	/**
+	* @brief This struct was made so we can read Windows params more easily, instead of bit shiftting every member, we can just create this struct
+	* using lparam and it will automatically break every member by its number of bits ( : N )
+	*/
 	union KeyInfo
 	{
 		LPARAM lparam;
@@ -131,8 +141,14 @@ namespace MC
 	};
 
 
+	/**
+	* @brief This struct will be serve as an array of Keys with its own states, the user through InputHandler can easily query for a key and check its state
+	*/
 	struct Key
 	{
+		/**
+		* @brief Default contructor 
+		*/
 		Key() : KeyCode(MC_KEYS::MC_NO_KEY), isPressed(false), isRepeated(false) {};
 
 		MC_KEYS KeyCode;
@@ -143,7 +159,7 @@ namespace MC
 
 	using EventCallbackFn = std::function<void(Event&)>;
 
-	//Users should use InputHandler, so i will hide this into internal namespace.
+	//Users should use InputHandler, so i will naively hide this into internal namespace.
 	namespace MC_INTERNAL
 	{
 		class WindowInput

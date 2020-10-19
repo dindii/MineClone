@@ -47,7 +47,7 @@ namespace MC
 
 		MC::vec3 target = m_CameraTarget;
 
-		target += ((forward * -pos.z) + (strafe * pos.x)) + (up * pos.y);
+		target += ((forward * pos.z) + (strafe * pos.x)) + (up * pos.y);
 
 		m_CameraTarget = target;
 

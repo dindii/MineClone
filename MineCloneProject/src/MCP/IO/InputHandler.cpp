@@ -12,8 +12,7 @@ namespace MC
 		for (uint8_t x = 0; x< MAX_KEYS-1; x++ )
 		{
 			//Search for the asked key and return its
-			if (aux[x].KeyCode != MC_KEYS::MC_NO_KEY)
-				if(aux[x].KeyCode == key)
+				if(aux[x].KeyCode != MC_KEYS::MC_NO_KEY && aux[x].KeyCode == key)
 					return aux[x].isPressed;
 		}
 
@@ -27,8 +26,7 @@ namespace MC
 
 		for (uint8_t x = 0; x < MAX_KEYS-1; x++)
 		{
-			if (aux[x].KeyCode != MC_KEYS::MC_NO_KEY)
-				if (aux[x].KeyCode == key)
+			if (aux[x].KeyCode != MC_KEYS::MC_NO_KEY && aux[x].KeyCode == key)
 					return aux[x].isRepeated;
 		}
 

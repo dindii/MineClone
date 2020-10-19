@@ -63,8 +63,15 @@ namespace MC
 	class KeyReleasedEvent : public KeyEvent
 	{
 	public:
+		/**
+		* @brief Constructor that takes an int to set the KeyEvent keycode.
+		* @param keycode - keycode of the pressed key.
+		*/
 		KeyReleasedEvent(int keycode) : KeyEvent(keycode) { };
 
+		/**
+		* @brief Stringfy the event, allowing it to be printed easily
+		*/
 		std::string ToString() const override
 		{
 			std::stringstream ss;
@@ -78,8 +85,15 @@ namespace MC
 	class KeyTypedEvent : public KeyEvent
 	{
 	public:
+		/**
+		* @brief Constructor that takes an int to set the KeyEvent keycode.
+		* @param keycode - keycode of the typed key.
+		*/
 		KeyTypedEvent(int keycode) : KeyEvent(keycode) {};
 
+		/**
+		* @brief Stringfy the event, allowing it to be printed easily
+		*/
 		std::string ToString() const override
 		{
 			std::stringstream ss;
