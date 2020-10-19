@@ -74,7 +74,7 @@ namespace MC
 						for (uint32_t zz = z; zz < CHUNK_SIZE; zz++)
 						{
 							//O bloco é diferente do atual, é vazio ou não visivel? Se sim, não o processe
-							if (blocks[x][yy][zz] != blocks[x][yy][z] || !blocks[x][yy][zz] || VisitedLeft[x][yy][zz] || !isFaceVisibleLeft(x, yy, zz))
+							if (blocks[x][yy][zz] != blocks[x][yy][z] || !blocks[x][yy][zz] || VisitedLeft[x][yy][zz] || !isFaceVisible(x, yy, zz, ECubeFace::LEFT))
 								break;
 
 							//Salvamos falando que o bloco ja foi visitado
@@ -121,7 +121,7 @@ namespace MC
 						for (uint32_t zz = z; zz < CHUNK_SIZE; zz++)
 						{
 							//O bloco é diferente do atual, é vazio ou não visivel? Se sim, não o processe
-							if (blocks[x][yy][zz] != blocks[x][yy][z] || !blocks[x][yy][zz] || VisitedRight[x][yy][zz] || !isFaceVisibleRight(x, yy, zz))
+							if (blocks[x][yy][zz] != blocks[x][yy][z] || !blocks[x][yy][zz] || VisitedRight[x][yy][zz] || !isFaceVisible(x, yy, zz, ECubeFace::RIGHT))
 								break;
 
 							//Salvamos falando que o bloco ja foi visitado
@@ -168,7 +168,7 @@ namespace MC
 						for (uint32_t xx = x; xx < CHUNK_SIZE; xx++)
 						{
 							//O bloco é diferente do atual, é vazio ou não visivel? Se sim, não o processe
-							if (blocks[xx][y][zz] != blocks[x][y][zz] || !blocks[xx][y][zz] || VisitedDown[xx][y][zz] || !isFaceVisibleDown(xx, y, zz))
+							if (blocks[xx][y][zz] != blocks[x][y][zz] || !blocks[xx][y][zz] || VisitedDown[xx][y][zz] || !isFaceVisible(xx, y, zz, ECubeFace::DOWN))
 								break;
 
 							//Salvamos falando que o bloco ja foi visitado
@@ -209,7 +209,7 @@ namespace MC
 						for (uint32_t xx = x; xx < CHUNK_SIZE; xx++)
 						{
 							//O bloco é diferente do atual, é vazio ou não visivel? Se sim, não o processe
-							if (blocks[xx][y][zz] != blocks[x][y][zz] || !blocks[xx][y][zz] || VisitedUp[xx][y][zz] || !isFaceVisibleUp(xx, y, zz))
+							if (blocks[xx][y][zz] != blocks[x][y][zz] || !blocks[xx][y][zz] || VisitedUp[xx][y][zz] || !isFaceVisible(xx, y, zz, ECubeFace::UP))
 								break;
 
 							//Salvamos falando que o bloco ja foi visitado
@@ -256,7 +256,7 @@ namespace MC
 						for (uint32_t xx = x; xx < CHUNK_SIZE; xx++)
 						{
 							//O bloco é diferente do atual, é vazio ou não visivel? Se sim, não o processe
-							if (blocks[xx][yy][z] != blocks[x][yy][z] || !blocks[xx][yy][z] || VisitedBack[xx][yy][z] || !isFaceVisibleBack(xx, yy, z))
+							if (blocks[xx][yy][z] != blocks[x][yy][z] || !blocks[xx][yy][z] || VisitedBack[xx][yy][z] || !isFaceVisible(xx, yy, z, ECubeFace::BACK))
 								break;
 
 							//Salvamos falando que o bloco ja foi visitado
@@ -293,7 +293,7 @@ namespace MC
 						for (uint32_t xx = x; xx < CHUNK_SIZE; xx++)
 						{
 							//O bloco é diferente do atual, é vazio ou não visivel? Se sim, não o processe
-							if (blocks[xx][yy][z] != blocks[x][yy][z] || !blocks[xx][yy][z] || VisitedFront[xx][yy][z] || !IsFaceVisibleFront(xx, yy, z))
+							if (blocks[xx][yy][z] != blocks[x][yy][z] || !blocks[xx][yy][z] || VisitedFront[xx][yy][z] || !isFaceVisible(xx, yy, z, ECubeFace::FRONT))
 								break;
 
 							//Salvamos falando que o bloco ja foi visitado
@@ -334,94 +334,50 @@ namespace MC
 		memset(VisitedLeft, 0, sizeof(VisitedLeft));
 	}
 
-	bool Chunk::IsFaceVisibleFront(const uint32_t x, const uint32_t y, const uint32_t z)
+	bool Chunk::isFaceVisible(const uint32_t x, const uint32_t y, const uint32_t z, ECubeFace face)
 	{
-		if (z == CHUNK_SIZE - 1 && nc.front_Chunk && nc.front_Chunk->blocks[x][y][0])
+		switch (face)
 		{
-			return false;
-		}
-		else if (z == CHUNK_SIZE - 1 || !blocks[x][y][z + 1])
-		{
-			return true;
+			case ECubeFace::LEFT:
+			{
+				if (x == 0 || (x > 0 && !blocks[x - 1][y][z]))
+					return true;
+				break;
+			}
+			case ECubeFace::RIGHT:
+			{
+				if (x == CHUNK_SIZE - 1 || (!blocks[x + 1][y][z]))
+					return true;
+				break;
+			}
+			case ECubeFace::DOWN:
+			{
+				if (y == 0 || (y > 0 && !blocks[x][y - 1][z]))
+					return true;
+				break;
+			}
+			case ECubeFace::UP:
+			{
+				if (y == CHUNK_SIZE - 1 || !blocks[x][y + 1][z])
+					return true;
+				break;
+			}
+			case ECubeFace::BACK:
+			{
+				if (z == 0 || (z > 0 && !blocks[x][y][z - 1]))
+					return true;
+				break;
+			}
+			case ECubeFace::FRONT:
+			{
+				if (z == CHUNK_SIZE - 1 || !blocks[x][y][z + 1])
+					return true;
+				break;
+			}
 		}
 
 		return false;
 	}
-
-	bool Chunk::isFaceVisibleBack(const uint32_t x, const uint32_t y, const uint32_t z)
-	{
-		if (z == 0 && nc.back_Chunk && nc.back_Chunk->blocks[x][y][CHUNK_SIZE - 1])
-		{
-			return false;
-		}
-		else if (z == 0 || (z > 0 && !blocks[x][y][z - 1]))
-		{
-			return true;
-		}
-
-		return false;
-	}
-
-	bool Chunk::isFaceVisibleUp(const uint32_t x, const uint32_t y, const uint32_t z)
-	{
-		if (y == CHUNK_SIZE - 1 && nc.upper_Chunk&& nc.upper_Chunk->blocks[x][0][z])
-		{
-			return false;
-		}
-		else if (y == CHUNK_SIZE - 1 || !blocks[x][y + 1][z])
-		{
-			return true;
-		}
-
-		return false;
-	}
-
-	bool Chunk::isFaceVisibleDown(const uint32_t x, const uint32_t y, const uint32_t z)
-	{
-		if (y == 0 && nc.below_Chunk && nc.below_Chunk->blocks[x][CHUNK_SIZE - 1][z])
-		{
-			return false;
-		}
-		else if (y == 0 || (y > 0 && !blocks[x][y - 1][z]))
-		{
-			return true;
-		}
-
-		return false;
-	}
-
-	bool Chunk::isFaceVisibleRight(const uint32_t x, const uint32_t y, const uint32_t z)
-	{
-		//#TODO: Experimentar fazer a checagem só do true e o resto todo retorna false.
-		if (x == CHUNK_SIZE - 1 && nc.right_Chunk && nc.right_Chunk->blocks[0][y][z])
-		{
-			return false;
-		}
-		else if (x == CHUNK_SIZE - 1 || (!blocks[x + 1][y][z]))
-		{
-			return true;
-		}
-
-		return false;
-	}
-
-	bool Chunk::isFaceVisibleLeft(const uint32_t x, const uint32_t y, const uint32_t z)
-	{
-		//a block is NOT visible
-		if (x == 0 && nc.left_Chunk && nc.left_Chunk->blocks[CHUNK_SIZE - 1][y][z])
-		{
-			return false;
-		}
-		// a block is visible
-		else if (x == 0 || (x > 0 && !blocks[x - 1][y][z]))
-		{
-			return true;
-		}
-
-		return false;
-	}
-
-
 
 	void Chunk::GenCubeFace(const uint32_t x, const uint32_t y, const uint32_t z, const uint32_t length, const uint32_t height, const uint32_t depth, const uint8_t type, uint32_t& vertexIterator, ECubeFace face)
 	{

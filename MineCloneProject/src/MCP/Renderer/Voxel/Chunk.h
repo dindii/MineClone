@@ -57,13 +57,9 @@ namespace MC
 		bool VisitedLeft[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
 		
 
-		//One function with switch 
-		bool IsFaceVisibleFront(const uint32_t x, const uint32_t y, const uint32_t z);
-		bool isFaceVisibleBack(const uint32_t x, const uint32_t y, const uint32_t z);
-		bool isFaceVisibleUp(const uint32_t x, const uint32_t y, const uint32_t z);
-		bool isFaceVisibleDown(const uint32_t x, const uint32_t y, const uint32_t z);
-		bool isFaceVisibleRight(const uint32_t x, const uint32_t y, const uint32_t z);
-		bool isFaceVisibleLeft(const uint32_t x, const uint32_t y, const uint32_t z);
+		bool isFaceVisible(const uint32_t x, const uint32_t y, const uint32_t z, ECubeFace face);
+
+		//void GreedyFrontFace(const uint32_t y, const uint32_t x);
 	};
 
 

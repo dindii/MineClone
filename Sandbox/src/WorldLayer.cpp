@@ -47,7 +47,7 @@ void WorldLayer::OnUpdate(MC::DeltaTime deltaTime)
 
 	MC::VoxelRenderer::Clear();
 	MC::VoxelRenderer::BeginScene(camera);
-//	MC::VoxelRenderer::Draw(&Directions);
+	MC::VoxelRenderer::Draw(&Directions);
 	MC::VoxelRenderer::Draw(terrain.GetTerrainData());
 }
 
