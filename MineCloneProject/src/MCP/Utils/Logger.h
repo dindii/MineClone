@@ -27,6 +27,7 @@ namespace MC {
 			Logger();
 			~Logger();
 
+			//#TODO: Instead all of this overloads, we could just use parameter packs/variadic
 			static void Log(Event& event, const Level level);
 			static void Log(const char* string, const Level level);
 			static void Log(const char* string, const char* message, const Level level);

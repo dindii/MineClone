@@ -34,7 +34,6 @@ namespace MC
 
 	void VoxelRenderer::Draw(Superchunk* superchunk)
 	{
- 
  		for (int x = 0; x < SUPER_CHUNK_SIZE; x++)
  			for (int y = 0; y < SUPER_CHUNK_SIZE; y++)
  				for (int z = 0; z < SUPER_CHUNK_SIZE; z++)

@@ -54,8 +54,8 @@ namespace MC
 
 	void VoxelTerrain::GenFlatTerrain() const
 	{
-		for (uint32_t z = 0; z < depth; z++)
-			for (uint32_t y = 0; y < height; y++)
+		for (uint32_t y = 0; y < height; y++)
+			for (uint32_t z = 0; z < depth; z++)
 				for (uint32_t x = 0; x < width; x++)
 					superChunk->Set(x, y, z, 1);	
 	}

@@ -3,7 +3,7 @@
 
 #include <thread>
 
-WorldLayer::WorldLayer() : Layer("WorldLayer"), terrain(48, 48, 48)
+WorldLayer::WorldLayer() : Layer("WorldLayer"), terrain(32, 32, 32)
 {
 	camera = MC::Camera(1362 / 701, { 0.0f, 0.0f, 500.0f });
 	camera.SetCameraLag(true);
@@ -18,23 +18,23 @@ WorldLayer::WorldLayer() : Layer("WorldLayer"), terrain(48, 48, 48)
 	//std::thread terrainth(&MC::VoxelTerrain::GenFlatTerrain, terrain);
 	//terrainth.join();
 
-
-	for (uint32_t x = 0; x < 100; x++)
-	{
-		Directions.Set(x, 0, 0, 1);
-	}
-
-	for (uint32_t y = 0; y < 100; y++)
-	{
-		Directions.Set(0, y, 0, 1);
-	}
-
-	//Por hora só temos um SC que detém 16 C (16*16 em uma direção) isto é, 256 blocos em linha reta.
-	//Por isso, algo além de 256 iria causar alguns comportamentos estranhos até tornar SC dinamico.
-	for (uint32_t z = 0; z < 256; z++)
-	{
-		Directions.Set(0, 0, z, 1);
-	}
+ 
+// 	for (uint32_t x = 0; x < 100; x++)
+// 	{
+// 		Directions.Set(x, 0, 0, 1);
+// 	}
+// 
+// 	for (uint32_t y = 0; y < 100; y++)
+// 	{
+// 		Directions.Set(0, y, 0, 1);
+// 	}
+//
+////Por hora só temos um SC que detém 16 C (16*16 em uma direção) isto é, 256 blocos em linha reta.
+////Por isso, algo além de 256 iria causar alguns comportamentos estranhos até tornar SC dinamico.
+// 	for (uint32_t z = 0; z < 150; z++)
+// 	{
+// 		Directions.Set(0, 0, z, 1);
+// 	}
 
 
 }
@@ -47,7 +47,7 @@ void WorldLayer::OnUpdate(MC::DeltaTime deltaTime)
 
 	MC::VoxelRenderer::Clear();
 	MC::VoxelRenderer::BeginScene(camera);
-	MC::VoxelRenderer::Draw(&Directions);
+	//MC::VoxelRenderer::Draw(&Directions);
 	MC::VoxelRenderer::Draw(terrain.GetTerrainData());
 }
 

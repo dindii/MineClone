@@ -1,7 +1,7 @@
 #pragma once
 #include "Chunk.h"
 
-constexpr int SUPER_CHUNK_SIZE = 16;
+constexpr int SUPER_CHUNK_SIZE = 8;
 
 namespace MC
 {
