@@ -83,38 +83,62 @@ namespace MC
 		{
 			case ECubeFace::LEFT:
 			{
-				if (x == 0 || (x > 0 && !chunkTarget->blocks[x - 1][y][z]))
+				if (x == 0 && chunkTarget->nc.left_Chunk && chunkTarget->nc.left_Chunk->blocks[CHUNK_SIZE - 1][y][z])
+					return false;
+			
+				else if (x == 0 || (x > 0 && !chunkTarget->blocks[x - 1][y][z]))
 					return true;
+				
 				break;
 			}
 			case ECubeFace::RIGHT:
 			{
-				if (x == CHUNK_SIZE || !chunkTarget->blocks[x + 1][y][z])
+				if (x == CHUNK_SIZE - 1 && chunkTarget->nc.right_Chunk && chunkTarget->nc.right_Chunk->blocks[0][y][z])
+					return false;
+				
+				else if (x == CHUNK_SIZE -1 || !chunkTarget->blocks[x + 1][y][z])
 					return true;
+				
 				break;
 			}
 			case ECubeFace::DOWN:
 			{
-				if (y == 0 || (y > 0 && !chunkTarget->blocks[x][y - 1][z]))
+				if (y == 0 && chunkTarget->nc.below_Chunk && chunkTarget->nc.below_Chunk->blocks[x][CHUNK_SIZE - 1][z])
+					return false;
+				
+				else if (y == 0 || (y > 0 && !chunkTarget->blocks[x][y - 1][z]))
 					return true;
-				break;
+				
+					break;
 			}
 			case ECubeFace::UP:
 			{
-				if (y == CHUNK_SIZE || !chunkTarget->blocks[x][y + 1][z])
+				if (y == CHUNK_SIZE - 1 && chunkTarget->nc.upper_Chunk && chunkTarget->nc.upper_Chunk->blocks[x][0][z])
+					return false;
+				
+				else if (y == CHUNK_SIZE -1 || !chunkTarget->blocks[x][y + 1][z])
 					return true;
+
 				break;
 			}
 			case ECubeFace::BACK:
 			{
-				if (z == 0 || (z > 0 && !chunkTarget->blocks[x][y][z - 1]))
+				if (z == 0 && chunkTarget->nc.back_Chunk && chunkTarget->nc.back_Chunk->blocks[x][y][CHUNK_SIZE - 1])
+					return false;
+				
+				else if (z == 0 || (z > 0 && !chunkTarget->blocks[x][y][z - 1]))
 					return true;
+				
 				break;
 			}
 			case ECubeFace::FRONT:
 			{
-				if (z == CHUNK_SIZE || !chunkTarget->blocks[x][y][z + 1])
+				if (z == CHUNK_SIZE - 1 && chunkTarget->nc.front_Chunk && chunkTarget->nc.front_Chunk->blocks[x][y][0])
+					return false;
+				
+				else if (z == CHUNK_SIZE -1 || !chunkTarget->blocks[x][y][z + 1])
 					return true;
+
 				break;
 			}
 		}
@@ -403,9 +427,6 @@ namespace MC
 			height++;
 		}
 	}
-
-
-
 
 
 }
