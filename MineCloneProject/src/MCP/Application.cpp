@@ -98,12 +98,12 @@ namespace MC
 
 		VoxelRenderer::SetViewport(0, 0, e.GetWidth(), e.GetHeight());
 
-		return true;
+		return false;
 	}
 
 	bool Application::OnKeyPressed(KeyPressedEvent& e)
 	{
-#ifdef MC_DEBUG
+//#ifdef MC_DEBUG
 		if (e.GetKeyCode() == (int)MC_KEYS::MC_KEY_ESC)
 		{
 			WindowCloseEvent close;
@@ -129,7 +129,7 @@ namespace MC
 
 			return true;
 		}
-#endif
+//#endif
 
 		return false;
 	}

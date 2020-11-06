@@ -5,7 +5,7 @@
 
 namespace MC
 {
-	constexpr uint8_t CHUNK_SIZE = 12;
+	constexpr uint8_t CHUNK_SIZE = 16;
 	constexpr uint8_t CUBE_FACES = 6;
 	constexpr uint8_t FACE_VERTICES_NUMBER = 6;
 

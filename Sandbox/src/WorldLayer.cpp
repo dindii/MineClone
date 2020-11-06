@@ -3,7 +3,7 @@
 
 #include <thread>
 
-WorldLayer::WorldLayer() : Layer("WorldLayer"), terrain(32, 32, 32)
+WorldLayer::WorldLayer() : Layer("WorldLayer"), terrain(64, 64, 64)
 {
 	camera = MC::Camera(1362 / 701, { 0.0f, 0.0f, 500.0f });
 	camera.SetCameraLag(true);

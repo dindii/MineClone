@@ -116,7 +116,7 @@ namespace MC
 				if (y == CHUNK_SIZE - 1 && chunkTarget->nc.upper_Chunk && chunkTarget->nc.upper_Chunk->blocks[x][0][z])
 					return false;
 				
-				else if (y == CHUNK_SIZE -1 || !chunkTarget->blocks[x][y + 1][z])
+				else if (y == CHUNK_SIZE - 1 || !chunkTarget->blocks[x][y + 1][z])
 					return true;
 
 				break;
@@ -136,7 +136,7 @@ namespace MC
 				if (z == CHUNK_SIZE - 1 && chunkTarget->nc.front_Chunk && chunkTarget->nc.front_Chunk->blocks[x][y][0])
 					return false;
 				
-				else if (z == CHUNK_SIZE -1 || !chunkTarget->blocks[x][y][z + 1])
+				else if (z == CHUNK_SIZE - 1 || !chunkTarget->blocks[x][y][z + 1])
 					return true;
 
 				break;

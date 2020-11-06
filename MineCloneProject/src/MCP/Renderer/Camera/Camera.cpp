@@ -74,18 +74,16 @@ namespace MC
 
 	void Camera::SetProjection(float AR)
 	{
-		m_Projection = mat4::Perspective(45.0f /*zoom*/, AR, 0.1f, 100.0f);
+		m_Projection = mat4::Perspective(70.0f /*zoom*/, AR, 0.1f, 100.0f);
 	}
 
 	void Camera::OnEvent(Event& e)
 	{
 		EventDispatcher dispatcher(e);
+
 		dispatcher.Dispatch<WindowResizeEvent>([&](WindowResizeEvent Event) -> bool
 		{
 			SetProjection((float)(Event.GetWidth() / Event.GetHeight()));
-
-			MC_LOG_TRACE((float)Event.GetWidth());
-
 			return false;
 		});
 	}
