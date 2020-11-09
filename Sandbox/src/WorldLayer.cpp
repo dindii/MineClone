@@ -66,7 +66,6 @@ void WorldLayer::OnImGuiRender()
 
 	ImGui::NewLine();
 
-	//#TODO Generate 2D images without interference of the Z-terrain.
 	if (ImGui::SliderInt("Octaves", &octaves, 0, 8) ||
 		ImGui::SliderFloat("Frequency", &frequency, 0.0f, 10.0f) ||
 		ImGui::SliderFloat("Persistance", &persistence, 0.0f, 1.0f) ||

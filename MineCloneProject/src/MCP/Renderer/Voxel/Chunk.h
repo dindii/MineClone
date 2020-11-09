@@ -5,6 +5,7 @@
 
 namespace MC
 {
+	//funções para setar o chunk size globalmente
 	constexpr uint8_t CHUNK_SIZE = 16;
 	constexpr uint8_t CUBE_FACES = 6;
 	constexpr uint8_t FACE_VERTICES_NUMBER = 6;
@@ -14,12 +15,12 @@ namespace MC
 	private:
 		struct NeighboursChunks
 		{
-			Chunk* left_Chunk = nullptr;
+			Chunk* left_Chunk =  nullptr;
 			Chunk* right_Chunk = nullptr;
 			Chunk* upper_Chunk = nullptr;
 			Chunk* below_Chunk = nullptr;
 			Chunk* front_Chunk = nullptr;
-			Chunk* back_Chunk = nullptr;
+			Chunk* back_Chunk =  nullptr;
 		};
 
 		enum class ECubeFace : uint8_t { UP = 1, DOWN, FRONT, BACK, LEFT, RIGHT};
@@ -33,7 +34,7 @@ namespace MC
 
 		void update();
 
-		//#TODO: enum class
+		//#TODO: enum class, setter and getter
 		//All of those who are + 1 it's because the greedy algorithm that needs to use the 0 index of them for position but at the same time it needs one more index
 		// of the array so the CHUNK_SIZE can be completely evaluated (since the key attribute as length or height is always one before the rest),
 		//With this, we can make a chunks with properly e.g 32 blocks round
@@ -50,15 +51,7 @@ namespace MC
 		bool changed;
 
 	private:
-		//@TODO: Promote to a pointer. Keep it here so others instances of Chunk will not share this array between them.
-
-		//Turn this to 2D array? Mix all together into a single array
-		bool VisitedFront[CHUNK_SIZE+1][CHUNK_SIZE+1][CHUNK_SIZE+1];
-		bool VisitedBack [CHUNK_SIZE+1][CHUNK_SIZE+1][CHUNK_SIZE+1];
-		bool VisitedUp	 [CHUNK_SIZE+1][CHUNK_SIZE+1][CHUNK_SIZE+1];
-		bool VisitedDown [CHUNK_SIZE+1][CHUNK_SIZE+1][CHUNK_SIZE+1];
-		bool VisitedRight[CHUNK_SIZE+1][CHUNK_SIZE+1][CHUNK_SIZE+1];
-		bool VisitedLeft [CHUNK_SIZE+1][CHUNK_SIZE+1][CHUNK_SIZE+1];
+		bool VisitedBlocks[((CHUNK_SIZE + 1) * (CHUNK_SIZE + 1) * (CHUNK_SIZE + 1) * CUBE_FACES)];
 		
 
 		void GenCubeFace(const uint32_t x, const uint32_t y, const uint32_t z, const uint32_t length, const uint32_t height, const uint32_t depth,

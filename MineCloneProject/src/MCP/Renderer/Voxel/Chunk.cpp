@@ -6,19 +6,17 @@
 
 namespace MC
 {
+	constexpr uint32_t CHUNK_SQUARED = CHUNK_SIZE * CHUNK_SIZE;
+	constexpr uint32_t CHUNK_SIZE_CUBED = CHUNK_SQUARED * CHUNK_SIZE;
+
+#define PreCalcIndex(x, y, z, a) (x + z * CHUNK_SIZE + y * CHUNK_SQUARED) + (CHUNK_SIZE_CUBED * a)
+	
 
 	Chunk::Chunk() : elements(0), changed(true)
 	{
-		//wrap this
-		memset(VisitedFront, 0,  sizeof(bool) * ((CHUNK_SIZE+1) * (CHUNK_SIZE+1) * (CHUNK_SIZE+1)));
-		memset(VisitedBack,  0,  sizeof(bool) * ((CHUNK_SIZE+1) * (CHUNK_SIZE+1) * (CHUNK_SIZE+1)));
-		memset(VisitedUp,    0,  sizeof(bool) * ((CHUNK_SIZE+1) * (CHUNK_SIZE+1) * (CHUNK_SIZE+1)));
-		memset(VisitedDown,  0,  sizeof(bool) * ((CHUNK_SIZE+1) * (CHUNK_SIZE+1) * (CHUNK_SIZE+1)));
-		memset(VisitedRight, 0,  sizeof(bool) * ((CHUNK_SIZE+1) * (CHUNK_SIZE+1) * (CHUNK_SIZE+1)));
-		memset(VisitedLeft,  0,  sizeof(bool) * ((CHUNK_SIZE+1) * (CHUNK_SIZE+1) * (CHUNK_SIZE+1)));
-
-		memset(blocks, 0, sizeof(blocks));
-		memset(vertex, 0, sizeof(vertex));
+		memset(blocks,        0, sizeof(blocks));
+		memset(vertex,        0, sizeof(vertex));
+		memset(VisitedBlocks, 0, sizeof(VisitedBlocks));
 
 		VBO = RenderCommand::GenMesh(1);
 	}
@@ -67,13 +65,7 @@ namespace MC
 
 		elements = vertexBufferIterator; 
 
-		//wrappar isso
-		memset(VisitedFront, 0, sizeof(VisitedFront));
-		memset(VisitedBack, 0, sizeof(VisitedBack));
-		memset(VisitedUp, 0, sizeof(VisitedUp));
-		memset(VisitedDown, 0, sizeof(VisitedDown));
-		memset(VisitedRight, 0, sizeof(VisitedRight));
-		memset(VisitedLeft, 0, sizeof(VisitedLeft));
+		memset(VisitedBlocks, 0, sizeof(VisitedBlocks));
 	}
 
 	//#TODO: Expandir para outras chunks
@@ -221,6 +213,7 @@ namespace MC
 	}
 
 
+//0
 	void Chunk::GreedyFrontFace(const uint32_t x, const uint32_t y, const uint32_t z, uint32_t& vertexBufferIterator, Chunk* chunkTarget)
 	{
 		uint32_t length = 0, height = 0;
@@ -232,11 +225,11 @@ namespace MC
 			for (uint32_t xx = x; xx <= CHUNK_SIZE; xx++)
 			{
 				//O bloco é diferente do atual, é vazio ou não visivel? Se sim, não o processe
-				if (chunkTarget->blocks[xx][yy][z] != chunkTarget->blocks[x][yy][z] || !chunkTarget->blocks[xx][yy][z] || VisitedFront[xx][yy][z] || !isFaceVisible(xx, yy, z, ECubeFace::FRONT, chunkTarget))
+				if (chunkTarget->blocks[xx][yy][z] != chunkTarget->blocks[x][yy][z] || !chunkTarget->blocks[xx][yy][z] || VisitedBlocks[PreCalcIndex(xx, yy, z, 0)] || !isFaceVisible(xx, yy, z, ECubeFace::FRONT, chunkTarget))
 					break;
 
 				//Salvamos falando que o bloco ja foi visitado
-				VisitedFront[xx][yy][z] = true;
+				VisitedBlocks[PreCalcIndex(xx, yy, z, 0)] = true;
 
 				//Caso não seja, aumentamos o length, ou seja, mais um bloco à direita que cubrimos.
 				length++;
@@ -255,6 +248,7 @@ namespace MC
 		}
 	}
 	
+//1
 	void Chunk::GreedyBackFace(const uint32_t x, const uint32_t y, const uint32_t z, uint32_t& vertexBufferIterator, Chunk* chunkTarget)
 	{
 		uint32_t length = 0, height = 0;
@@ -266,11 +260,11 @@ namespace MC
 			for (uint32_t xx = x; xx <= CHUNK_SIZE; xx++)
 			{
 				//O bloco é diferente do atual, é vazio ou não visivel? Se sim, não o processe
-				if (blocks[xx][yy][z] != blocks[x][yy][z] || !blocks[xx][yy][z] || VisitedBack[xx][yy][z] || !isFaceVisible(xx, yy, z, ECubeFace::BACK, this))
+				if (blocks[xx][yy][z] != blocks[x][yy][z] || !blocks[xx][yy][z] || VisitedBlocks[PreCalcIndex(xx, yy, z, 1)] || !isFaceVisible(xx, yy, z, ECubeFace::BACK, this))
 					break;
 
 				//Salvamos falando que o bloco ja foi visitado
-				VisitedBack[xx][yy][z] = true;
+				VisitedBlocks[PreCalcIndex(xx, yy, z, 1)] = true;
 
 				//Caso não seja, aumentamos o length, ou seja, mais um bloco à direita que cubrimos.
 				length++;
@@ -302,11 +296,11 @@ namespace MC
 			for (uint32_t xx = x; xx <= CHUNK_SIZE; xx++)
 			{
 				//O bloco é diferente do atual, é vazio ou não visivel? Se sim, não o processe
-				if (blocks[xx][y][zz] != blocks[x][y][zz] || !blocks[xx][y][zz] || VisitedUp[xx][y][zz] || !isFaceVisible(xx, y, zz, ECubeFace::UP, this))
+				if (blocks[xx][y][zz] != blocks[x][y][zz] || !blocks[xx][y][zz] || VisitedBlocks[PreCalcIndex(xx, y, zz, 2)] || !isFaceVisible(xx, y, zz, ECubeFace::UP, this))
 					break;
 
 				//Salvamos falando que o bloco ja foi visitado
-				VisitedUp[xx][y][zz] = true;
+				VisitedBlocks[PreCalcIndex(xx, y, zz, 2)] = true;
 
 				//Caso não seja, aumentamos o length, ou seja, mais um bloco à direita que cubrimos.
 				length++;
@@ -336,11 +330,11 @@ namespace MC
 			for (uint32_t xx = x; xx <= CHUNK_SIZE; xx++)
 			{
 				//O bloco é diferente do atual, é vazio ou não visivel? Se sim, não o processe
-				if (blocks[xx][y][zz] != blocks[x][y][zz] || !blocks[xx][y][zz] || VisitedDown[xx][y][zz] || !isFaceVisible(xx, y, zz, ECubeFace::DOWN, this))
+				if (blocks[xx][y][zz] != blocks[x][y][zz] || !blocks[xx][y][zz] || VisitedBlocks[PreCalcIndex(xx, y, zz, 3)] || !isFaceVisible(xx, y, zz, ECubeFace::DOWN, this))
 					break;
 
 				//Salvamos falando que o bloco ja foi visitado
-				VisitedDown[xx][y][zz] = true;
+				VisitedBlocks[PreCalcIndex(xx, y, zz, 3)] = true;
 
 				//Caso não seja, aumentamos o length, ou seja, mais um bloco à direita que cubrimos.
 				length++;
@@ -371,11 +365,11 @@ namespace MC
 			for (uint32_t zz = z; zz <= CHUNK_SIZE; zz++)
 			{
 				//O bloco é diferente do atual, é vazio ou não visivel? Se sim, não o processe
-				if (blocks[x][yy][zz] != blocks[x][yy][z] || !blocks[x][yy][zz] || VisitedLeft[x][yy][zz] || !isFaceVisible(x, yy, zz, ECubeFace::LEFT, this))
+				if (blocks[x][yy][zz] != blocks[x][yy][z] || !blocks[x][yy][zz] || VisitedBlocks[PreCalcIndex(x, yy, zz, 4)] || !isFaceVisible(x, yy, zz, ECubeFace::LEFT, this))
 					break;
 
 				//Salvamos falando que o bloco ja foi visitado
-				VisitedLeft[x][yy][zz] = true;
+				VisitedBlocks[PreCalcIndex(x, yy, zz, 4)] = true;
 
 				//Caso não seja, aumentamos o length, ou seja, mais um bloco à direita que cubrimos.
 				depth++;
@@ -405,11 +399,11 @@ namespace MC
 			for (uint32_t zz = z; zz <= CHUNK_SIZE; zz++)
 			{
 				//O bloco é diferente do atual, é vazio ou não visivel? Se sim, não o processe
-				if (blocks[x][yy][zz] != blocks[x][yy][z] || !blocks[x][yy][zz] || VisitedRight[x][yy][zz] || !isFaceVisible(x, yy, zz, ECubeFace::RIGHT, this))
+				if (blocks[x][yy][zz] != blocks[x][yy][z] || !blocks[x][yy][zz] || VisitedBlocks[PreCalcIndex(x, yy, zz, 5)] || !isFaceVisible(x, yy, zz, ECubeFace::RIGHT, this))
 					break;
 
 				//Salvamos falando que o bloco ja foi visitado
-				VisitedRight[x][yy][zz] = true;
+				VisitedBlocks[PreCalcIndex(x, yy, zz, 5)] = true;
 
 				//Caso não seja, aumentamos o length, ou seja, mais um bloco à direita que cubrimos.
 				depth++;
