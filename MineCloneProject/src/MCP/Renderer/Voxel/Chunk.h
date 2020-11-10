@@ -5,7 +5,7 @@
 
 namespace MC
 {
-	//funções para setar o chunk size globalmente
+	//#TODO: Make a global function to change the size of the chunk and superchunk
 	constexpr uint8_t CHUNK_SIZE = 16;
 	constexpr uint8_t CUBE_FACES = 6;
 	constexpr uint8_t FACE_VERTICES_NUMBER = 6;
@@ -13,6 +13,8 @@ namespace MC
 	struct Chunk
 	{
 	private:
+		//We keep track of the neighbours chunks in order to cull the edges of the actual chunk
+		//i.e: even if a block is in the limit of the actual chunk, we don't render it if theres a neighbour chunk (he wouldn't be visible)
 		struct NeighboursChunks
 		{
 			Chunk* left_Chunk =  nullptr;
@@ -23,47 +25,97 @@ namespace MC
 			Chunk* back_Chunk =  nullptr;
 		};
 
-		enum class ECubeFace : uint8_t { UP = 1, DOWN, FRONT, BACK, LEFT, RIGHT};
+		//Some internal functions will use this system to be more readable, although, the order its important and will be taken into account. (FRONT = 0 ...)
+		enum  ECubeFace : uint8_t { FRONT, BACK, UP, DOWN, LEFT, RIGHT};
 
 	public:
 		Chunk();
 		~Chunk();
 
+		//Get a type of a specific block
 		uint8_t get(int x, int y, int z);
+
+		//Set a type of a specific block
 		void set(int x, int y, int, uint8_t type);
 
+		//Regen the current chunk, this will be called if we detect changes in the chunk
 		void update();
 
-		//#TODO: enum class, setter and getter
-		//All of those who are + 1 it's because the greedy algorithm that needs to use the 0 index of them for position but at the same time it needs one more index
-		// of the array so the CHUNK_SIZE can be completely evaluated (since the key attribute as length or height is always one before the rest),
-		//With this, we can make a chunks with properly e.g 32 blocks round
-		uint8_t blocks[CHUNK_SIZE+1][CHUNK_SIZE+1][CHUNK_SIZE+1]; //types of blocks e.g: grass, stone, sand etc
 
-		bvec4 vertex[(CHUNK_SIZE+1) * (CHUNK_SIZE+1) * (CHUNK_SIZE+1) * FACE_VERTICES_NUMBER * CUBE_FACES]; //mesh data
-
-		//Set by SuperChunk
+		//Our actual neighbours chunks, this will be set by the SuperChunk class who will own this Chunk and will have sight of the other chunks as a whole
 		NeighboursChunks nc;
 
-		//Used by Renderer
+		//Mesh and OpenGL details, this will be used by the Renderer and it will possibly be abstracted away further
 		uint32_t VBO;
 		int elements;
 		bool changed;
 
+		//Our actual mesh data. Explanation on why the "+1" below.
+		bvec4 vertex[(CHUNK_SIZE+1) * (CHUNK_SIZE+1) * (CHUNK_SIZE+1) * FACE_VERTICES_NUMBER * CUBE_FACES];
 	private:
-		bool VisitedBlocks[((CHUNK_SIZE + 1) * (CHUNK_SIZE + 1) * (CHUNK_SIZE + 1) * CUBE_FACES)];
-		
-
+		/**
+		* @brief This function is reponsible to build the face in our vertex array, it generates 6 vertices based on the actual arguments.
+		* @param x, y and z - The position in the world of the vertex
+		* @param height, depth and length - This is sent by the greedy vertex algorithm and will determine the size of the face ( x + width, y + height, z + depth)
+		* @param type - Type of the block (dirt, grass, stone, custom etc...), this is sent by the face calculations functions.
+		* @param vertexIterator - A reference, it's the actual position in the vertex array. Each vertex adds + 1 in this iterator, for each face we have + 6 on it.
+		  it's also used to check how many elements we have at the end, saving us of batching non-existent blocks
+		* @param face - Since this can generate all the six faces, we can choose which face we want to gen. e.g: ECubeFace::FRONT
+		*/
 		void GenCubeFace(const uint32_t x, const uint32_t y, const uint32_t z, const uint32_t length, const uint32_t height, const uint32_t depth,
-		const uint8_t type, uint32_t& vertexIterator, ECubeFace face);
+						 const uint8_t type, uint32_t& vertexIterator, ECubeFace face);
 
-		bool isFaceVisible(const uint32_t x, const uint32_t y, const uint32_t z, ECubeFace face, Chunk* chunkTarget);
 
-		void GreedyFrontFace( const uint32_t x, const uint32_t y, const uint32_t z, uint32_t& vertexBufferIterator, Chunk* chunkTarget);
-		void GreedyBackFace ( const uint32_t x, const uint32_t y, const uint32_t z, uint32_t& vertexBufferIterator, Chunk* chunkTarget);
-		void GreedyUpFace   ( const uint32_t x, const uint32_t y, const uint32_t z, uint32_t& vertexBufferIterator, Chunk* chunkTarget);
-		void GreedyDownFace ( const uint32_t x, const uint32_t y, const uint32_t z, uint32_t& vertexBufferIterator, Chunk* chunkTarget);
-		void GreedyRightFace( const uint32_t x, const uint32_t y, const uint32_t z, uint32_t& vertexBufferIterator, Chunk* chunkTarget);
-		void GreedyLeftFace ( const uint32_t x, const uint32_t y, const uint32_t z, uint32_t& vertexBufferIterator, Chunk* chunkTarget);
+		/**
+		* @brief This function checks if a face is visible or not, this is, check if the face is in a border and if it is, check if there's a chunk next and if it's face is active
+		  or not.
+		* @param x, y and z - The block coords in the chunk (not world coords!)
+		* @param face - Since this can generate all the six faces, we can choose which face we want to gen. e.g: ECubeFace::FRONT
+		*/
+		bool isFaceVisible(const uint32_t x, const uint32_t y, const uint32_t z, ECubeFace face);
+
+
+		/**
+		* @brief This function is reponsible for calculating the Greedy Meshing Voxel algorithm of Front and Back face,
+		  it checks a bunch of things to verify how far can a face be optmized 
+		* @param x, y and z - The block coords in the chunk (not world coords!)
+		* @param type - Type of the block (dirt, grass, stone, custom etc...), this will be sent for "GenCubeFace" function.
+		* @param vertexIterator - A reference, it's the actual position in the vertex array. Each vertex adds + 1 in this iterator, for each face we have + 6 on it.
+		  it's also used to check how many elements we have at the end, saving us of batching non-existent blocks
+	    */
+		void CalcFrontAndBackFace(const uint32_t x, const uint32_t y, const uint32_t z, uint8_t type, uint32_t& vertexBufferIterator);
+
+		/**
+		* @brief This function is reponsible for calculating the Greedy Meshing Voxel algorithm of Up and Down face,
+		  it checks a bunch of things to verify how far can a face be optmized
+		* @param x, y and z - The block coords in the chunk (not world coords!)
+		* @param type - Type of the block (dirt, grass, stone, custom etc...), this will be sent for "GenCubeFace" function.
+		* @param vertexIterator - A reference, it's the actual position in the vertex array. Each vertex adds + 1 in this iterator, for each face we have + 6 on it.
+		  it's also used to check how many elements we have at the end, saving us of batching non-existent blocks
+		*/
+		void CalcUpAndDownFace   (const uint32_t x, const uint32_t y, const uint32_t z, uint8_t type, uint32_t& vertexBufferIterator);
+
+		/**
+		* @brief This function is reponsible for calculating the Greedy Meshing Voxel algorithm of Right and Left face,
+		  it checks a bunch of things to verify how far can a face be optmized
+		* @param x, y and z - The block coords in the chunk (not world coords!)
+		* @param type - Type of the block (dirt, grass, stone, custom etc...), this will be sent for "GenCubeFace" function.
+		* @param vertexIterator - A reference, it's the actual position in the vertex array. Each vertex adds + 1 in this iterator, for each face we have + 6 on it.
+		  it's also used to check how many elements we have at the end, saving us of batching non-existent blocks
+		*/
+		void CalcRightAndLeftFace(const uint32_t x, const uint32_t y, const uint32_t z, uint8_t type, uint32_t& vertexBufferIterator);
+
+
+
+
+		//Contains our actual blocks. If 0 then the block does not exist.
+		//Our Greedy Voxel Meshing is always one block behind, so if we want to use ALL blocks of CHUNK_SIZE we must use CHUNK_SIZE+1
+		//e.g: 16 of CHUNK_SIZE would result in 15 blocks generated. But 17 would result in 16.
+		//There's no problem with this because the additional block are never going to be generated, avoiding geometry clipping.
+		uint8_t blocks[CHUNK_SIZE+1][CHUNK_SIZE+1][CHUNK_SIZE+1];
+		
+		
+		//Our visited blocks for every face. They are combined in one single array.
+		bool VisitedBlocks[((CHUNK_SIZE + 1) * (CHUNK_SIZE + 1) * (CHUNK_SIZE + 1) * CUBE_FACES)];
 	};
 }
