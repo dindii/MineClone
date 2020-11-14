@@ -91,7 +91,7 @@ namespace MC
 
 		MC_LOG_TRACE((char*)glGetString(GL_VENDOR));
 		MC_LOG_TRACE((char*)glGetString(GL_VERSION));
-		
+
 
 		//Setup the first OpenGL call
 		glViewport(0, 0, m_Details->Width, m_Details->Height); //@TODO: Mover isso para outro lugar que lide apenas com OpenGL calls.
@@ -112,15 +112,6 @@ namespace MC
 	{
 		swapBuffers();
 		pollEvents();
-		
-
-		// @TODO: Quando passar para MT, lockar a thread apos setar o clipcursor e atualizar o RECT em alguma mensagem de window resize.S
-
-		//RECT r;
-		//GetWindowRect(m_NativeWindow, &r);
-		//ClipCursor(&r);
-		//ShowCursor(false);
-
 	}
 
 	bool Window::pollEvents()

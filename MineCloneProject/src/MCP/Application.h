@@ -3,6 +3,7 @@
 #include "LayerStack.h"
 #include "MCP/Platform/DeltaTime.h"
 #include "ImGuiLayer.h"
+#include "Utils/Logger.h"
 
 namespace MC
 {
@@ -46,6 +47,8 @@ namespace MC
 		bool lockCursor = true;
 
 		ImGuiLayer* m_ImGuiLayer;
+
+		MC::Debug::Logger* logger;
 
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);

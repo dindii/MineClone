@@ -1,14 +1,15 @@
 #pragma once
 #include <string>
-#include "MCP/Event/Event.h"
-#include "MCP/Maths/vec3.h"
 #include "MCP/Core.h"
+#include <sstream>
+#include <iostream>
 
 /*      @ TODO:
 * Mutex if needed.
-* Add all classes of the engine
-* Poll loggers
-* avoid repeating the check
+*/
+
+/*  
+* Not the fastest but should do the job if great flexibility. It is meant to be used only for debugging mode and can be easily extended with operator<< overload.
 */
 
 namespace MC {
@@ -16,7 +17,7 @@ namespace MC {
 	{
 		struct Logger
 		{
-			enum Level
+			enum Level : uint8_t
 			{
 				MCTRACE = 0,
 				MCWARNING,
@@ -24,34 +25,61 @@ namespace MC {
 				MCFATAL,
 			};
 
-			Logger();
-			~Logger();
+			Logger()
+			{
+				levelLabels[0] = "TRACE";
+				levelLabels[1] = "WARNING";
+				levelLabels[2] = "ERROR";
+				levelLabels[3] = "FATAL";
+			}
+			~Logger() = default;
 
-			//#TODO: Instead all of this overloads, we could just use parameter packs/variadic
-			static void Log(Event& event, const Level level);
-			static void Log(const char* string, const Level level);
-			static void Log(const char* string, const char* message, const Level level);
-			static void Log(std::string string, const Level level);
-			static void Log(const int num, const Level level);
-			static void Log(const float num, const Level level);
-			static void Log(const double num, const Level level);
-			static void Log(const vec3& vec, const Level level);
+			template<typename ... Args>
+			inline static void Log(Level level, Args&& ... args)
+			{
+				oss << levelLabels[level] << ": ";
+				(oss << ... << std::forward<Args>(args)) << '\n';
+				
+				checkFatal(level);
+			}
+			
+			inline static void Flush()
+			{
+				//Avoiding to use str with no purpose (which uses a considerable chunk of memory)
+				oss.seekp(0, std::ios::end);
+				uint32_t size = (uint32_t)oss.tellp();
+				
+				if (size > 0)
+				{
+					std::cout << oss.str();
+					
+					//Clears stream
+					oss.str("");
+				}
+			}
+		private:
+			inline static void checkFatal(const Level& level)
+			{
+				if (level == Level::MCFATAL)
+				{
+					Flush();
+					MC_ASSERT(false);
+				}
+			}
 
 		private:
-			static void Dispatch();
-			static void checkFatal(const Level& level);
-		private:
-			static std::string* levelLabels;
+			static std::string levelLabels[4];
+			static std::ostringstream oss;
 		};
 	}
 }
 
 
 #ifdef  MC_DEBUG
-#define MC_LOG_TRACE(...)   MC::Debug::Logger::Log(__VA_ARGS__,  MC::Debug::Logger::Level::MCTRACE)
-#define MC_LOG_WARNING(...) MC::Debug::Logger::Log(__VA_ARGS__,  MC::Debug::Logger::Level::MCWARNING)
-#define MC_LOG_ERROR(...)   MC::Debug::Logger::Log(__VA_ARGS__,  MC::Debug::Logger::Level::MCERROR)
-#define MC_LOG_FATAL(...)   MC::Debug::Logger::Log(__VA_ARGS__,  MC::Debug::Logger::Level::MCFATAL)
+#define MC_LOG_TRACE(...)   MC::Debug::Logger::Log(MC::Debug::Logger::Level::MCTRACE  ,                                 __VA_ARGS__)
+#define MC_LOG_WARNING(...) MC::Debug::Logger::Log(MC::Debug::Logger::Level::MCWARNING, __LINE__, " ", __FILE__, " - ", __VA_ARGS__)
+#define MC_LOG_ERROR(...)   MC::Debug::Logger::Log(MC::Debug::Logger::Level::MCERROR  , __LINE__, " ", __FILE__, " - ", __VA_ARGS__)
+#define MC_LOG_FATAL(...)   MC::Debug::Logger::Log(MC::Debug::Logger::Level::MCFATAL  , __LINE__, " ", __FILE__, " - ", __VA_ARGS__)
 
 #else
 #define MC_LOG_TRACE(...) 

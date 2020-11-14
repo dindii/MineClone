@@ -207,8 +207,16 @@ namespace MC
 		}
 	}
 
+	//Although we use ECubeFace for readability inside our functions, we need to use literal integers in order to reduce the code to half 
+	//And since it's not needed scalability (since we will never have more than six faces), we can use those integers without problem.
+	//Each face have a number (that matches ECubeFace) reserved for it and we will use this here.
+	//FRONT = 0, BACK = 1, UP = 2, DOWN = 3, LEFT = 4, RIGHT = 5
+	//Then, we can cast the integer to the ECubeFace (which will be right) and use this same integer into PreCalcIndex.
+	//Also, we can use those functions in whatever order we want.
+
 	void Chunk::CalcFrontAndBackFace(const uint32_t x, const uint32_t y, const uint32_t z, uint8_t type, uint32_t& vertexBufferIterator)
 	{
+		//Front = 0 and Back = 1
 		for (uint8_t i = 0; i < 2; i++)
 		{
 			uint32_t length = 0, height = 0;
@@ -248,7 +256,7 @@ namespace MC
 	}
 	void Chunk::CalcUpAndDownFace(const uint32_t x, const uint32_t y, const uint32_t z, uint8_t type, uint32_t& vertexBufferIterator)
 	{
-		//#TODO: Expandir pra outras faces e depois expandir pra outros chunks
+		//Up = 2 and Down = 3
 		for (uint8_t i = 2; i < 4; i++)
 		{
 			uint32_t length = 0, depth = 0;
@@ -287,7 +295,7 @@ namespace MC
 	
 	void Chunk::CalcRightAndLeftFace(const uint32_t x, const uint32_t y, const uint32_t z, uint8_t type, uint32_t& vertexBufferIterator)
 	{
-		//#TODO: Expandir pra outras faces e depois expandir pra outros chunks
+		//Left = 4 and Right = 5
 		for (uint8_t i = 4; i < 6; i++)
 		{
 			uint32_t depth = 0, height = 0;

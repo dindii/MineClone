@@ -35,8 +35,6 @@ WorldLayer::WorldLayer() : Layer("WorldLayer"), terrain(64, 64, 64)
 // 	{
 // 		Directions.Set(0, 0, z, 1);
 // 	}
-
-
 }
 
 void WorldLayer::OnUpdate(MC::DeltaTime deltaTime)

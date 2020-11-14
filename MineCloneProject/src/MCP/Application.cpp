@@ -1,6 +1,5 @@
 #include "mcpch.h"
 #include "Application.h"
-#include "Utils/Logger.h"
 #include "Core.h"
 #include "IO/InputHandler.h"
 #include "MCP/Renderer/VoxelRenderer.h"
@@ -13,6 +12,9 @@ namespace MC
 
 	Application::Application() : m_Running(true)
 	{
+		//We need to initialize the logger first in order to recieve info of the other systems initialization
+		logger = new MC::Debug::Logger;
+
 		s_Instance = this;
 		m_Minimized = false;
 
@@ -25,6 +27,8 @@ namespace MC
 
 		m_ImGuiLayer = new ImGuiLayer;
 		PushOverLay(m_ImGuiLayer);
+
+
 	}
 
 	Application::~Application()
@@ -32,6 +36,7 @@ namespace MC
 		VoxelRenderer::ShutDown();
 
 		delete m_Window;
+		delete logger;
 
 	}
 
@@ -52,7 +57,10 @@ namespace MC
 				layer->OnImGuiRender();
 			m_ImGuiLayer->End();
 
-			m_Window->onUpdate();	
+			m_Window->onUpdate();
+
+			//flush log messages
+			logger->Flush();
 		}
 	}
 
