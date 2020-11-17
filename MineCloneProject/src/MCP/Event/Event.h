@@ -64,6 +64,12 @@ namespace MC
 		inline bool IsInCategory(EventCategory category) { return GetCategoryFlags() & category; }
     };
 
+	inline std::ostream& operator<<(std::ostream& os, const Event& e)
+	{
+		os << e.ToString();
+		return os;
+	}
+
 	class EventDispatcher
 	{
 		/**

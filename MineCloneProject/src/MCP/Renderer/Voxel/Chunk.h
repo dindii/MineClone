@@ -6,7 +6,7 @@
 namespace MC
 {
 	//#TODO: Make a global function to change the size of the chunk and superchunk
-	constexpr uint8_t CHUNK_SIZE = 16;
+	constexpr uint8_t CHUNK_SIZE = 32;
 	constexpr uint8_t CUBE_FACES = 6;
 	constexpr uint8_t FACE_VERTICES_NUMBER = 6;
 

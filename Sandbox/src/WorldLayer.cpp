@@ -1,9 +1,7 @@
 ﻿#include "WorldLayer.h"
 #include "imgui/imgui.h"
 
-#include <thread>
-
-WorldLayer::WorldLayer() : Layer("WorldLayer"), terrain(64, 64, 64)
+WorldLayer::WorldLayer() : Layer("WorldLayer"), terrain(255, 255, 255)
 {
 	camera = MC::Camera(1362 / 701, { 0.0f, 0.0f, 500.0f });
 	camera.SetCameraLag(true);
@@ -52,6 +50,8 @@ void WorldLayer::OnUpdate(MC::DeltaTime deltaTime)
 void WorldLayer::OnEvent(MC::Event& e)
 {
 	camera.OnEvent(e);
+	MC_LOG_TRACE(e);
+	
 }
 
 void WorldLayer::OnImGuiRender()
@@ -109,7 +109,6 @@ void WorldLayer::MovePlayer(MC::DeltaTime deltaTime)
 
 	camera.AddCameraTargetPosition(gotoCamera, deltaTime);	
 //	camera.SetCameraPosition(MC::vec3(camera.GetCameraPos().x - gotoCamera.x,camera.GetCameraPos().y + gotoCamera.y, camera.GetCameraPos().z + gotoCamera.z));
-
 }
 
 //#TODO: mover para um controller
