@@ -46,8 +46,8 @@ namespace MC
 		uint32_t vertexBufferIterator = 0;
 
 		for (uint32_t y = 0; y <= CHUNK_SIZE; y++)	
-			for (uint32_t z = 0; z <= CHUNK_SIZE; z++)	
-				for (uint32_t x = 0; x <= CHUNK_SIZE; x++)
+			for (uint8_t z = 0; z <= CHUNK_SIZE; z++)	
+				for (uint8_t x = 0; x <= CHUNK_SIZE; x++)
 				{
 					type = blocks[x][y][z];
 					if (!type)
@@ -64,7 +64,7 @@ namespace MC
 	}
 
 	//#TODO: Expandir para outras chunks
-	bool Chunk::isFaceVisible(const uint32_t x, const uint32_t y, const uint32_t z, ECubeFace face)
+	bool Chunk::isFaceVisible(const uint8_t x, const uint32_t y, const uint8_t z, ECubeFace face)
 	{
 		switch (face)
 		{
@@ -133,74 +133,88 @@ namespace MC
 		return false;
 	}
 
+	uint32_t Chunk::PackVertexAtbs(const uint8_t x, const uint32_t y, const uint8_t z, const uint8_t normalLight, const uint8_t type)
+	{
+		uint32_t Pack = (normalLight << 13) | (z << 16) | (x << 20) | (y << 24);
+		
+		//	 Y        X    Z        N    I      Left
+		// |00000000| |0000 0000| |000 00000| 00000000 
 
-	void Chunk::GenCubeFace(const uint32_t x, const uint32_t y, const uint32_t z, const uint32_t length, const uint32_t height, const uint32_t depth, const uint8_t type, uint32_t& vertexIterator, ECubeFace face)
+		//z 0-8
+		//x 8-16
+		//y 16-24
+		
+		return Pack;
+	}
+
+	void Chunk::GenCubeFace(const uint8_t x, const uint32_t y, const uint8_t z, const uint8_t length, const uint32_t height, const uint8_t depth, const uint8_t type, uint32_t& vertexIterator, ECubeFace face)
 	{
 		switch (face)
 		{
 			case ECubeFace::BACK:
 			{
-				vertex[vertexIterator++] = bvec4(x,			 y,		      z, type);
-				vertex[vertexIterator++] = bvec4(x,			 y + height,  z, type);
-				vertex[vertexIterator++] = bvec4(x + length, y, z,			 type);
-				vertex[vertexIterator++] = bvec4(x,			 y + height,  z, type);
-				vertex[vertexIterator++] = bvec4(x + length, y + height,  z, type);
-				vertex[vertexIterator++] = bvec4(x + length, y,		      z, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x,			 y,		      z, 2, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x,			 y + height,  z, 2, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x + length, y, z,			     2, type	 );
+				vertex[vertexIterator++] = PackVertexAtbs(x,			 y + height,  z, 2, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x + length, y + height,  z,    2, type	 );
+				vertex[vertexIterator++] = PackVertexAtbs(x + length, y,		      z, 2, type);
 				
 				break;
 			}
 			case ECubeFace::FRONT:
 			{															 
- 				vertex[vertexIterator++] = bvec4(x,          y,			 z + 1, type);
- 				vertex[vertexIterator++] = bvec4(x + length, y,			 z + 1, type);
-				vertex[vertexIterator++] = bvec4(x,			 y + height, z + 1, type);
-				vertex[vertexIterator++] = bvec4(x,			 y + height, z + 1, type);
-				vertex[vertexIterator++] = bvec4(x + length, y,			 z + 1, type);
-				vertex[vertexIterator++] = bvec4(x + length, y + height, z + 1, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x, y, z + 1, 4, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x + length, y, z + 1, 4, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x, y + height, z + 1, 4, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x, y + height, z + 1, 4, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x + length, y, z + 1, 4, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x + length, y + height, z + 1, 4, type);
 
 				break;
 			}
 			case ECubeFace::LEFT:
 			{
-				vertex[vertexIterator++] = bvec4(x, y,          z, type);
-				vertex[vertexIterator++] = bvec4(x, y,		    z + depth, type);
-				vertex[vertexIterator++] = bvec4(x, y + height, z, type);
-				vertex[vertexIterator++] = bvec4(x, y + height, z, type);
-				vertex[vertexIterator++] = bvec4(x, y,          z + depth, type);
-				vertex[vertexIterator++] = bvec4(x, y + height, z + depth, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x, y,          z,		    4, type		);
+				vertex[vertexIterator++] = PackVertexAtbs(x, y,		    z + depth,  4, type );
+				vertex[vertexIterator++] = PackVertexAtbs(x, y + height, z,         4, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x, y + height, z,         4, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x, y,          z + depth, 4, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x, y + height, z + depth, 4, type);
 
 				break;
 			}
 			case ECubeFace::RIGHT:
 			{
-				vertex[vertexIterator++] = bvec4(x + 1, y,			z,         type);
-				vertex[vertexIterator++] = bvec4(x + 1, y + height, z,		   type);
-				vertex[vertexIterator++] = bvec4(x + 1, y,			z + depth, type);
-				vertex[vertexIterator++] = bvec4(x + 1, y + height, z,         type);
-				vertex[vertexIterator++] = bvec4(x + 1, y + height, z + depth, type);
-				vertex[vertexIterator++] = bvec4(x + 1, y,			z + depth, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x + 1, y,			z,          2, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x + 1, y + height, z,		    2, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x + 1, y,			z + depth,  2, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x + 1, y + height, z,         2, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x + 1, y + height, z + depth, 2, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x + 1, y,			z + depth,  2, type);
+
 
 				break;
 			}
 			case ECubeFace::UP:
 			{
-				vertex[vertexIterator++] = bvec4(x,		   	 y + 1, z,         type);
-				vertex[vertexIterator++] = bvec4(x,		  	 y + 1, z + depth, type);
-				vertex[vertexIterator++] = bvec4(x + length, y + 1, z,		   type);
-				vertex[vertexIterator++] = bvec4(x + length, y + 1, z,	       type);
-				vertex[vertexIterator++] = bvec4(x,          y + 1, z + depth, type);
-				vertex[vertexIterator++] = bvec4(x + length, y + 1, z + depth, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x,		   	 y + 1, z,         5, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x,		  	 y + 1, z + depth, 5, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x + length, y + 1, z,			   5, type	   );
+				vertex[vertexIterator++] = PackVertexAtbs(x + length, y + 1, z,			   5, type    );
+				vertex[vertexIterator++] = PackVertexAtbs(x,          y + 1, z + depth,    5, type   );
+				vertex[vertexIterator++] = PackVertexAtbs(x + length, y + 1, z + depth,    5, type   );
 
 				break;
 			}
 			case ECubeFace::DOWN:
 			{
-				vertex[vertexIterator++] = bvec4(x,          y, z,         type);
-				vertex[vertexIterator++] = bvec4(x + length, y, z,         type);
-				vertex[vertexIterator++] = bvec4(x,          y, z + depth, type);
-				vertex[vertexIterator++] = bvec4(x + length, y, z,         type);
-				vertex[vertexIterator++] = bvec4(x + length, y, z + depth, type);
-				vertex[vertexIterator++] = bvec4(x,          y, z + depth, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x,          y, z,         1, type		);
+				vertex[vertexIterator++] = PackVertexAtbs(x + length, y, z,         1, type		);
+				vertex[vertexIterator++] = PackVertexAtbs(x,          y, z + depth, 1, type		);
+				vertex[vertexIterator++] = PackVertexAtbs(x + length, y, z,         1, type		);
+				vertex[vertexIterator++] = PackVertexAtbs(x + length, y, z + depth, 1, type		);
+				vertex[vertexIterator++] = PackVertexAtbs(x,          y, z + depth, 1, type		);
 
 				break;
 			}
@@ -214,12 +228,12 @@ namespace MC
 	//Then, we can cast the integer to the ECubeFace (which will be right) and use this same integer into PreCalcIndex.
 	//Also, we can use those functions in whatever order we want.
 
-	void Chunk::CalcFrontAndBackFace(const uint32_t x, const uint32_t y, const uint32_t z, uint8_t type, uint32_t& vertexBufferIterator)
+	void Chunk::CalcFrontAndBackFace(const uint8_t x, const uint32_t y, const uint8_t z, uint8_t type, uint32_t& vertexBufferIterator)
 	{
 		//Front = 0 and Back = 1
 		for (uint8_t i = 0; i < 2; i++)
 		{
-			uint32_t length = 0, height = 0;
+			uint8_t length = 0, height = 0;
 			uint32_t PreviousLength = 0;
 
 			ECubeFace face = (ECubeFace)i;
@@ -254,12 +268,12 @@ namespace MC
 		}
 
 	}
-	void Chunk::CalcUpAndDownFace(const uint32_t x, const uint32_t y, const uint32_t z, uint8_t type, uint32_t& vertexBufferIterator)
+	void Chunk::CalcUpAndDownFace(const uint8_t x, const uint32_t y, const uint8_t z, uint8_t type, uint32_t& vertexBufferIterator)
 	{
 		//Up = 2 and Down = 3
 		for (uint8_t i = 2; i < 4; i++)
 		{
-			uint32_t length = 0, depth = 0;
+			uint8_t length = 0, depth = 0;
 			uint32_t PreviousLength = 0;
 
 			ECubeFace face = (ECubeFace)i;
@@ -293,12 +307,12 @@ namespace MC
 		}
 	}
 	
-	void Chunk::CalcRightAndLeftFace(const uint32_t x, const uint32_t y, const uint32_t z, uint8_t type, uint32_t& vertexBufferIterator)
+	void Chunk::CalcRightAndLeftFace(const uint8_t x, const uint32_t y, const uint8_t z, uint8_t type, uint32_t& vertexBufferIterator)
 	{
 		//Left = 4 and Right = 5
 		for (uint8_t i = 4; i < 6; i++)
 		{
-			uint32_t depth = 0, height = 0;
+			uint8_t depth = 0, height = 0;
 			uint32_t PreviousDepth = 0;
 
 			ECubeFace face = (ECubeFace)i;

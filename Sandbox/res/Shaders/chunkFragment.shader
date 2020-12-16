@@ -1,8 +1,9 @@
 #version 330 core
 
-in vec4 v_textCoord;
+
+in float NormalLight;
 
 void main()
 {
-	gl_FragColor = vec4(0.8f, 0.8f, 0.8f, 1.0f);
+	gl_FragColor = vec4(0.8f, 0.8f, 0.8f, 1.0f) * NormalLight;
 }

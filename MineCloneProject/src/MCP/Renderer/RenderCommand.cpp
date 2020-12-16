@@ -13,7 +13,7 @@ namespace MC
 			chunk->update();
 
 			glBindBuffer(GL_ARRAY_BUFFER, chunk->VBO);
-			glBufferData(GL_ARRAY_BUFFER, chunk->elements * sizeof(chunk->vertex[0]), chunk->vertex, GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, chunk->elements * sizeof(uint32_t), chunk->vertex, GL_STATIC_DRAW);
 		}
 		
 		if (!chunk->elements)
@@ -21,7 +21,7 @@ namespace MC
 
 		glBindBuffer(GL_ARRAY_BUFFER, chunk->VBO);
 		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 4, GL_BYTE, GL_FALSE, sizeof(uint8_t) * 4, (void*)0);
+		glVertexAttribIPointer(0, 1, GL_UNSIGNED_INT, sizeof(uint32_t), 0);
 
 		glDrawArrays(GL_TRIANGLES, 0, chunk->elements);
 	}

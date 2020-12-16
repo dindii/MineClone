@@ -1,7 +1,7 @@
 ﻿#include "WorldLayer.h"
 #include "imgui/imgui.h"
 
-WorldLayer::WorldLayer() : Layer("WorldLayer"), terrain(255, 255, 255)
+WorldLayer::WorldLayer() : Layer("WorldLayer"), terrain(64, 64, 64)
 {
 	camera = MC::Camera(1362 / 701, { 0.0f, 0.0f, 500.0f });
 	camera.SetCameraLag(true);
@@ -50,8 +50,7 @@ void WorldLayer::OnUpdate(MC::DeltaTime deltaTime)
 void WorldLayer::OnEvent(MC::Event& e)
 {
 	camera.OnEvent(e);
-	MC_LOG_TRACE(e);
-	
+	//MC_LOG_TRACE(e);
 }
 
 void WorldLayer::OnImGuiRender()
