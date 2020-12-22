@@ -1,8 +1,8 @@
 #include "mcpch.h"
 #include "Application.h"
 #include "imgui.h"
-#include "examples/imgui_impl_win32.h"
-#include "examples/imgui_impl_opengl3.h"
+#include "backends/imgui_impl_win32.h"
+#include "backends/imgui_impl_opengl3.h"
 #include "imgui_internal.h"
 #include <tchar.h>
 #include "MCP/Renderer/RenderCommand.h"
@@ -37,8 +37,8 @@ namespace MC
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
 		io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
 		io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
-		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-		io.ConfigDockingWithShift = true;
+		//io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+		//io.ConfigDockingWithShift = true;
 
 		ImGui_ImplWin32_Init(Application::Get()->GetWindow().GetNativeWindow());
 		ImGui_ImplOpenGL3_Init("#version 410");

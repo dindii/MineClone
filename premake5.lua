@@ -17,6 +17,7 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
  IncludeDir = {}
   IncludeDir["Glad"] = "MineCloneProject/vendor/Glad/include"
   IncludeDir["ImGui"] = "MineCloneProject/vendor/imgui"
+  IncludeDir["stbi"] = "MineCloneProject/vendor/stbi"
 
   group "Dependencies"
   include "MineCloneProject/vendor/Glad"
@@ -39,21 +40,27 @@ project "MineCloneProject"
 	files
 	{
 		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp"
+		"%{prj.name}/src/**.cpp",
+		"%{prj.name}/vendor/Imgui/backends/imgui_impl_win32.cpp",
+		"%{prj.name}/vendor/Imgui/backends/imgui_impl_win32.h",
+
+		"%{prj.name}/vendor/Imgui/backends/imgui_impl_opengl3.cpp",
+		"%{prj.name}/vendor/Imgui/backends/imgui_impl_opengl3.h"
 	}
 
 	includedirs
 	{
 		"%{prj.name}/src",
 		"%{IncludeDir.Glad}",
-                "%{IncludeDir.ImGui}",
+        "%{IncludeDir.ImGui}",
+		"%{IncludeDir.stbi}",
 	}
 	
 	links
 	{
 		"Glad",
-                "ImGui",
-                "opengl32.lib"
+        "ImGui",
+        "opengl32.lib"
 	}
 
 	filter "system:windows"
