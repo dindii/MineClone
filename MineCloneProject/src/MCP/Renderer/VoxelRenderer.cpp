@@ -6,22 +6,60 @@
 #include "MCP/Maths/Maths.h"
 
 namespace MC
-{
-	struct VoxelRenderingResources
-	{
-		Shader voxelShader;
-	};
-
-	static VoxelRenderingResources* v_Data;
+{	
+	VoxelRenderer::VoxelRenderingResources* VoxelRenderer::v_Data;
 
 	void VoxelRenderer::Init()
 	{
 		v_Data = new VoxelRenderingResources();
 		v_Data->voxelShader.Init("res/Shaders/chunkVertex.shader", "res/Shaders/chunkFragment.shader");
+		v_Data->voxelShader.Bind();
+
+		int32_t samplers[v_Data->MaxTextureSlots];
+	
+		for (uint32_t x = 0; x < v_Data->MaxTextureSlots; x++)
+			samplers[x] = x;
+	
+		v_Data->voxelShader.UploadIntArray("u_Textures", samplers, v_Data->MaxTextureSlots);
+	
+		for (uint32_t x = 0; x < v_Data->MaxTextureSlots; x++)
+			v_Data->textures[x] = nullptr;
 
 		RenderCommand::Init();
 	}
 
+	int8_t VoxelRenderer::AddTexture(const Texture2D* texture)
+	{
+		if (v_Data->TextureSlotsIndex >= v_Data->MaxTextureSlots)
+		{
+			MC_LOG_ERROR("Not enough texture slots remaining!");
+			return 0;
+		}
+		
+		v_Data->textures[v_Data->TextureSlotsIndex] = texture; 
+		return v_Data->TextureSlotsIndex++;
+
+	}
+
+	int8_t VoxelRenderer::GetTexture(const Texture2D* texture)
+	{
+		int8_t textureIndex = -1;
+		
+		for (uint32_t x = 0; x <= v_Data->TextureSlotsIndex; x++)
+		{
+			if (v_Data->textures[x] && *v_Data->textures[x] == *texture)
+			{
+				textureIndex = x;
+				return textureIndex;
+			}
+		}
+		
+		return textureIndex;
+
+		
+	}
+
+	
 	void VoxelRenderer::ShutDown()
 	{
 		delete v_Data;
@@ -52,6 +90,15 @@ namespace MC
 	void VoxelRenderer::BeginScene(const Camera& camera)
 	{
 		v_Data->voxelShader.UploadUniformMat4("u_ViewProjection", (camera.GetProjection() * camera.getViewMatrix()));
+	}
+
+	void VoxelRenderer::EndScene()
+	{
+		for (int x = 0; x < v_Data->TextureSlotsIndex; x++)
+		{
+			v_Data->textures[x]->Bind(x);
+		}
+
 	}
 
 	void VoxelRenderer::Clear(const bool& ColorBuffer /*= true*/, const bool& DepthBuffer /*= true*/)

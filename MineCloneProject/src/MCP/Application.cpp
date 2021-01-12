@@ -27,8 +27,6 @@ namespace MC
 
 		m_ImGuiLayer = new ImGuiLayer;
 		PushOverLay(m_ImGuiLayer);
-
-
 	}
 
 	Application::~Application()

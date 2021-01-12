@@ -3,19 +3,19 @@
 #include "MCP/Renderer/RenderCommand.h"
 
 #include "MCP/Utils/Logger.h"
-
+#include "MCP/Renderer/VoxelRenderer.h"
 namespace MC
 {
 	constexpr uint32_t CHUNK_SQUARED = CHUNK_SIZE * CHUNK_SIZE;
 	constexpr uint32_t CHUNK_SIZE_CUBED = CHUNK_SQUARED * CHUNK_SIZE;
 
 #define PreCalcIndex(x, y, z, a) (x + z * CHUNK_SIZE + y * CHUNK_SQUARED) + (CHUNK_SIZE_CUBED * a)
-	
+
 
 	Chunk::Chunk() : elements(0), changed(true)
 	{
-		memset(blocks,        0, sizeof(blocks));
-		memset(vertex,        0, sizeof(vertex));
+		memset(blocks, 0, sizeof(blocks));
+		memset(vertex, 0, sizeof(vertex));
 		memset(VisitedBlocks, 0, sizeof(VisitedBlocks));
 
 		VBO = RenderCommand::GenMesh(1);
@@ -31,12 +31,18 @@ namespace MC
 		return blocks[x][y][z];
 	}
 
-	void Chunk::set(int x, int y, int z, uint8_t type)
+	void Chunk::set(int x, int y, int z, uint8_t type, const Texture2D* texture)
 	{
 		blocks[x][y][z] = type;
 		changed = true;
-	}
 
+		int8_t TextureID = VoxelRenderer::GetTexture(texture);
+		
+		if (TextureID < 0)
+			TextureID = VoxelRenderer::AddTexture(texture);
+
+		m_TexturesID[x][y][z] = TextureID;
+	}
 
 	void Chunk::update()
 	{
@@ -133,9 +139,9 @@ namespace MC
 		return false;
 	}
 
-	uint32_t Chunk::PackVertexAtbs(const uint8_t x, const uint32_t y, const uint8_t z, const uint8_t normalLight, const uint8_t type)
+	uint32_t Chunk::PackVertexAtbs(const uint8_t x, const uint32_t y, const uint8_t z, const uint8_t normalLight, const uint8_t textureID, const uint8_t textureCoordsIndex, const uint8_t type)
 	{
-		uint32_t Pack = (normalLight << 13) | (z << 16) | (x << 20) | (y << 24);
+		uint32_t Pack = (textureCoordsIndex) | (textureID << 8) |(normalLight << 13) | (z << 16) | (x << 20) | (y << 24);
 		
 		//	 Y        X    Z        N    I      Left
 		// |00000000| |0000 0000| |000 00000| 00000000 
@@ -149,72 +155,75 @@ namespace MC
 
 	void Chunk::GenCubeFace(const uint8_t x, const uint32_t y, const uint8_t z, const uint8_t length, const uint32_t height, const uint8_t depth, const uint8_t type, uint32_t& vertexIterator, ECubeFace face)
 	{
+
+		int8_t textureID = m_TexturesID[x][y][z];
+
 		switch (face)
 		{
 			case ECubeFace::BACK:
 			{
-				vertex[vertexIterator++] = PackVertexAtbs(x,			 y,		      z, 2, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x,			 y + height,  z, 2, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x + length, y, z,			     2, type	 );
-				vertex[vertexIterator++] = PackVertexAtbs(x,			 y + height,  z, 2, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x + length, y + height,  z,    2, type	 );
-				vertex[vertexIterator++] = PackVertexAtbs(x + length, y,		      z, 2, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x,			 y,		      z, 2, textureID, 0, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x,			 y + height,  z, 2, textureID, 1, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x + length, y, z,			     2, textureID, 3, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x,			 y + height,  z, 2, textureID, 1, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x + length, y + height,  z,    2, textureID, 2, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x + length, y,		      z, 2, textureID, 1, type);
 				
 				break;
 			}
 			case ECubeFace::FRONT:
 			{															 
-				vertex[vertexIterator++] = PackVertexAtbs(x, y, z + 1, 4, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x + length, y, z + 1, 4, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x, y + height, z + 1, 4, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x, y + height, z + 1, 4, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x + length, y, z + 1, 4, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x + length, y + height, z + 1, 4, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x, y, z + 1, 4,				    textureID, 0, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x + length, y, z + 1, 4,		    textureID, 1, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x, y + height, z + 1, 4,		    textureID, 3, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x, y + height, z + 1, 4,		    textureID, 3, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x + length, y, z + 1, 4,		    textureID, 1, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x + length, y + height, z + 1, 4, textureID, 2, type);
 
 				break;
 			}
 			case ECubeFace::LEFT:
 			{
-				vertex[vertexIterator++] = PackVertexAtbs(x, y,          z,		    4, type		);
-				vertex[vertexIterator++] = PackVertexAtbs(x, y,		    z + depth,  4, type );
-				vertex[vertexIterator++] = PackVertexAtbs(x, y + height, z,         4, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x, y + height, z,         4, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x, y,          z + depth, 4, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x, y + height, z + depth, 4, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x, y,          z,		    4,  textureID, 0, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x, y,		    z + depth,  4,  textureID, 3, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x, y + height, z,         4,  textureID, 1, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x, y + height, z,         4,  textureID, 1, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x, y,          z + depth, 4,  textureID, 3, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x, y + height, z + depth, 4,  textureID, 2, type);
 
 				break;
 			}
 			case ECubeFace::RIGHT:
 			{
-				vertex[vertexIterator++] = PackVertexAtbs(x + 1, y,			z,          2, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x + 1, y + height, z,		    2, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x + 1, y,			z + depth,  2, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x + 1, y + height, z,         2, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x + 1, y + height, z + depth, 2, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x + 1, y,			z + depth,  2, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x + 1, y,			z,          2, textureID, 0, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x + 1, y + height, z,		    2, textureID, 1, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x + 1, y,			z + depth,  2, textureID, 3, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x + 1, y + height, z,         2, textureID, 1, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x + 1, y + height, z + depth, 2, textureID, 2, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x + 1, y,			z + depth,  2, textureID, 3, type);
 
 
 				break;
 			}
 			case ECubeFace::UP:
 			{
-				vertex[vertexIterator++] = PackVertexAtbs(x,		   	 y + 1, z,         5, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x,		  	 y + 1, z + depth, 5, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x + length, y + 1, z,			   5, type	   );
-				vertex[vertexIterator++] = PackVertexAtbs(x + length, y + 1, z,			   5, type    );
-				vertex[vertexIterator++] = PackVertexAtbs(x,          y + 1, z + depth,    5, type   );
-				vertex[vertexIterator++] = PackVertexAtbs(x + length, y + 1, z + depth,    5, type   );
+				vertex[vertexIterator++] = PackVertexAtbs(x,		   	 y + 1, z,         5,  textureID, 0, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x,		  	 y + 1, z + depth, 5,  textureID, 3, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x + length, y + 1, z,			   5,  textureID, 1, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x + length, y + 1, z,			   5,  textureID, 1, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x,          y + 1, z + depth,    5,  textureID, 3, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x + length, y + 1, z + depth,    5,  textureID, 2, type);
 
 				break;
 			}
 			case ECubeFace::DOWN:
 			{
-				vertex[vertexIterator++] = PackVertexAtbs(x,          y, z,         1, type		);
-				vertex[vertexIterator++] = PackVertexAtbs(x + length, y, z,         1, type		);
-				vertex[vertexIterator++] = PackVertexAtbs(x,          y, z + depth, 1, type		);
-				vertex[vertexIterator++] = PackVertexAtbs(x + length, y, z,         1, type		);
-				vertex[vertexIterator++] = PackVertexAtbs(x + length, y, z + depth, 1, type		);
-				vertex[vertexIterator++] = PackVertexAtbs(x,          y, z + depth, 1, type		);
+				vertex[vertexIterator++] = PackVertexAtbs(x,          y, z,         1,  textureID, 0, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x + length, y, z,         1,  textureID, 1, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x,          y, z + depth, 1,  textureID, 3, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x + length, y, z,         1,  textureID, 1, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x + length, y, z + depth, 1,  textureID, 2, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x,          y, z + depth, 1,  textureID, 3, type);
 
 				break;
 			}
@@ -246,16 +255,35 @@ namespace MC
 					if (blocks[xx][yy][z] != blocks[x][yy][z] || !blocks[xx][yy][z] || VisitedBlocks[PreCalcIndex(xx, yy, z, i)] || !isFaceVisible(xx, yy, z, face))
 						break;
 
+					
+
 					//Salvamos falando que o bloco ja foi visitado
 					VisitedBlocks[PreCalcIndex(xx, yy, z, i)] = true;
 
 					//Caso não seja, aumentamos o length, ou seja, mais um bloco à direita que cubrimos.
 					length++;
+					
+#ifdef MC_DEBUG
+					//DEBUG
+					//////////////////////////////////////////////////////////////////////////////
+					//m_TexturesID[xx][yy][z] = m_TexturesID[x][y][z];
+					//////////////////////////////////////////////////////////////////////////////
+#endif
 				}
 
 				if (yy > 0 && (PreviousLength != length || yy == CHUNK_SIZE))
 				{
 					GenCubeFace(x, yy - height, z, PreviousLength, height, 1, type, vertexBufferIterator, face);
+#ifdef MC_DEBUG
+					//DEBUG
+					//////////////////////////////////////////////////////////////////////////////
+					//Converter o array de texturas de blocos para array de texturas de faces tal como o Set do Superchunk e chunk
+					//ou achar um jeito de unificar todas as alterações de index das faces em um só bloco (improvável)
+
+					//ver qual vai ser o fator pra multiplicar o texture coord pra formar bloquinhos uniformes.
+					m_TexturesID[x][yy - height][z] = m_TexturesID[x][y][z];
+					//////////////////////////////////////////////////////////////////////////////
+#endif
 					height = 0;
 				}
 
@@ -263,7 +291,6 @@ namespace MC
 				length = 0;
 
 				height++;
-
 			}
 		}
 

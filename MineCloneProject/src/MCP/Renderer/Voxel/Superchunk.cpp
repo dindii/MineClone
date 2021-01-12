@@ -36,7 +36,7 @@ namespace MC
 		return c[cx][cy][cz]->get(x, y, z);
 	}
 
-	void Superchunk::Set(int x, int y, int z, uint8_t type)
+	void Superchunk::Set(int x, int y, int z, uint8_t type, const Texture2D* texture)
 	{
 		int cx = x / CHUNK_SIZE;
 		int cy = y / CHUNK_SIZE;
@@ -65,7 +65,7 @@ namespace MC
 			c[cx][cy][cz - 1]->nc.front_Chunk = c[cx][cy][cz];
 		}
 
-		c[cx][cy][cz]->set(x, y, z, type);
+		c[cx][cy][cz]->set(x, y, z, type, texture);
 	}
 
 }

@@ -2,6 +2,7 @@
 
 #include "MCP/Renderer/Shader/Shader.h"
 #include "MCP/Maths/bvec4.h"
+#include "MCP/Renderer/Texture2D.h"
 
 namespace MC
 {
@@ -36,7 +37,7 @@ namespace MC
 		uint8_t get(int x, int y, int z);
 
 		//Set a type of a specific block
-		void set(int x, int y, int, uint8_t type);
+		void set(int x, int y, int, uint8_t type, const Texture2D* texture);
 
 		//Regen the current chunk, this will be called if we detect changes in the chunk
 		void update();
@@ -66,7 +67,7 @@ namespace MC
 						 const uint8_t type, uint32_t& vertexIterator, ECubeFace face);
 
 
-		uint32_t PackVertexAtbs(const uint8_t x, const uint32_t y, const uint8_t z, const uint8_t normalLight, const uint8_t type);
+		uint32_t PackVertexAtbs(const uint8_t x, const uint32_t y, const uint8_t z, const uint8_t normalLight, const uint8_t textureID, const uint8_t textureCoordsIndex, const uint8_t type);
 
 		/**
 		* @brief This function checks if a face is visible or not, this is, check if the face is in a border and if it is, check if there's a chunk next and if it's face is active
@@ -115,8 +116,11 @@ namespace MC
 		//e.g: 16 of CHUNK_SIZE would result in 15 blocks generated. But 17 would result in 16.
 		//There's no problem with this because the additional block are never going to be generated, avoiding geometry clipping.
 		uint8_t blocks[CHUNK_SIZE+1][CHUNK_SIZE+1][CHUNK_SIZE+1];
+
+		uint8_t m_TexturesID[CHUNK_SIZE + 1][CHUNK_SIZE + 1][CHUNK_SIZE + 1];
 		
 		
+
 		//Our visited blocks for every face. They are combined in one single array.
 		bool VisitedBlocks[((CHUNK_SIZE + 1) * (CHUNK_SIZE + 1) * (CHUNK_SIZE + 1) * CUBE_FACES)];
 	};

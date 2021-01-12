@@ -132,5 +132,10 @@ namespace MC
 		glUniform4f(location, mat.x, mat.y, mat.z, mat.w);
 	}
 
+	void Shader::UploadIntArray(const std::string& name, int* data, uint32_t count)
+	{
+		GLint location = glGetUniformLocation(m_RendererID, name.c_str()); //@TODO: Cache those locations
+		glUniform1iv(location, count, data);
+	}
 
 }

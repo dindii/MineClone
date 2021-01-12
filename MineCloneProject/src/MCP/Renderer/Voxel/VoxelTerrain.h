@@ -24,10 +24,14 @@ namespace MC
 
 		inline Superchunk* GetTerrainData() { return superChunk; }
 		inline Texture2D& GetTerrainPreview() { return m_terrainPreviewTex; }
+
 	private:
 		uint32_t width, height, depth;
 
 		Superchunk* superChunk; //@TODO: extent to multiple superchunks
 		Texture2D m_terrainPreviewTex;
+
+		Texture2D* m_TestTexture;
+		Texture2D* m_TestTexture2;
 	};
 }

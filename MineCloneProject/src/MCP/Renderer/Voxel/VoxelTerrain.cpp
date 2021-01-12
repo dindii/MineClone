@@ -4,16 +4,21 @@
 #include "MCP/Renderer/Misc/PNGimageWriter.h"
 #include "MCP/Utils/Logger.h"
 
+#include "MCP/Renderer/Texture2D.h"
+
 namespace MC
 {
 	VoxelTerrain::VoxelTerrain(uint32_t c_width, uint32_t c_height, uint32_t c_depth) : width(c_width), height(c_height), depth(c_depth),
 		m_terrainPreviewTex(0, width, height, 1)
 	{
 		superChunk = new Superchunk;
+		m_TestTexture = new Texture2D("res/Textures/test.png");
+		m_TestTexture2 = new Texture2D("res/Textures/kaiq.png");
 	}
 
 	VoxelTerrain::~VoxelTerrain()
 	{
+		delete m_TestTexture;
 		delete superChunk;
 	}
 
@@ -44,7 +49,7 @@ namespace MC
 						 should = (float)Noise.GenOctave(x / xf, y / yf, z / zf, octaves, frequency, persistence, xOffset, yOffset);
 
 					 //Only one type of block for now
-					 (should * yf) > y ? superChunk->Set(x, y, z, 1) : superChunk->Set(x, y, z, 0);
+					 (should * yf) > y ? superChunk->Set(x, y, z, 1, m_TestTexture) : superChunk->Set(x, y, z, 0, m_TestTexture2);
 				 }
 			}
 
@@ -57,6 +62,6 @@ namespace MC
 		for (uint32_t y = 0; y < height; y++)
 			for (uint32_t z = 0; z < depth; z++)
 				for (uint32_t x = 0; x < width; x++)
-					superChunk->Set(x, y, z, 1);	
+					superChunk->Set(x, y, z, 1, m_TestTexture);	
 	}
 }
