@@ -8,7 +8,7 @@ WorldLayer::WorldLayer() : Layer("WorldLayer"), terrain(64, 64, 64)
 	camera.SetCameraLagValue(0.15000f);
 
 	terrain.GenNoiseTerrain(MC::VoxelTerrain::TerrainType::Terrain3D, 1, 0.0f, 0.25f, 0.0f, 0.0f);
-
+	//terrain.GenFlatTerrain();
 }
 
 void WorldLayer::OnUpdate(MC::DeltaTime deltaTime)

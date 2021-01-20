@@ -9,14 +9,15 @@ namespace MC
 	constexpr uint32_t CHUNK_SQUARED = CHUNK_SIZE * CHUNK_SIZE;
 	constexpr uint32_t CHUNK_SIZE_CUBED = CHUNK_SQUARED * CHUNK_SIZE;
 
-#define PreCalcIndex(x, y, z, a) (x + z * CHUNK_SIZE + y * CHUNK_SQUARED) + (CHUNK_SIZE_CUBED * a)
+#define CALC_INDEX(x, y, z, a) (x + z * CHUNK_SIZE + y * CHUNK_SQUARED) + (CHUNK_SIZE_CUBED * a)
 
 
 	Chunk::Chunk() : elements(0), changed(true)
 	{
-		memset(blocks, 0, sizeof(blocks));
-		memset(vertex, 0, sizeof(vertex));
+		memset(blocks,        0, sizeof(blocks));
+		memset(vertex,        0, sizeof(vertex));
 		memset(VisitedBlocks, 0, sizeof(VisitedBlocks));
+		memset(m_TexturesID,  0, sizeof(m_TexturesID));
 
 		VBO = RenderCommand::GenMesh(1);
 	}
@@ -36,14 +37,19 @@ namespace MC
 		blocks[x][y][z] = type;
 		changed = true;
 
-		int8_t TextureID = VoxelRenderer::GetTexture(texture);
-		
-		if (TextureID < 0)
-			TextureID = VoxelRenderer::AddTexture(texture);
+		if (type)
+		{
+			int8_t TextureID = VoxelRenderer::GetTexture(texture);
 
-		m_TexturesID[x][y][z] = TextureID;
+			if (TextureID < 0)
+				TextureID = VoxelRenderer::AddTexture(texture);
+
+			//Almost all of my voxel mesh generation works with faces, so i have to make my texture array also work with faces
+			//This can leads us in the future to a setup where we can choose a texture for each of the six cube faces. 
+			for (uint8_t a = 0; a < CUBE_FACES; a++)
+				m_TexturesID[CALC_INDEX(x, y, z, a)] = TextureID;
+		}
 	}
-
 	void Chunk::update()
 	{
 	    uint8_t type = 0;
@@ -69,7 +75,6 @@ namespace MC
 		memset(VisitedBlocks, 0, sizeof(VisitedBlocks));
 	}
 
-	//#TODO: Expandir para outras chunks
 	bool Chunk::isFaceVisible(const uint8_t x, const uint32_t y, const uint8_t z, ECubeFace face)
 	{
 		switch (face)
@@ -139,9 +144,9 @@ namespace MC
 		return false;
 	}
 
-	uint32_t Chunk::PackVertexAtbs(const uint8_t x, const uint32_t y, const uint8_t z, const uint8_t normalLight, const uint8_t textureID, const uint8_t textureCoordsIndex, const uint8_t type)
+	uint32_t Chunk::PackVertexAtbs(const uint8_t x, const uint32_t y, const uint8_t z, const uint8_t normalLight, const uint32_t textureID, const uint8_t textureCoordsIndex, const uint8_t type)
 	{
-		uint32_t Pack = (textureCoordsIndex) | (textureID << 8) |(normalLight << 13) | (z << 16) | (x << 20) | (y << 24);
+		uint32_t Pack = (textureCoordsIndex) | (textureID << 8) | (normalLight << 13) | (z << 16) | (x << 20) | (y << 24);
 		
 		//	 Y        X    Z        N    I      Left
 		// |00000000| |0000 0000| |000 00000| 00000000 
@@ -149,43 +154,41 @@ namespace MC
 		//z 0-8
 		//x 8-16
 		//y 16-24
-		
+
+
 		return Pack;
 	}
 
-	void Chunk::GenCubeFace(const uint8_t x, const uint32_t y, const uint8_t z, const uint8_t length, const uint32_t height, const uint8_t depth, const uint8_t type, uint32_t& vertexIterator, ECubeFace face)
+	void Chunk::GenCubeFace(const uint8_t x, const uint32_t y, const uint8_t z, const uint8_t length, const uint32_t height, const uint8_t depth, const uint8_t type, uint32_t& vertexIterator, uint8_t textureID, ECubeFace face)
 	{
-
-		int8_t textureID = m_TexturesID[x][y][z];
-
 		switch (face)
 		{
 			case ECubeFace::BACK:
 			{
-				vertex[vertexIterator++] = PackVertexAtbs(x,			 y,		      z, 2, textureID, 0, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x,			 y + height,  z, 2, textureID, 1, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x + length, y, z,			     2, textureID, 3, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x,			 y + height,  z, 2, textureID, 1, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x + length, y + height,  z,    2, textureID, 2, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x + length, y,		      z, 2, textureID, 1, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x,		  y,		   z, 2, textureID, 0, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x,		  y + height,  z, 2, textureID, 1, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x + length, y,           z, 2, textureID, 3, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x,		  y + height,  z, 2, textureID, 1, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x + length, y + height,  z, 2, textureID, 2, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x + length, y,		   z, 2, textureID, 1, type);
 				
 				break;
 			}
 			case ECubeFace::FRONT:
-			{															 
-				vertex[vertexIterator++] = PackVertexAtbs(x, y, z + 1, 4,				    textureID, 0, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x + length, y, z + 1, 4,		    textureID, 1, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x, y + height, z + 1, 4,		    textureID, 3, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x, y + height, z + 1, 4,		    textureID, 3, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x + length, y, z + 1, 4,		    textureID, 1, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x + length, y + height, z + 1, 4, textureID, 2, type);
+			{			
+				vertex[vertexIterator++] = PackVertexAtbs(x,          y,          z + 1, 4,		    textureID, 0, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x + length, y,          z + 1, 4,		    textureID, 1, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x,          y + height, z + 1, 4,		    textureID, 3, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x,          y + height, z + 1, 4,		    textureID, 3, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x + length, y,          z + 1, 4,		    textureID, 1, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x + length, y + height, z + 1, 4,         textureID, 2, type);
 
 				break;
 			}
 			case ECubeFace::LEFT:
 			{
 				vertex[vertexIterator++] = PackVertexAtbs(x, y,          z,		    4,  textureID, 0, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x, y,		    z + depth,  4,  textureID, 3, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x, y,		     z + depth, 4,  textureID, 3, type);
 				vertex[vertexIterator++] = PackVertexAtbs(x, y + height, z,         4,  textureID, 1, type);
 				vertex[vertexIterator++] = PackVertexAtbs(x, y + height, z,         4,  textureID, 1, type);
 				vertex[vertexIterator++] = PackVertexAtbs(x, y,          z + depth, 4,  textureID, 3, type);
@@ -195,12 +198,12 @@ namespace MC
 			}
 			case ECubeFace::RIGHT:
 			{
-				vertex[vertexIterator++] = PackVertexAtbs(x + 1, y,			z,          2, textureID, 0, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x + 1, y + height, z,		    2, textureID, 1, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x + 1, y,			z + depth,  2, textureID, 3, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x + 1, y + height, z,         2, textureID, 1, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x + 1, y + height, z + depth, 2, textureID, 2, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x + 1, y,			z + depth,  2, textureID, 3, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x + 1, y,			 z,          2, textureID, 0, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x + 1, y + height, z,		     2, textureID, 1, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x + 1, y,			 z + depth,  2, textureID, 3, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x + 1, y + height, z,          2, textureID, 1, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x + 1, y + height, z + depth,  2, textureID, 2, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x + 1, y,			 z + depth,  2, textureID, 3, type);
 
 
 				break;
@@ -234,7 +237,7 @@ namespace MC
 	//And since it's not needed scalability (since we will never have more than six faces), we can use those integers without problem.
 	//Each face have a number (that matches ECubeFace) reserved for it and we will use this here.
 	//FRONT = 0, BACK = 1, UP = 2, DOWN = 3, LEFT = 4, RIGHT = 5
-	//Then, we can cast the integer to the ECubeFace (which will be right) and use this same integer into PreCalcIndex.
+	//Then, we can cast the integer to the ECubeFace (which will be right) and use this same integer into CALC_INDEX.
 	//Also, we can use those functions in whatever order we want.
 
 	void Chunk::CalcFrontAndBackFace(const uint8_t x, const uint32_t y, const uint8_t z, uint8_t type, uint32_t& vertexBufferIterator)
@@ -244,52 +247,39 @@ namespace MC
 		{
 			uint8_t length = 0, height = 0;
 			uint32_t PreviousLength = 0;
-
+	
 			ECubeFace face = (ECubeFace)i;
-
+			uint8_t textureID = 0;
 			for (uint32_t yy = y; yy <= CHUNK_SIZE; yy++)
 			{
 				for (uint32_t xx = x; xx <= CHUNK_SIZE; xx++)
 				{
+
+					uint32_t PreCalculatedIndex = CALC_INDEX(xx, yy, z, i);
+
 					//O bloco é diferente do atual, é vazio ou não visivel? Se sim, não o processe
-					if (blocks[xx][yy][z] != blocks[x][yy][z] || !blocks[xx][yy][z] || VisitedBlocks[PreCalcIndex(xx, yy, z, i)] || !isFaceVisible(xx, yy, z, face))
+					if (blocks[xx][yy][z] != blocks[xx][y][z] || blocks[xx][yy][z] != blocks[x][yy][z] || !blocks[xx][yy][z] || VisitedBlocks[PreCalculatedIndex] || !isFaceVisible(xx, yy, z, face))
 						break;
-
+	
 					
-
+	
 					//Salvamos falando que o bloco ja foi visitado
-					VisitedBlocks[PreCalcIndex(xx, yy, z, i)] = true;
-
+					VisitedBlocks[PreCalculatedIndex] = true;
+					textureID = m_TexturesID[PreCalculatedIndex] = m_TexturesID[CALC_INDEX(x, y, z, i)];
+		
 					//Caso não seja, aumentamos o length, ou seja, mais um bloco à direita que cubrimos.
 					length++;
-					
-#ifdef MC_DEBUG
-					//DEBUG
-					//////////////////////////////////////////////////////////////////////////////
-					//m_TexturesID[xx][yy][z] = m_TexturesID[x][y][z];
-					//////////////////////////////////////////////////////////////////////////////
-#endif
 				}
-
+	
 				if (yy > 0 && (PreviousLength != length || yy == CHUNK_SIZE))
 				{
-					GenCubeFace(x, yy - height, z, PreviousLength, height, 1, type, vertexBufferIterator, face);
-#ifdef MC_DEBUG
-					//DEBUG
-					//////////////////////////////////////////////////////////////////////////////
-					//Converter o array de texturas de blocos para array de texturas de faces tal como o Set do Superchunk e chunk
-					//ou achar um jeito de unificar todas as alterações de index das faces em um só bloco (improvável)
-
-					//ver qual vai ser o fator pra multiplicar o texture coord pra formar bloquinhos uniformes.
-					m_TexturesID[x][yy - height][z] = m_TexturesID[x][y][z];
-					//////////////////////////////////////////////////////////////////////////////
-#endif
+					GenCubeFace(x, yy - height, z, PreviousLength, height, 1, type, vertexBufferIterator, textureID, face);
 					height = 0;
 				}
-
+	
 				PreviousLength = length;
 				length = 0;
-
+	
 				height++;
 			}
 		}
@@ -305,24 +295,29 @@ namespace MC
 
 			ECubeFace face = (ECubeFace)i;
 
+			uint8_t textureID = 0;
+
 			for (uint32_t zz = z; zz <= CHUNK_SIZE; zz++)
 			{
 				for (uint32_t xx = x; xx <= CHUNK_SIZE; xx++)
 				{
+					uint32_t PreCalculatedIndex = CALC_INDEX(xx, y, zz, i);
+
 					//O bloco é diferente do atual, é vazio ou não visivel? Se sim, não o processe
-					if (blocks[xx][y][zz] != blocks[x][y][zz] || !blocks[xx][y][zz] || VisitedBlocks[PreCalcIndex(xx, y, zz, i)] || !isFaceVisible(xx, y, zz, face))
+					if (blocks[xx][y][zz] != blocks[xx][y][z] || blocks[xx][y][zz] != blocks[x][y][zz] || !blocks[xx][y][zz] || VisitedBlocks[PreCalculatedIndex] || !isFaceVisible(xx, y, zz, face))
 						break;
-
+		
 					//Salvamos falando que o bloco ja foi visitado
-					VisitedBlocks[PreCalcIndex(xx, y, zz, i)] = true;
-
+					VisitedBlocks[PreCalculatedIndex] = true;
+					textureID = m_TexturesID[PreCalculatedIndex] = m_TexturesID[CALC_INDEX(x, y, z, i)];
 					//Caso não seja, aumentamos o length, ou seja, mais um bloco à direita que cubrimos.
+
 					length++;
 				}
 
 				if (zz > 0 && (PreviousLength != length || zz == CHUNK_SIZE))
 				{
-					GenCubeFace(x, y, zz - depth, PreviousLength, 1, depth, type, vertexBufferIterator, face);
+					GenCubeFace(x, y, zz - depth, PreviousLength, 1, depth, type, vertexBufferIterator, textureID, face);
 					depth = 0;
 				}
 
@@ -341,33 +336,38 @@ namespace MC
 		{
 			uint8_t depth = 0, height = 0;
 			uint32_t PreviousDepth = 0;
-
+		
 			ECubeFace face = (ECubeFace)i;
+			uint8_t textureID = 0;
 
 			for (uint32_t yy = y; yy <= CHUNK_SIZE; yy++)
 			{
 				for (uint32_t zz = z; zz <= CHUNK_SIZE; zz++)
 				{
-					//O bloco é diferente do atual, é vazio ou não visivel? Se sim, não o processe
-					if (blocks[x][yy][zz] != blocks[x][yy][z] || !blocks[x][yy][zz] || VisitedBlocks[PreCalcIndex(x, yy, zz, i)] || !isFaceVisible(x, yy, zz, face))
-						break;
 
+					uint32_t PreCalculatedIndex = CALC_INDEX(x, yy, zz, i);
+
+					//O bloco é diferente do atual, é vazio ou não visivel? Se sim, não o processe
+					if (blocks[x][yy][zz] != blocks[x][y][zz] || blocks[x][yy][zz] != blocks[x][yy][z] || !blocks[x][yy][zz] || VisitedBlocks[PreCalculatedIndex] || !isFaceVisible(x, yy, zz, face))
+						break;
+		
 					//Salvamos falando que o bloco ja foi visitado
-					VisitedBlocks[PreCalcIndex(x, yy, zz, i)] = true;
+					VisitedBlocks[PreCalculatedIndex] = true;
+					textureID = m_TexturesID[PreCalculatedIndex] = m_TexturesID[CALC_INDEX(x, y, z, i)];
 
 					//Caso não seja, aumentamos o length, ou seja, mais um bloco à direita que cubrimos.
 					depth++;
 				}
-
+		
 				if (yy > 0 && (PreviousDepth != depth || yy == CHUNK_SIZE))
 				{
-					GenCubeFace(x, yy - height, z, 1, height, PreviousDepth, type, vertexBufferIterator, face);
+					GenCubeFace(x, yy - height, z, 1, height, PreviousDepth, type, vertexBufferIterator, textureID, face);
 					height = 0;
 				}
-
+		
 				PreviousDepth = depth;
 				depth = 0;
-
+		
 				height++;
 			}
 		}

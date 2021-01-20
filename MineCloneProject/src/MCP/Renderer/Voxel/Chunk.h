@@ -36,7 +36,7 @@ namespace MC
 		//Get a type of a specific block
 		uint8_t get(int x, int y, int z);
 
-		//Set a type of a specific block
+		//Set a type of a specific block //#TODO: if necessary, extend it to a six textures, one for each face.
 		void set(int x, int y, int, uint8_t type, const Texture2D* texture);
 
 		//Regen the current chunk, this will be called if we detect changes in the chunk
@@ -64,10 +64,10 @@ namespace MC
 		* @param face - Since this can generate all the six faces, we can choose which face we want to gen. e.g: ECubeFace::FRONT
 		*/
 		void GenCubeFace(const uint8_t x, const uint32_t y, const uint8_t z, const uint8_t length, const uint32_t height, const uint8_t depth,
-						 const uint8_t type, uint32_t& vertexIterator, ECubeFace face);
+						 const uint8_t type, uint32_t& vertexIterator, uint8_t textureID, ECubeFace face);
 
 
-		uint32_t PackVertexAtbs(const uint8_t x, const uint32_t y, const uint8_t z, const uint8_t normalLight, const uint8_t textureID, const uint8_t textureCoordsIndex, const uint8_t type);
+		uint32_t PackVertexAtbs(const uint8_t x, const uint32_t y, const uint8_t z, const uint8_t normalLight, const uint32_t textureID, const uint8_t textureCoordsIndex, const uint8_t type);
 
 		/**
 		* @brief This function checks if a face is visible or not, this is, check if the face is in a border and if it is, check if there's a chunk next and if it's face is active
@@ -117,7 +117,7 @@ namespace MC
 		//There's no problem with this because the additional block are never going to be generated, avoiding geometry clipping.
 		uint8_t blocks[CHUNK_SIZE+1][CHUNK_SIZE+1][CHUNK_SIZE+1];
 
-		uint8_t m_TexturesID[CHUNK_SIZE + 1][CHUNK_SIZE + 1][CHUNK_SIZE + 1];
+		uint8_t m_TexturesID[((CHUNK_SIZE + 1) * (CHUNK_SIZE + 1) * (CHUNK_SIZE + 1) * CUBE_FACES)];
 		
 		
 

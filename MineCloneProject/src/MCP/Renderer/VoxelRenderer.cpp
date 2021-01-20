@@ -89,15 +89,20 @@ namespace MC
 
 	void VoxelRenderer::BeginScene(const Camera& camera)
 	{
+		for (int x = 0; x < v_Data->TextureSlotsIndex; x++)
+		{
+			v_Data->textures[x]->Bind(x);
+		}
+
 		v_Data->voxelShader.UploadUniformMat4("u_ViewProjection", (camera.GetProjection() * camera.getViewMatrix()));
 	}
 
 	void VoxelRenderer::EndScene()
 	{
-		for (int x = 0; x < v_Data->TextureSlotsIndex; x++)
-		{
-			v_Data->textures[x]->Bind(x);
-		}
+// 		for (int x = 0; x < v_Data->TextureSlotsIndex; x++)
+// 		{
+// 			v_Data->textures[x]->Bind(x);
+// 		}
 
 	}
 

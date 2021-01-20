@@ -31,7 +31,13 @@ namespace MC
 		Superchunk* superChunk; //@TODO: extent to multiple superchunks
 		Texture2D m_terrainPreviewTex;
 
-		Texture2D* m_TestTexture;
-		Texture2D* m_TestTexture2;
+		//DEBUG
+		Texture2D* AguaTextura;
+		Texture2D* AreiaTextura;
+		Texture2D* GramaTextura;
+		Texture2D* TerraTextura;
+		Texture2D* NeveTextura;
+		
+		//DEBUG
 	};
 }

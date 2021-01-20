@@ -8,7 +8,7 @@ uniform mat4 u_Transform;
 
 out float NormalLight;
 out vec2 v_TextureCoordinates;
-out uint v_TextureID;
+flat out uint v_TextureID;
 
 
 float Z = float((a_Coord >> 16u) & 0xFu);
@@ -19,7 +19,7 @@ float Y = float((a_Coord >> 24u) & 0xFFu);
 
 uint TextureCoordinatesIndex = (a_Coord & 0xFFu);
 
-vec2 texCoords[4] = vec2[4](
+    vec2 texCoords[4] = vec2[4](
 	vec2(0.0f, 0.0f),
 	vec2(1.0f, 0.0f),
 	vec2(1.0f, 1.0f),
@@ -29,8 +29,8 @@ vec2 texCoords[4] = vec2[4](
 
 void main()
 {
-	v_TextureID = (a_Coord >> 8u) & 0x20u;
 	v_TextureCoordinates = texCoords[TextureCoordinatesIndex];
-	gl_Position = u_ViewProjection * u_Transform * vec4(X, Y, Z, 1.0f); //MVP
+	v_TextureID = ((a_Coord >> 8u) & 0x1Fu);
 	NormalLight = clamp(float((a_Coord >> 13u) & 0x7u) / 5.0f, 0.0f, 1.0f);
+	gl_Position = u_ViewProjection * u_Transform * vec4(X, Y, Z, 1.0f); //MVP
 }
