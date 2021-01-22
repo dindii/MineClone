@@ -74,7 +74,7 @@ namespace MC
 
 	void Camera::SetProjection(float AR)
 	{
-		m_Projection = mat4::Perspective(70.0f /*zoom*/, AR, 1.0f, 100.0f);
+		m_Projection = mat4::Perspective(70.0f /*zoom*/, AR, 0.1f, 100.0f);
 	}
 
 	void Camera::OnEvent(Event& e)

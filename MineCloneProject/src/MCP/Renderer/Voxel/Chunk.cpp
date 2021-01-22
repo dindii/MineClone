@@ -155,6 +155,9 @@ namespace MC
 		//x 8-16
 		//y 16-24
 
+		//X - 16
+		//Z - 16
+		//Y - 256
 
 		return Pack;
 	}
