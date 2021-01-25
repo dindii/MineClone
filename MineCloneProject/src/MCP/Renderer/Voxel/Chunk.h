@@ -67,7 +67,7 @@ namespace MC
 						 const uint8_t type, uint32_t& vertexIterator, uint8_t textureID, ECubeFace face);
 
 
-		uint32_t PackVertexAtbs(const uint8_t x, const uint32_t y, const uint8_t z, const uint8_t normalLight, const uint32_t textureID, const uint8_t textureCoordsIndex, const uint8_t type);
+		uint32_t PackVertexAtbs(const uint8_t x, const uint32_t y, const uint8_t z, const uint8_t normalLight, const uint32_t textureID, const uint8_t textureCoordsIndex, const uint8_t type, const uint8_t Length1, const uint8_t Length2);
 
 		/**
 		* @brief This function checks if a face is visible or not, this is, check if the face is in a border and if it is, check if there's a chunk next and if it's face is active

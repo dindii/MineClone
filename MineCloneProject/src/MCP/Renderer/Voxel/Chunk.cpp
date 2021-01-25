@@ -144,12 +144,13 @@ namespace MC
 		return false;
 	}
 
-	uint32_t Chunk::PackVertexAtbs(const uint8_t x, const uint32_t y, const uint8_t z, const uint8_t normalLight, const uint32_t textureID, const uint8_t textureCoordsIndex, const uint8_t type)
+	uint32_t Chunk::PackVertexAtbs(const uint8_t x, const uint32_t y, const uint8_t z, const uint8_t normalLight, const uint32_t textureID, const uint8_t textureCoordsIndex, const uint8_t type, const uint8_t Length1, const uint8_t Length2)
 	{
-		uint32_t Pack = (textureCoordsIndex) | (textureID << 8) | (normalLight << 13) | (z << 16) | (x << 20) | (y << 24);
+		uint32_t Pack =  (Length1 << 2) | (textureCoordsIndex << 6) | (textureID << 8) | (normalLight << 13) | (z << 16) | (x << 20) | (Length2 << 24) | (y << 28);
 		
-		//	 Y        X    Z        N    I      Left
-		// |00000000| |0000 0000| |000 00000| 00000000 
+		//	 Y    ATB2    X    Z      N    I    TC    ATB1 LEFT
+		// |0000 |0000| |0000 0000| |000 00000| 00    0000 00 
+		//LEFTING: 0000 0000 00
 
 		//z 0-8
 		//x 8-16
@@ -166,72 +167,83 @@ namespace MC
 	{
 		switch (face)
 		{
+			//#TODO: All faces (specially RIGHT and LEFT) doesn't follow a pattern of vertex setting, put them uniform.
 			case ECubeFace::BACK:
 			{
-				vertex[vertexIterator++] = PackVertexAtbs(x,		  y,		   z, 2, textureID, 0, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x,		  y + height,  z, 2, textureID, 1, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x + length, y,           z, 2, textureID, 3, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x,		  y + height,  z, 2, textureID, 1, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x + length, y + height,  z, 2, textureID, 2, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x + length, y,		   z, 2, textureID, 1, type);
-				
+				vertex[vertexIterator++] = PackVertexAtbs(x + length, y,           z, 2, textureID, 3, type, length, height);
+				vertex[vertexIterator++] = PackVertexAtbs(x,		  y,		   z, 2, textureID, 2, type, length, height);
+				vertex[vertexIterator++] = PackVertexAtbs(x,		  y + height,  z, 2, textureID, 1, type, length, height);
+
+				vertex[vertexIterator++] = PackVertexAtbs(x,		  y + height,  z, 2, textureID, 1, type, length, height);
+				vertex[vertexIterator++] = PackVertexAtbs(x + length, y + height,  z, 2, textureID, 0, type, length, height);
+				vertex[vertexIterator++] = PackVertexAtbs(x + length, y,           z, 2, textureID, 3, type, length, height);
+
 				break;
 			}
+	
+	
+			
 			case ECubeFace::FRONT:
 			{			
-				vertex[vertexIterator++] = PackVertexAtbs(x,          y,          z + 1, 4,		    textureID, 0, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x + length, y,          z + 1, 4,		    textureID, 1, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x,          y + height, z + 1, 4,		    textureID, 3, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x,          y + height, z + 1, 4,		    textureID, 3, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x + length, y,          z + 1, 4,		    textureID, 1, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x + length, y + height, z + 1, 4,         textureID, 2, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x,          y,          z + 1, 4,	 textureID, 2, type, length, height);
+				vertex[vertexIterator++] = PackVertexAtbs(x + length, y,          z + 1, 4,	 textureID, 3, type, length, height);
+				vertex[vertexIterator++] = PackVertexAtbs(x + length, y + height, z + 1, 4,  textureID, 0, type, length, height);
+																							 
+				vertex[vertexIterator++] = PackVertexAtbs(x + length, y + height, z + 1, 4,  textureID, 0, type, length, height);
+				vertex[vertexIterator++] = PackVertexAtbs(x,          y + height, z + 1, 4,	 textureID, 1, type, length, height);
+				vertex[vertexIterator++] = PackVertexAtbs(x,          y,          z + 1, 4,	 textureID, 2, type, length, height);
 
 				break;
 			}
 			case ECubeFace::LEFT:
 			{
-				vertex[vertexIterator++] = PackVertexAtbs(x, y,          z,		    4,  textureID, 0, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x, y,		     z + depth, 4,  textureID, 3, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x, y + height, z,         4,  textureID, 1, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x, y + height, z,         4,  textureID, 1, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x, y,          z + depth, 4,  textureID, 3, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x, y + height, z + depth, 4,  textureID, 2, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x, y,          z,		    4,  textureID, 3, type, depth, height);
+				vertex[vertexIterator++] = PackVertexAtbs(x, y,		     z + depth, 4,  textureID, 2, type, depth, height);
+				vertex[vertexIterator++] = PackVertexAtbs(x, y + height, z,         4,  textureID, 0, type, depth, height);
+																											
+				vertex[vertexIterator++] = PackVertexAtbs(x, y + height, z,         4,  textureID, 0, type, depth, height);
+				vertex[vertexIterator++] = PackVertexAtbs(x, y,          z + depth, 4,  textureID, 2, type, depth, height);
+				vertex[vertexIterator++] = PackVertexAtbs(x, y + height, z + depth, 4,  textureID, 1, type, depth, height);
 
 				break;
 			}
 			case ECubeFace::RIGHT:
 			{
-				vertex[vertexIterator++] = PackVertexAtbs(x + 1, y,			 z,          2, textureID, 0, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x + 1, y + height, z,		     2, textureID, 1, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x + 1, y,			 z + depth,  2, textureID, 3, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x + 1, y + height, z,          2, textureID, 1, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x + 1, y + height, z + depth,  2, textureID, 2, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x + 1, y,			 z + depth,  2, textureID, 3, type);
-
+				vertex[vertexIterator++] = PackVertexAtbs(x + 1, y,			 z,          2, textureID, 2, type, depth, height);
+				vertex[vertexIterator++] = PackVertexAtbs(x + 1, y + height, z,		     2, textureID, 1, type, depth, height);
+				vertex[vertexIterator++] = PackVertexAtbs(x + 1, y,			 z + depth,  2, textureID, 3, type, depth, height);
+																												
+				vertex[vertexIterator++] = PackVertexAtbs(x + 1, y + height, z,          2, textureID, 1, type, depth, height);
+				vertex[vertexIterator++] = PackVertexAtbs(x + 1, y + height, z + depth,  2, textureID, 0, type, depth, height);
+				vertex[vertexIterator++] = PackVertexAtbs(x + 1, y,			 z + depth,  2, textureID, 3, type, depth, height);
 
 				break;
 			}
 			case ECubeFace::UP:
 			{
-				vertex[vertexIterator++] = PackVertexAtbs(x,		   	 y + 1, z,         5,  textureID, 0, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x,		  	 y + 1, z + depth, 5,  textureID, 3, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x + length, y + 1, z,			   5,  textureID, 1, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x + length, y + 1, z,			   5,  textureID, 1, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x,          y + 1, z + depth,    5,  textureID, 3, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x + length, y + 1, z + depth,    5,  textureID, 2, type);
+ 				vertex[vertexIterator++] = PackVertexAtbs(x,		   	 y + 1, z,         5,  textureID, 0, type, length, depth);
+ 				vertex[vertexIterator++] = PackVertexAtbs(x,		  	 y + 1, z + depth, 5,  textureID, 3, type, length, depth);
+ 				vertex[vertexIterator++] = PackVertexAtbs(x + length,    y + 1, z,		   5,  textureID, 1, type, length, depth);
+ 
+ 				vertex[vertexIterator++] = PackVertexAtbs(x + length, y + 1, z,			   5,  textureID, 1, type, length, depth);
+ 				vertex[vertexIterator++] = PackVertexAtbs(x,          y + 1, z + depth,    5,  textureID, 3, type, length, depth);
+ 				vertex[vertexIterator++] = PackVertexAtbs(x + length, y + 1, z + depth,    5,  textureID, 2, type, length, depth);
+
+
 
 				break;
 			}
 			case ECubeFace::DOWN:
 			{
-				vertex[vertexIterator++] = PackVertexAtbs(x,          y, z,         1,  textureID, 0, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x + length, y, z,         1,  textureID, 1, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x,          y, z + depth, 1,  textureID, 3, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x + length, y, z,         1,  textureID, 1, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x + length, y, z + depth, 1,  textureID, 2, type);
-				vertex[vertexIterator++] = PackVertexAtbs(x,          y, z + depth, 1,  textureID, 3, type);
+				vertex[vertexIterator++] = PackVertexAtbs(x,          y, z,         1,  textureID, 0, type, length, depth);
+				vertex[vertexIterator++] = PackVertexAtbs(x + length, y, z,         1,  textureID, 1, type, length, depth);
+				vertex[vertexIterator++] = PackVertexAtbs(x,          y, z + depth, 1,  textureID, 3, type, length, depth);
 
-				break;
+				vertex[vertexIterator++] = PackVertexAtbs(x + length, y, z,         1,  textureID, 1, type, length, depth);
+				vertex[vertexIterator++] = PackVertexAtbs(x + length, y, z + depth, 1,  textureID, 2, type, length, depth);
+				vertex[vertexIterator++] = PackVertexAtbs(x,          y, z + depth, 1,  textureID, 3, type, length, depth);
+
+				break;																					
 			}
 		}
 	}
@@ -261,7 +273,7 @@ namespace MC
 					uint32_t PreCalculatedIndex = CALC_INDEX(xx, yy, z, i);
 
 					//O bloco é diferente do atual, é vazio ou não visivel? Se sim, não o processe
-					if (blocks[xx][yy][z] != blocks[xx][y][z] || blocks[xx][yy][z] != blocks[x][yy][z] || !blocks[xx][yy][z] || VisitedBlocks[PreCalculatedIndex] || !isFaceVisible(xx, yy, z, face))
+					if (!blocks[xx][yy][z] || blocks[xx][yy][z] != blocks[xx][y][z] || blocks[xx][yy][z] != blocks[x][yy][z] || VisitedBlocks[PreCalculatedIndex] || !isFaceVisible(xx, yy, z, face))
 						break;
 	
 					
@@ -307,7 +319,7 @@ namespace MC
 					uint32_t PreCalculatedIndex = CALC_INDEX(xx, y, zz, i);
 
 					//O bloco é diferente do atual, é vazio ou não visivel? Se sim, não o processe
-					if (blocks[xx][y][zz] != blocks[xx][y][z] || blocks[xx][y][zz] != blocks[x][y][zz] || !blocks[xx][y][zz] || VisitedBlocks[PreCalculatedIndex] || !isFaceVisible(xx, y, zz, face))
+					if (!blocks[xx][y][zz] || blocks[xx][y][zz] != blocks[xx][y][z] || blocks[xx][y][zz] != blocks[x][y][zz] || VisitedBlocks[PreCalculatedIndex] || !isFaceVisible(xx, y, zz, face))
 						break;
 		
 					//Salvamos falando que o bloco ja foi visitado
@@ -351,7 +363,7 @@ namespace MC
 					uint32_t PreCalculatedIndex = CALC_INDEX(x, yy, zz, i);
 
 					//O bloco é diferente do atual, é vazio ou não visivel? Se sim, não o processe
-					if (blocks[x][yy][zz] != blocks[x][y][zz] || blocks[x][yy][zz] != blocks[x][yy][z] || !blocks[x][yy][zz] || VisitedBlocks[PreCalculatedIndex] || !isFaceVisible(x, yy, zz, face))
+					if (!blocks[x][yy][zz] || blocks[x][yy][zz] != blocks[x][y][zz] || blocks[x][yy][zz] != blocks[x][yy][z] || VisitedBlocks[PreCalculatedIndex] || !isFaceVisible(x, yy, zz, face))
 						break;
 		
 					//Salvamos falando que o bloco ja foi visitado
