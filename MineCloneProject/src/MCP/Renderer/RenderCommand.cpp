@@ -63,8 +63,12 @@ namespace MC
 
 	void RenderCommand::DelMesh(unsigned int nMeshes, unsigned int& Mesh)
 	{
-		glDeleteBuffers(nMeshes, &Mesh);
-	}
+		if (Mesh > 0)
+		{
+			glDeleteBuffers(nMeshes, &Mesh);
+			Mesh = -1;
+		}
+		}
 
 	void RenderCommand::Init()
 	{

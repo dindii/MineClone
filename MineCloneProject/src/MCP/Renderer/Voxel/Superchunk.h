@@ -11,7 +11,8 @@ namespace MC
 		Superchunk();
 		~Superchunk();
 		uint8_t Get(int x, int y, int z);
-		void Set(int x, int y, int z, uint8_t type, const Texture2D* texture);
+		void Set(int x, int y, int z, uint8_t type, const BlockTexture2D* FaceTextures);
+		void Set(int x, int y, int z, uint8_t type, const Texture2D* UniformTexture);
 
 		Chunk* c[SUPER_CHUNK_SIZE][SUPER_CHUNK_SIZE][SUPER_CHUNK_SIZE];
 	};

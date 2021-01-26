@@ -37,7 +37,10 @@ namespace MC
 		uint8_t get(int x, int y, int z);
 
 		//Set a type of a specific block //#TODO: if necessary, extend it to a six textures, one for each face.
-		void set(int x, int y, int, uint8_t type, const Texture2D* texture);
+		void set(int x, int y, int, uint8_t type, const BlockTexture2D* FaceTextures);
+
+		//The texture will be applied to all faces of the voxel
+		void set(int x, int y, int, uint8_t type, const Texture2D* UniformTexture);
 
 		//Regen the current chunk, this will be called if we detect changes in the chunk
 		void update();

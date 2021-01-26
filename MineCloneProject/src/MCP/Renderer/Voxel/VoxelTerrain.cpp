@@ -14,29 +14,41 @@ namespace MC
 		BLOCK_SAND,
 		BLOCK_GRASS,
 		BLOCK_DIRT,
-		BLOCK_SNOW
+		BLOCK_SNOW,
+		BLOCK_STONE
 	};
 
 	VoxelTerrain::VoxelTerrain(uint32_t c_width, uint32_t c_height, uint32_t c_depth) : width(c_width), height(c_height), depth(c_depth),
 		m_terrainPreviewTex(0, width, height, 1)
 	{
-		superChunk =   new Superchunk;
-		AguaTextura =  new Texture2D("res/Textures/azul.png");
-		AreiaTextura = new Texture2D("res/Textures/amarelo.png");
-		GramaTextura = new Texture2D("res/Textures/verde.png");
-		TerraTextura = new Texture2D("res/Textures/marrom.png");
-		NeveTextura =  new Texture2D("res/Textures/branco.png");
+		superChunk   = new Superchunk;
 
-	
+		WaterTexture = new Texture2D("res/Textures/azul.png");
+		SandTexture  = new Texture2D("res/Textures/sand.png");
+		SnowTexture  = new Texture2D("res/Textures/branco.png");
+		StoneTexture = new Texture2D("res/Textures/stone.png");
+		DirtTexture  = new Texture2D("res/Textures/dirt/dirt.png");
+
+
+		//#TODO: Overcome RAII issues 
+		GrassTexture = new BlockTexture2D
+		   ("res/Textures/grass/grass_side.png"  ,
+			"res/Textures/grass/grass_side.png"  ,
+			"res/Textures/grass/grass_top.png"   ,
+			"res/Textures/grass/grass_bottom.png",
+			"res/Textures/grass/grass_side.png"  ,
+			"res/Textures/grass/grass_side.png");
+
+
 	}
 
 	VoxelTerrain::~VoxelTerrain()
 	{
-		delete AguaTextura;
-		delete AreiaTextura;
-		delete GramaTextura;
-		delete TerraTextura;
-		delete NeveTextura;
+		delete WaterTexture;
+		delete SandTexture;
+		delete SnowTexture;
+		delete DirtTexture;
+
 		delete superChunk;
 	}
 
@@ -59,7 +71,7 @@ namespace MC
 						if (type == TerrainType::Terrain2D)
 							should = (float)Noise.GenOctave(x / xf, 0.0f, y / yf, octaves, frequency, persistence, xOffset, yOffset);
 				
-						 terrainPreview.Set(should);
+				//		 terrainPreview.Set(should);
 		
 						 for (uint32_t z = 0; z < depth; z++)
 						 {
@@ -69,13 +81,15 @@ namespace MC
 					
 							 if ((should * yf) > y)
 							 {
-								 if      (should > 0.0f  &&  should < 0.4f)  superChunk->Set(x, y, z, BLOCK_WATER, AguaTextura);
-								 else if (should > 0.4f  &&  should < 0.45f) superChunk->Set(x, y, z, BLOCK_SAND, AreiaTextura);
-								 else if (should > 0.45f &&  should < 0.65f) superChunk->Set(x, y, z, BLOCK_GRASS, GramaTextura);
-								 else if (should > 0.65f &&  should < 0.9f)  superChunk->Set(x, y, z, BLOCK_DIRT, TerraTextura);
-								 else if (should > 0.9f  &&  should < 1.0f)  superChunk->Set(x, y, z, BLOCK_SNOW, NeveTextura);
+								 if      (should > 0.0f  &&  should < 0.4f)  superChunk->Set(x, y, z, BLOCK_WATER, WaterTexture);
+								 else if (should > 0.4f  &&  should < 0.45f) superChunk->Set(x, y, z, BLOCK_SAND, SandTexture);
+								 else if (should > 0.45f &&  should < 0.60f) superChunk->Set(x, y, z, BLOCK_DIRT, DirtTexture);
+								 else if (should > 0.60f &&  should < 0.8f)  superChunk->Set(x, y, z, BLOCK_GRASS, GrassTexture);
+								 else if (should > 0.8f  &&  should < 1.0f)  superChunk->Set(x, y, z, BLOCK_SNOW, SnowTexture);
 							 }
-							 else superChunk->Set(x, y, z, 0, nullptr);
+
+						     //#TODO: blank slot 0 texture!!
+							 else superChunk->Set(x, y, z, 0, WaterTexture);
 
 						 }
 					}
@@ -89,6 +103,6 @@ namespace MC
 			for (uint32_t y = 0; y < height; y++)
 				for (uint32_t z = 0; z < depth; z++)
 					for(uint32_t x = 0; x<width; x++)
-					superChunk->Set(x, y, z, BLOCK_WATER, AguaTextura);
+					superChunk->Set(x, y, z, BLOCK_WATER, WaterTexture);
 	}
 }

@@ -38,6 +38,9 @@ namespace MC
 			uint32_t TextureSlotsIndex = 0;
 
 			 const Texture2D* textures[MaxTextureSlots];
+
+			 mat4* SceneActiveCamera;
+			 mat4* SceneActiveProjection;
 		};
 
 		static VoxelRenderingResources* v_Data;

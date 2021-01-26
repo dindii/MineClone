@@ -32,12 +32,14 @@ namespace MC
 		Texture2D m_terrainPreviewTex;
 
 		//DEBUG
-		Texture2D* AguaTextura;
-		Texture2D* AreiaTextura;
-		Texture2D* GramaTextura;
-		Texture2D* TerraTextura;
-		Texture2D* NeveTextura;
+		Texture2D*  WaterTexture;
+		Texture2D*  SandTexture;
+		Texture2D*  SnowTexture;
+		Texture2D*  StoneTexture;
+		Texture2D*  DirtTexture;
 		
+		//Multiple textures voxels
+		BlockTexture2D*  GrassTexture;
 		//DEBUG
 	};
 }

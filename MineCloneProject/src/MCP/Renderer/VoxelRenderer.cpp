@@ -26,6 +26,11 @@ namespace MC
 			v_Data->textures[x] = nullptr;
 
 		RenderCommand::Init();
+
+		RenderCommand::SetClearColor({0.6f, 0.8f, 1.0f, 1.0f});
+
+		v_Data->SceneActiveCamera     = new mat4();
+		v_Data->SceneActiveProjection = new mat4();
 	}
 
 	int8_t VoxelRenderer::AddTexture(const Texture2D* texture)
@@ -70,18 +75,23 @@ namespace MC
 		RenderCommand::Draw(chunk);
 	}
 
+	static float diameter = sqrtf(CHUNK_SIZE * CHUNK_SIZE + CHUNK_SIZE * CHUNK_SIZE + CHUNK_SIZE * CHUNK_SIZE);
+
 	void VoxelRenderer::Draw(Superchunk* superchunk)
 	{
+
  		for (int x = 0; x < SUPER_CHUNK_SIZE; x++)
  			for (int y = 0; y < SUPER_CHUNK_SIZE; y++)
  				for (int z = 0; z < SUPER_CHUNK_SIZE; z++)
  				{
  					if (superchunk->c[x][y][z])
  					{
- 						mat4 model;
- 						model *= model.Translate(vec3(float(x * CHUNK_SIZE), float(y  * CHUNK_SIZE), float(z  * CHUNK_SIZE)));
- 						v_Data->voxelShader.Bind();
+						mat4 model;
+						model = model.Translate(vec3(float((x)* CHUNK_SIZE), float((y)* CHUNK_SIZE), float((z)* CHUNK_SIZE)));
+
+						v_Data->voxelShader.Bind();
  						v_Data->voxelShader.UploadUniformMat4("u_Transform", model);
+
  						Draw(superchunk->c[x][y][z]);
  					}
  				}
@@ -89,12 +99,15 @@ namespace MC
 
 	void VoxelRenderer::BeginScene(const Camera& camera)
 	{
-		for (int x = 0; x < v_Data->TextureSlotsIndex; x++)
-		{
+		for (uint8_t x = 0; x < v_Data->TextureSlotsIndex; x++)
 			v_Data->textures[x]->Bind(x);
-		}
+		
 
 		v_Data->voxelShader.UploadUniformMat4("u_ViewProjection", (camera.GetProjection() * camera.getViewMatrix()));
+
+		//Culling
+		*(v_Data->SceneActiveCamera) = camera.getViewMatrix();
+		*(v_Data->SceneActiveProjection) = camera.GetProjection();
 	}
 
 	void VoxelRenderer::EndScene()

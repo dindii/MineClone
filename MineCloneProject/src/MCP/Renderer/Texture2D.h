@@ -31,4 +31,37 @@ namespace MC
 		uint32_t m_InternalFormat, m_DataFormat;
 	};
 
+	//A struct containg six Textures2D pointers (one for each face of a voxel)
+	struct BlockTexture2D
+	{
+		BlockTexture2D() = default;
+
+		BlockTexture2D(const std::string& UniformTexturePath);
+		BlockTexture2D(const std::string& UniformSidesTexturePath, const std::string& TopTexturePath);
+
+		BlockTexture2D(const std::string& FrontTexturePath, const std::string& BackTexturePath, const std::string& TopTexturePath,
+					   const std::string& BottomTexturePath, const std::string& LeftTexturePath, const std::string& RightTexturePath);
+
+		~BlockTexture2D();
+
+		union 
+		{
+		 struct
+		 {
+			Texture2D*  FrontTexture;
+			Texture2D*  BackTexture;
+			Texture2D*  TopTexture; 
+			Texture2D*  BottomTexture;
+			Texture2D*  LeftTexture;
+			Texture2D*  RightTexture;
+	     };
+
+		 struct
+		 {
+			Texture2D* Textures[6];
+		 };
+		};
+	};
+
+
 }

@@ -106,7 +106,13 @@ namespace MC
 
 		Texture2D::~Texture2D()
 		{
-			glDeleteTextures(1, &m_RendererID);
+			if (m_RendererID > 0)
+			{
+				glDeleteTextures(1, &m_RendererID);
+
+				//avoiding RAII problems
+				m_RendererID = -1;
+			}
 		}
 
 		void Texture2D::SetData(void* data)
@@ -118,4 +124,51 @@ namespace MC
 		{
 			glBindTextureUnit(slot, m_RendererID);
 		}
+
+		//Define a texture for all sides
+		BlockTexture2D::BlockTexture2D(const std::string& UniformTexturePath)
+		{
+			Textures[0] = new Texture2D(UniformTexturePath);
+
+			for (uint8_t x = 1; x < 6; x++)
+				Textures[x] = Textures[0];
+			
+		}
+
+		//Define a texture for the sides (bottom included) and another for the top
+		BlockTexture2D::BlockTexture2D(const std::string& UniformSidesTexturePath, const std::string& TopTexturePath)
+		{
+			LeftTexture   = new Texture2D(UniformSidesTexturePath);
+
+			RightTexture  = LeftTexture;
+			FrontTexture  = RightTexture;
+			BackTexture   = FrontTexture;
+			BottomTexture = BackTexture;
+
+			TopTexture    = new Texture2D(TopTexturePath);
+		}
+
+		//Define one texture per side
+		BlockTexture2D::BlockTexture2D(const std::string& FrontTexturePath, const std::string& BackTexturePath, const std::string& TopTexturePath, const std::string& BottomTexturePath, const std::string& LeftTexturePath, const std::string& RightTexturePath)
+		{
+			 FrontTexture  = new Texture2D(FrontTexturePath);
+			 BackTexture   = new Texture2D(BackTexturePath);
+			 TopTexture    = new Texture2D(TopTexturePath);
+			 BottomTexture = new Texture2D(BottomTexturePath);
+			 LeftTexture   = new Texture2D(LeftTexturePath);
+			 RightTexture  = new Texture2D(RightTexturePath);
+		}
+
+		//Attempt to delete if it is not already deleted
+		BlockTexture2D::~BlockTexture2D()
+		{
+			for (uint8_t x = 0; x < 6; x++)
+				if (Textures[x])
+				{
+					delete Textures[x];
+					Textures[x] = nullptr;
+				}
+			
+		}
+
 }
