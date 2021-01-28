@@ -56,7 +56,7 @@ namespace MC
 	{
 				PerlinNoise Noise;
 		
-				PNGimageWriter terrainPreview("terrainpreview.png", width, height);
+			//	PNGimageWriter terrainPreview("terrainpreview.png", width, height);
 		
 				float xf = (float)width;
 				float yf = (float)height;
@@ -94,8 +94,8 @@ namespace MC
 						 }
 					}
 		
-		terrainPreview.Write();
-		m_terrainPreviewTex.SetData(terrainPreview.GetData());
+		//terrainPreview.Write();
+	//	m_terrainPreviewTex.SetData(terrainPreview.GetData());
 	}
 
 	void VoxelTerrain::GenFlatTerrain() const

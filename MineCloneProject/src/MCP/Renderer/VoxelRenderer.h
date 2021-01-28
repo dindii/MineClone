@@ -30,6 +30,10 @@ namespace MC
 		static void Init(); 
 		static void ShutDown();
 
+		//INFOS
+		static uint32_t DrawnChunks;
+		
+
 	private:
 		struct VoxelRenderingResources
 		{

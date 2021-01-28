@@ -8,6 +8,7 @@
 namespace MC
 {	
 	VoxelRenderer::VoxelRenderingResources* VoxelRenderer::v_Data;
+	uint32_t VoxelRenderer::DrawnChunks = 0;
 
 	void VoxelRenderer::Init()
 	{
@@ -72,26 +73,53 @@ namespace MC
 
 	void VoxelRenderer::Draw(Chunk* chunk)
 	{
-		RenderCommand::Draw(chunk);
-	}
 
-	static float diameter = sqrtf(CHUNK_SIZE * CHUNK_SIZE + CHUNK_SIZE * CHUNK_SIZE + CHUNK_SIZE * CHUNK_SIZE);
+		RenderCommand::Draw(chunk);
+
+		DrawnChunks++;
+	}
 
 	void VoxelRenderer::Draw(Superchunk* superchunk)
 	{
-
  		for (int x = 0; x < SUPER_CHUNK_SIZE; x++)
  			for (int y = 0; y < SUPER_CHUNK_SIZE; y++)
  				for (int z = 0; z < SUPER_CHUNK_SIZE; z++)
  				{
  					if (superchunk->c[x][y][z])
  					{
-						mat4 model;
-						model = model.Translate(vec3(float((x)* CHUNK_SIZE), float((y)* CHUNK_SIZE), float((z)* CHUNK_SIZE)));
+ 						mat4 model;
+ 						model = model.Translate(vec3(float((x)* CHUNK_SIZE), float((y)* CHUNK_SIZE), float((z)* CHUNK_SIZE)));
+ 
+						
+						//MVP matrix
+						mat4 mvp = (*v_Data->SceneActiveProjection) * (*v_Data->SceneActiveCamera) * model;
+						
+						//generic chunk center in the world
+						vec4 center = mvp * vec4((CHUNK_SIZE / 2), (CHUNK_SIZE / 2), (CHUNK_SIZE / 2), 1.0f);
 
-						v_Data->voxelShader.Bind();
+						float distance = vec3::Length({ center.x, center.y, center.z });
+
+						//center of the particular chunk in NDC
+						center.x /= center.w;
+						center.y /= center.w;
+ 
+						//if the chunk is behind the camera, don't render it
+						if (center.z < (-CHUNK_SIZE / 1.5f))
+							continue;
+
+						//if the chunk is out of the camera bounds + margin, don't render it
+						if (fabsf(center.x) > 1 + fabsf(CHUNK_SIZE * 2 / center.w) || fabsf(center.y) > 1 + fabsf(CHUNK_SIZE * 2 / center.w))
+							continue;
+
+ 
+						//render distance  //#TODO maybe a radius for this?
+						if (distance > 200.0f)
+							continue;
+
+ 
+ 						v_Data->voxelShader.Bind();
  						v_Data->voxelShader.UploadUniformMat4("u_Transform", model);
-
+ 
  						Draw(superchunk->c[x][y][z]);
  					}
  				}
@@ -116,7 +144,7 @@ namespace MC
 // 		{
 // 			v_Data->textures[x]->Bind(x);
 // 		}
-
+		DrawnChunks = 0;
 	}
 
 	void VoxelRenderer::Clear(const bool& ColorBuffer /*= true*/, const bool& DepthBuffer /*= true*/)
@@ -140,7 +168,3 @@ namespace MC
 	}
 
 }
-
-//length height
-//height depth
-//length depth

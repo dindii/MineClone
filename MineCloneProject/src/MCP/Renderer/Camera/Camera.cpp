@@ -5,12 +5,13 @@
 #include "MCP/Maths/mat4.h"
 #include "MCP/Utils/Logger.h"
 #include "MCP/IO/InputHandler.h"
+#include "MCP/Renderer/VoxelRenderer.h"
 
 namespace MC
 {
 	Camera::Camera(const float AR, const vec3& position) : m_Yaw(0.0f), m_Pitch(0.0f), m_CameraTarget({ 0.0f, 0.0f, -1.0f })
 	{
-		m_Projection =  mat4::Perspective(70.0f /*zoom*/, AR, 0.1f, 100.0f);
+		m_Projection =  mat4::Perspective(90.0f /*zoom*/, AR, 0.1f, 100.0f);
 
 		m_CameraPos = position;
 		UpdateCameraVectors();
@@ -26,10 +27,10 @@ namespace MC
 	{
 		mat4 m_CameraRotation, m_CameraPosition;
 
-		m_CameraRotation = mat4::Rotate(m_Pitch, vec3(1.0f, 0.0f, 0.0f));
+		m_CameraRotation *= mat4::Rotate(m_Pitch, vec3(1.0f, 0.0f, 0.0f));
 		m_CameraRotation *= mat4::Rotate(m_Yaw, vec3(0.0f, 1.0f, 0.0f));
 
-		m_CameraPosition = mat4::Translate(-m_CameraPos);
+		m_CameraPosition *= mat4::Translate(-m_CameraPos);
 	    
 		m_ViewMatrix = m_CameraRotation * m_CameraPosition;
 	}
@@ -74,7 +75,8 @@ namespace MC
 
 	void Camera::SetProjection(float AR)
 	{
-		m_Projection = mat4::Perspective(70.0f /*zoom*/, AR, 0.5f, 100.0f);
+		//#TODO: More params
+		m_Projection = mat4::Perspective(70.0f /*zoom*/, AR, 0.1f, 100.0f);
 	}
 
 	void Camera::OnEvent(Event& e)
@@ -83,7 +85,8 @@ namespace MC
 
 		dispatcher.Dispatch<WindowResizeEvent>([&](WindowResizeEvent Event) -> bool
 		{
-			SetProjection((float)(Event.GetWidth() / Event.GetHeight()));
+			SetProjection(float(Event.GetWidth()) / float(Event.GetHeight()));
+			VoxelRenderer::SetViewport(0, 0, Event.GetWidth(), Event.GetHeight());
 			return false;
 		});
 	}

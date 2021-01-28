@@ -1,9 +1,9 @@
 ﻿#include "WorldLayer.h"
 #include "imgui/imgui.h"
 
-WorldLayer::WorldLayer() : Layer("WorldLayer"), terrain(64, 64, 64)
+WorldLayer::WorldLayer() : Layer("WorldLayer"), terrain(128, 128, 128)
 {
-	camera = MC::Camera(1362 / 701, { 0.0f, 0.0f, 500.0f });
+	camera = MC::Camera(1362.0f / 701.0f, { 0.0f, 0.0f, 500.0f });
 	camera.SetCameraLag(true);
 	camera.SetCameraLagValue(0.15000f);
 
@@ -20,7 +20,7 @@ void WorldLayer::OnUpdate(MC::DeltaTime deltaTime)
 	MC::VoxelRenderer::Clear();
 	MC::VoxelRenderer::BeginScene(camera);
 	MC::VoxelRenderer::Draw(terrain.GetTerrainData());
-	MC::VoxelRenderer::EndScene();
+	//MC::VoxelRenderer::EndScene();
 }
 
 void WorldLayer::OnEvent(MC::Event& e)
@@ -47,6 +47,10 @@ void WorldLayer::OnImGuiRender()
 	{
 		ReGenTerrain();
 	}
+
+	ImGui::NewLine();
+	ImGui::Text("Drawn Chunks: %i ", MC::VoxelRenderer::DrawnChunks);
+	MC::VoxelRenderer::EndScene();
 }
 
 void WorldLayer::ReGenTerrain()
