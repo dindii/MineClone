@@ -34,6 +34,9 @@ namespace MC
 		float Dot(const vec3& other) const;
 		vec3 Cross(const vec3& other);
 
+		vec3 Max(const vec3& other) const;
+		float Max() const;
+
 		//Retornando uma referencia para o proprio objeto a fim de evitar criar novos objetos e podermos com eficiencia
 		//juntar uma operação na outra
 		vec3& add(const vec3& other);
@@ -59,6 +62,9 @@ namespace MC
 
 		bool operator==(const vec3& other);
 		bool operator!=(const vec3& other);
+
+		float& operator[](uint8_t index) { return elements[index]; }
+		float operator[](uint8_t index) const { return elements[index]; }
 
 		vec3 operator-() const { return { -x, -y, -z }; }
 

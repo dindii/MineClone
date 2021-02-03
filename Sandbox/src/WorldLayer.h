@@ -15,6 +15,8 @@ public:
 	void MovePlayer(MC::DeltaTime deltaTime);
 	void LookAround();
 	void ReGenTerrain();
+	bool ChangeBlock(MC::MouseButtonPressedEvent& event);
+
 
 	float cameraSpeed = 50.5f, cameraSens = 1.0f;
 

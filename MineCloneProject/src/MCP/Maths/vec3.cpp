@@ -107,6 +107,27 @@ namespace MC
 		return first.x * second.x + first.y * second.y + first.z * second.z;
 	}
 
+	vec3 vec3::Max(const vec3& other) const
+	{
+		vec3 result;
+
+		for (uint8_t x = 0; x < 3; x++)
+			result[x] = elements[x] > other[x] ? elements[x] : other[x];
+
+		return result;
+	}
+
+	float vec3::Max() const
+	{
+		float maxVal = elements[0];
+
+		for (uint8_t x = 0; x < 3; x++)
+			if (elements[x] > maxVal) maxVal = elements[x];
+
+		return maxVal;
+			
+	}
+
 	vec3& vec3::add(const vec3& other)
 	{
 		x += other.x;

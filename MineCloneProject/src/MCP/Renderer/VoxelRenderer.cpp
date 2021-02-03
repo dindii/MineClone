@@ -8,6 +8,8 @@
 namespace MC
 {	
 	VoxelRenderer::VoxelRenderingResources* VoxelRenderer::v_Data;
+
+	//#TODO: wrap in render stats
 	uint32_t VoxelRenderer::DrawnChunks = 0;
 
 	void VoxelRenderer::Init()
@@ -89,7 +91,6 @@ namespace MC
  					{
  						mat4 model;
  						model = model.Translate(vec3(float((x)* CHUNK_SIZE), float((y)* CHUNK_SIZE), float((z)* CHUNK_SIZE)));
- 
 						
 						//MVP matrix
 						mat4 mvp = (*v_Data->SceneActiveProjection) * (*v_Data->SceneActiveCamera) * model;
@@ -110,13 +111,11 @@ namespace MC
 						//if the chunk is out of the camera bounds + margin, don't render it
 						if (fabsf(center.x) > 1 + fabsf(CHUNK_SIZE * 2 / center.w) || fabsf(center.y) > 1 + fabsf(CHUNK_SIZE * 2 / center.w))
 							continue;
-
  
 						//render distance  //#TODO maybe a radius for this?
 						if (distance > 200.0f)
 							continue;
 
- 
  						v_Data->voxelShader.Bind();
  						v_Data->voxelShader.UploadUniformMat4("u_Transform", model);
  

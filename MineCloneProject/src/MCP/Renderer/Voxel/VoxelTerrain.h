@@ -25,6 +25,8 @@ namespace MC
 		inline Superchunk* GetTerrainData() { return superChunk; }
 		inline Texture2D& GetTerrainPreview() { return m_terrainPreviewTex; }
 
+		void RemoveBlock(uint8_t x, uint8_t y, uint8_t z);
+
 	private:
 		uint32_t width, height, depth;
 

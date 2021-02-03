@@ -2,7 +2,7 @@
 #include "Chunk.h"
 #include "MCP/Renderer/Texture2D.h"
 
-constexpr int SUPER_CHUNK_SIZE = 24;
+constexpr int SUPER_CHUNK_SIZE = 15;
 
 namespace MC
 {

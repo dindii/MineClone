@@ -105,4 +105,10 @@ namespace MC
 					for(uint32_t x = 0; x<width; x++)
 					superChunk->Set(x, y, z, BLOCK_WATER, WaterTexture);
 	}
+
+	void VoxelTerrain::RemoveBlock(uint8_t x, uint8_t y, uint8_t z)
+	{
+		superChunk->Set(x, y, z, 0, WaterTexture);
+	}
+
 }
