@@ -2,44 +2,37 @@
 #include "Trace.h"
 #include "MCP/IO/InputHandler.h"
 #include "MCP/Application.h"
+#include "../Renderer/RenderCommand.h"
+#include "../Renderer/VoxelRenderer.h"
 
 namespace MC
 {
-	vec3 Trace::Cast(const Camera& camera)
+	MC::vec3 Trace::UnprojectCenterPixel(const Camera& camera)
 	{
 		mat4 projectionMatrix = camera.GetProjection();
-		mat4 viewMatrix = camera.getViewMatrix();
+		mat4 viewMatrix       = camera.getViewMatrix();
 
-		//SCREEN CORDS
-		vec2 mousePos = InputHandler::GetMouseCoords();
+		MC::Application* app  = MC::Application::Get();
 
-		Application* app = Application::Get();
+		//Screen actual width and height
+		float width = app->GetWindow().getWidth();
+		float height = app->GetWindow().getHeight();
 
-		float screenWidth = app->GetWindow().getWidth();
-		float screenHeight = app->GetWindow().getHeight();
+		//middle screen fragment depth (0-1)
+		float depth = MC::RenderCommand::GetPixelDepth(width / 2, height / 2, 1, 1);
 
-		//NDC
-		float xNormalizedDeviceCoords = (2.0f * mousePos.x) / screenWidth - 1;
-		float yNormalizedDeviceCoords = (2.0f * mousePos.y) / screenHeight - 1; //-Y if needed
+		mat4 Inverse = mat4::Inverse(projectionMatrix * viewMatrix);
 
-		//CLIP COORDS
-		vec4 clipCoords(xNormalizedDeviceCoords, yNormalizedDeviceCoords, -1.0f, 1.0f);
+ 		vec4 tmp = vec4(width, height, depth, 1.0f);
 
-		//VIEW SPACE
-		mat4 invertedProjection = projectionMatrix.Invert();
-		vec4 viewCoords = invertedProjection * clipCoords;
+ 		tmp.x    = (width  / 2) / width;
+		tmp.y    = (height / 2) / height;
+ 		tmp      = tmp * (2.0f) - (1.0f);
 
-		viewCoords = vec4(viewCoords.x, viewCoords.y, -1.0f, 0.0f);
+		vec4 obj = Inverse * tmp;
+		obj /= obj.w;
 
-		//WORLD SPACE
-		mat4 inversedView = viewMatrix.Invert();
-		vec4 worldCoords = inversedView * viewCoords;
-
-		vec3 ray(worldCoords.x, worldCoords.y, worldCoords.z);
-		ray = ray.Normalized();
-
-		return ray;
-
+		return vec3(obj.x, obj.y, obj.z);
 	}
 
 }

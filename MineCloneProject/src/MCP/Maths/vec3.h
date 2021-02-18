@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 
 
 namespace MC
@@ -36,7 +37,7 @@ namespace MC
 
 		vec3 Max(const vec3& other) const;
 		float Max() const;
-
+		
 		//Retornando uma referencia para o proprio objeto a fim de evitar criar novos objetos e podermos com eficiencia
 		//juntar uma operação na outra
 		vec3& add(const vec3& other);
@@ -46,6 +47,8 @@ namespace MC
 
 		vec3& multiply(const float& other);
 
+
+		friend std::ostream& operator<<(std::ostream& os, const MC::vec3& vec);
 		friend vec3 operator+(vec3 left, const vec3& right);
 		friend vec3 operator-(vec3 left, const vec3& right);
 		friend vec3 operator*(vec3 left, const vec3& right);

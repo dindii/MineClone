@@ -8,6 +8,7 @@
 
 namespace MC
 {
+	//#TODO: map with textures
 	enum EBlockColor : uint8_t
 	{
 		BLOCK_WATER = 1,
@@ -39,7 +40,9 @@ namespace MC
 			"res/Textures/grass/grass_side.png"  ,
 			"res/Textures/grass/grass_side.png");
 
-
+		//#TODO remove this workaround, find a way ro proper register the texture on the renderer without the needing of
+		//using a blank set
+		superChunk->Set(0, 0, 0, BLOCK_DIRT, DirtTexture);
 	}
 
 	VoxelTerrain::~VoxelTerrain()
@@ -56,7 +59,7 @@ namespace MC
 	{
 				PerlinNoise Noise;
 		
-			//	PNGimageWriter terrainPreview("terrainpreview.png", width, height);
+				PNGimageWriter terrainPreview("terrainpreview.png", width, height);
 		
 				float xf = (float)width;
 				float yf = (float)height;
@@ -71,7 +74,7 @@ namespace MC
 						if (type == TerrainType::Terrain2D)
 							should = (float)Noise.GenOctave(x / xf, 0.0f, y / yf, octaves, frequency, persistence, xOffset, yOffset);
 				
-				//		 terrainPreview.Set(should);
+						 terrainPreview.Set(should);
 		
 						 for (uint32_t z = 0; z < depth; z++)
 						 {
@@ -83,8 +86,8 @@ namespace MC
 							 {
 								 if      (should > 0.0f  &&  should < 0.4f)  superChunk->Set(x, y, z, BLOCK_WATER, WaterTexture);
 								 else if (should > 0.4f  &&  should < 0.45f) superChunk->Set(x, y, z, BLOCK_SAND, SandTexture);
-								 else if (should > 0.45f &&  should < 0.60f) superChunk->Set(x, y, z, BLOCK_DIRT, DirtTexture);
-								 else if (should > 0.60f &&  should < 0.8f)  superChunk->Set(x, y, z, BLOCK_GRASS, GrassTexture);
+								 else if (should > 0.45f &&  should < 0.60f) superChunk->Set(x, y, z, BLOCK_GRASS, GrassTexture);
+								 else if (should > 0.60f &&  should < 0.8f)  superChunk->Set(x, y, z, BLOCK_STONE, StoneTexture);
 								 else if (should > 0.8f  &&  should < 1.0f)  superChunk->Set(x, y, z, BLOCK_SNOW, SnowTexture);
 							 }
 
@@ -94,8 +97,8 @@ namespace MC
 						 }
 					}
 		
-		//terrainPreview.Write();
-	//	m_terrainPreviewTex.SetData(terrainPreview.GetData());
+		terrainPreview.Write();
+		m_terrainPreviewTex.SetData(terrainPreview.GetData());
 	}
 
 	void VoxelTerrain::GenFlatTerrain() const
@@ -109,6 +112,7 @@ namespace MC
 	void VoxelTerrain::RemoveBlock(uint8_t x, uint8_t y, uint8_t z)
 	{
 		superChunk->Set(x, y, z, 0, WaterTexture);
+
 	}
 
 }

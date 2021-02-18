@@ -1,6 +1,7 @@
 ﻿#include "WorldLayer.h"
 #include "imgui/imgui.h"
 #include "MCP/Physic/AABB.h"
+#include "MCP/Physic/Trace.h"
 WorldLayer::WorldLayer() : Layer("WorldLayer"), terrain(64, 64, 64)
 {
 	camera = MC::Camera(1362.0f / 701.0f, { 0.0f, 0.0f, 500.0f });
@@ -9,6 +10,8 @@ WorldLayer::WorldLayer() : Layer("WorldLayer"), terrain(64, 64, 64)
 
 	terrain.GenNoiseTerrain(MC::VoxelTerrain::TerrainType::Terrain3D, octaves, frequency, persistence, 0.0f, 0.0f);
 	//terrain.GenFlatTerrain();
+
+	MC::InputHandler::showCursor(true);
 }
 
 void WorldLayer::OnUpdate(MC::DeltaTime deltaTime)
@@ -35,6 +38,17 @@ void WorldLayer::OnEvent(MC::Event& e)
 
 bool WorldLayer::ChangeBlock(MC::MouseButtonPressedEvent& event)
 {
+	MC::vec3 coords = MC::Trace::UnprojectCenterPixel(camera);
+
+	uint32_t x = MC::floorf(coords.x);
+	uint32_t y = MC::floorf(coords.y);
+	uint32_t z = MC::floorf(coords.z);
+
+	if (x >= terrain.GetWidth() || y >= terrain.GetHeight() || z >= terrain.GetDepth() || x < 0 || y < 0 || z < 0)
+		return false;
+
+	terrain.RemoveBlock(x, y, z);
+
 	return true;
 }
 

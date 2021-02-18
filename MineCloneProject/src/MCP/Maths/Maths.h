@@ -1,7 +1,7 @@
 #pragma once
 #include "mcpch.h"
 #include <stdint.h>
-#define ED_PI 3.14159265359
+#define MC_PI 3.14159265359
 
 namespace MC
 {
@@ -35,12 +35,12 @@ namespace MC
 
 	inline float toDegrees(const float radians) 
 	{
-		return (float)(radians * (180.0f / ED_PI));
+		return (float)(radians * (180.0f / MC_PI));
 	}
 
 	inline float toRadians(const float degrees)
 	{
-		return (float)(degrees * (ED_PI / 180.0f));
+		return (float)(degrees * (MC_PI / 180.0f));
 	}
 
 	inline float tan(const float angle)
@@ -63,6 +63,25 @@ namespace MC
 		 return ((start * (1.0f - alpha)) + (end * alpha));	
 	}
 
+	inline int floorf(const float val)
+	{
+		return ::floorf(val);
+	}
+
+	inline float fabsf(const float val)
+	{
+		return ::fabsf(val);
+	}
+
+	inline float roundf(const float val)
+	{
+		return ::roundf(val);
+	}
+
+	inline float dti(float val)
+	{
+		return fabsf(val - roundf(val));
+	}
 	//Module for doubles
 	template<typename T, typename U>
 	constexpr double dmod(T x, U mod)

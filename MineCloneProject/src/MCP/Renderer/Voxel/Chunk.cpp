@@ -4,6 +4,8 @@
 
 #include "MCP/Utils/Logger.h"
 #include "MCP/Renderer/VoxelRenderer.h"
+
+#include "MCP/Maths/Maths.h"
 namespace MC
 {
 	constexpr uint32_t CHUNK_SQUARED = CHUNK_SIZE * CHUNK_SIZE;
@@ -80,9 +82,9 @@ namespace MC
 
 		uint32_t vertexBufferIterator = 0;
 
-		for (uint32_t y = 0; y <= CHUNK_SIZE; y++)	
-			for (uint8_t z = 0; z <= CHUNK_SIZE; z++)	
-				for (uint8_t x = 0; x <= CHUNK_SIZE; x++)
+		for (uint32_t y = 0; y < CHUNK_SIZE; y++)	
+			for (uint8_t z = 0; z < CHUNK_SIZE; z++)	
+				for (uint8_t x = 0; x < CHUNK_SIZE; x++)
 				{
 					type = blocks[x][y][z];
 					if (!type)
@@ -109,6 +111,7 @@ namespace MC
 			
 				else if (x == 0 || (x > 0 && !blocks[x - 1][y][z]))
 					return true;
+
 				
 				break;
 			}
@@ -120,6 +123,7 @@ namespace MC
 				else if (x == CHUNK_SIZE -1 || !blocks[x + 1][y][z])
 					return true;
 				
+
 				break;
 			}
 			case ECubeFace::DOWN:
@@ -154,11 +158,11 @@ namespace MC
 			}
 			case ECubeFace::FRONT:
 			{
-				if (z == CHUNK_SIZE - 1 && nc.front_Chunk && nc.front_Chunk->blocks[x][y][0])
-					return false;
-				
-				else if (z == CHUNK_SIZE - 1 || !blocks[x][y][z + 1])
-					return true;
+ 				if (z == CHUNK_SIZE - 1 && nc.front_Chunk && nc.front_Chunk->blocks[x][y][0])
+ 					return false;
+ 				
+ 				else if (z == CHUNK_SIZE - 1 || !blocks[x][y][z + 1])
+ 					return true;
 
 				break;
 			}
@@ -188,6 +192,12 @@ namespace MC
 
 	void Chunk::GenCubeFace(const uint8_t x, const uint32_t y, const uint8_t z, const uint8_t length, const uint32_t height, const uint8_t depth, const uint8_t type, uint32_t& vertexIterator, uint8_t textureID, ECubeFace face)
 	{
+
+		//#TODO an easier way to identify textures once they already are inside the renderer pipeline. Maybe a map?
+		//If grass and theres a block above, turn into dirt
+		if (blocks[x][y][z] == 3 && blocks[x][y + 1][z])
+			textureID = 4;
+
 		switch (face)
 		{
 			//#TODO: All faces (specially RIGHT and LEFT) doesn't follow a pattern of vertex setting, put them uniform.
@@ -385,6 +395,7 @@ namespace MC
 
 					uint32_t PreCalculatedIndex = CALC_INDEX(x, yy, zz, i);
 
+				
 					//O bloco é diferente do atual, é vazio ou não visivel? Se sim, não o processe
 					if (!blocks[x][yy][zz] || blocks[x][yy][zz] != blocks[x][y][zz] || blocks[x][yy][zz] != blocks[x][yy][z] || VisitedBlocks[PreCalculatedIndex] || !isFaceVisible(x, yy, zz, face))
 						break;

@@ -18,7 +18,7 @@ namespace MC
 	}
 
 
-	const mat4 Camera::getViewMatrix() const
+	mat4 Camera::getViewMatrix() const
 	{
 		return m_ViewMatrix;
 	}

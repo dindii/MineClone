@@ -38,6 +38,7 @@ namespace MC
 
 	void Superchunk::Set(int x, int y, int z, uint8_t type, const BlockTexture2D* FaceTextures)
 	{
+		//#TODO: remove all this duplicated code
 		int cx = x / CHUNK_SIZE;
 		int cy = y / CHUNK_SIZE;
 		int cz = z / CHUNK_SIZE;
@@ -48,22 +49,44 @@ namespace MC
 
 		if (!c[cx][cy][cz])
 			c[cx][cy][cz] = new Chunk();
-		
+
 		if (cx > 0)
 		{
 			c[cx][cy][cz]->nc.left_Chunk = c[cx - 1][cy][cz];
 			c[cx - 1][cy][cz]->nc.right_Chunk = c[cx][cy][cz];
 		}
+
+		if (x == 0 && c[cx][cy][cz]->nc.left_Chunk)
+			c[cx][cy][cz]->nc.left_Chunk->changed = true;
+
+		else if (x == CHUNK_SIZE - 1 && c[cx][cy][cz]->nc.right_Chunk)
+			c[cx][cy][cz]->nc.right_Chunk->changed = true;
+
 		if (cy > 0)
 		{
 			c[cx][cy][cz]->nc.below_Chunk = c[cx][cy - 1][cz];
 			c[cx][cy - 1][cz]->nc.upper_Chunk = c[cx][cy][cz];
 		}
+
+		if (y == 0 && c[cx][cy][cz]->nc.below_Chunk)
+			c[cx][cy][cz]->nc.below_Chunk->changed = true;
+
+		else if (y == CHUNK_SIZE - 1 && c[cx][cy][cz]->nc.upper_Chunk)
+			c[cx][cy][cz]->nc.upper_Chunk->changed = true;
+
+
 		if (cz > 0)
 		{
 			c[cx][cy][cz]->nc.back_Chunk = c[cx][cy][cz - 1];
 			c[cx][cy][cz - 1]->nc.front_Chunk = c[cx][cy][cz];
 		}
+
+		if (z == 0 && c[cx][cy][cz]->nc.back_Chunk)
+			c[cx][cy][cz]->nc.back_Chunk->changed = true;
+
+		else if (z == CHUNK_SIZE - 1 && c[cx][cy][cz]->nc.front_Chunk)
+			c[cx][cy][cz]->nc.front_Chunk->changed = true;
+
 
 		c[cx][cy][cz]->set(x, y, z, type, FaceTextures);
 	}
@@ -86,16 +109,38 @@ namespace MC
 			c[cx][cy][cz]->nc.left_Chunk = c[cx - 1][cy][cz];
 			c[cx - 1][cy][cz]->nc.right_Chunk = c[cx][cy][cz];
 		}
+		
+		if (x == 0 && c[cx][cy][cz]->nc.left_Chunk)
+			c[cx][cy][cz]->nc.left_Chunk->changed = true;
+		
+		else if(x == CHUNK_SIZE - 1 && c[cx][cy][cz]->nc.right_Chunk)
+			c[cx][cy][cz]->nc.right_Chunk->changed = true;
+
 		if (cy > 0)
 		{
 			c[cx][cy][cz]->nc.below_Chunk = c[cx][cy - 1][cz];
 			c[cx][cy - 1][cz]->nc.upper_Chunk = c[cx][cy][cz];
 		}
+		
+		if (y == 0 && c[cx][cy][cz]->nc.below_Chunk)
+			c[cx][cy][cz]->nc.below_Chunk->changed = true;
+
+		else if (y == CHUNK_SIZE - 1 && c[cx][cy][cz]->nc.upper_Chunk)
+			c[cx][cy][cz]->nc.upper_Chunk->changed = true;
+		
+		
 		if (cz > 0)
 		{
 			c[cx][cy][cz]->nc.back_Chunk = c[cx][cy][cz - 1];
 			c[cx][cy][cz - 1]->nc.front_Chunk = c[cx][cy][cz];
 		}
+
+		if (z == 0 && c[cx][cy][cz]->nc.back_Chunk)
+			c[cx][cy][cz]->nc.back_Chunk->changed = true;
+
+		else if (z == CHUNK_SIZE - 1 && c[cx][cy][cz]->nc.front_Chunk)
+			c[cx][cy][cz]->nc.front_Chunk->changed = true;
+
 
 		c[cx][cy][cz]->set(x, y, z, type, UniformTexture);
 	}

@@ -19,6 +19,8 @@ namespace MC
 		static void WireframeMode(bool cond);
 		static void DelMesh(unsigned int nMeshes, unsigned int& Mesh);
 
+		static float GetPixelDepth(const uint32_t width, const uint32_t height, const uint32_t x, const uint32_t y);
+
 		static void Init();
 	};
 

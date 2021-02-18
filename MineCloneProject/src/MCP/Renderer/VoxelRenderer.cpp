@@ -32,8 +32,10 @@ namespace MC
 
 		RenderCommand::SetClearColor({0.6f, 0.8f, 1.0f, 1.0f});
 
+		//#TODO: delete properly
 		v_Data->SceneActiveCamera     = new mat4();
 		v_Data->SceneActiveProjection = new mat4();
+		v_Data->MVP	  = new mat4();
 	}
 
 	int8_t VoxelRenderer::AddTexture(const Texture2D* texture)
@@ -91,10 +93,12 @@ namespace MC
  					{
  						mat4 model;
  						model = model.Translate(vec3(float((x)* CHUNK_SIZE), float((y)* CHUNK_SIZE), float((z)* CHUNK_SIZE)));
-						
+					
+
 						//MVP matrix
 						mat4 mvp = (*v_Data->SceneActiveProjection) * (*v_Data->SceneActiveCamera) * model;
-						
+						*(v_Data->MVP) = mvp;
+
 						//generic chunk center in the world
 						vec4 center = mvp * vec4((CHUNK_SIZE / 2), (CHUNK_SIZE / 2), (CHUNK_SIZE / 2), 1.0f);
 

@@ -27,6 +27,10 @@ namespace MC
 
 		void RemoveBlock(uint8_t x, uint8_t y, uint8_t z);
 
+		inline uint32_t GetWidth()  const { return width; }
+		inline uint32_t GetHeight() const { return height; }
+		inline uint32_t GetDepth()  const { return depth; }
+
 	private:
 		uint32_t width, height, depth;
 

@@ -33,8 +33,8 @@ namespace MC
 		//INFOS
 		static uint32_t DrawnChunks;
 		
-
-	private:
+	public:
+	//private:
 		struct VoxelRenderingResources
 		{
 			static const uint32_t MaxTextureSlots = 32;
@@ -45,6 +45,7 @@ namespace MC
 
 			 mat4* SceneActiveCamera;
 			 mat4* SceneActiveProjection;
+			 mat4* MVP;
 		};
 
 		static VoxelRenderingResources* v_Data;

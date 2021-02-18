@@ -5,7 +5,7 @@ namespace MC
 {
 	struct Trace
 	{
-		static vec3 Cast(const Camera& camera);
+		static vec3 UnprojectCenterPixel(const Camera& camera);
 	};
 
 }

@@ -15,7 +15,7 @@ namespace MC
 			glBindBuffer(GL_ARRAY_BUFFER, chunk->VBO);
 			glBufferData(GL_ARRAY_BUFFER, chunk->elements * sizeof(uint32_t), chunk->vertex, GL_STATIC_DRAW);
 		}
-		
+
 		if (!chunk->elements)
 			return;
 
@@ -70,10 +70,18 @@ namespace MC
 		}
 		}
 
+	float RenderCommand::GetPixelDepth(const uint32_t width, const uint32_t height, const uint32_t x, const uint32_t y)
+	{
+		float depth = 0;
+		glReadPixels(width, height, x, y, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
+		return depth;
+	}
+
 	void RenderCommand::Init()
 	{
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
 	}
 
 }
