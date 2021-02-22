@@ -78,6 +78,7 @@ namespace MC
 		return ::roundf(val);
 	}
 
+	//distance from an integer
 	inline float dti(float val)
 	{
 		return fabsf(val - roundf(val));

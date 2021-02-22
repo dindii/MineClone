@@ -118,7 +118,8 @@ namespace MC
 		//Our Greedy Voxel Meshing is always one block behind, so if we want to use ALL blocks of CHUNK_SIZE we must use CHUNK_SIZE+1
 		//e.g: 16 of CHUNK_SIZE would result in 15 blocks generated. But 17 would result in 16.
 		//There's no problem with this because the additional block are never going to be generated, avoiding geometry clipping.
-		uint8_t blocks[CHUNK_SIZE+1][CHUNK_SIZE+1][CHUNK_SIZE+1];
+		//uint8_t blocks[CHUNK_SIZE+1][CHUNK_SIZE+1][CHUNK_SIZE+1];
+		uint8_t blocks[(CHUNK_SIZE + 1) * (CHUNK_SIZE + 1) * (CHUNK_SIZE + 1)];
 
 		uint8_t m_TexturesID[((CHUNK_SIZE + 1) * (CHUNK_SIZE + 1) * (CHUNK_SIZE + 1) * CUBE_FACES)];
 		

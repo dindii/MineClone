@@ -35,7 +35,6 @@ namespace MC
 		//#TODO: delete properly
 		v_Data->SceneActiveCamera     = new mat4();
 		v_Data->SceneActiveProjection = new mat4();
-		v_Data->MVP	  = new mat4();
 	}
 
 	int8_t VoxelRenderer::AddTexture(const Texture2D* texture)
@@ -97,7 +96,7 @@ namespace MC
 
 						//MVP matrix
 						mat4 mvp = (*v_Data->SceneActiveProjection) * (*v_Data->SceneActiveCamera) * model;
-						*(v_Data->MVP) = mvp;
+			
 
 						//generic chunk center in the world
 						vec4 center = mvp * vec4((CHUNK_SIZE / 2), (CHUNK_SIZE / 2), (CHUNK_SIZE / 2), 1.0f);

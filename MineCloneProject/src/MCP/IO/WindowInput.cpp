@@ -276,6 +276,9 @@ namespace MC
 				uint32_t width = (lparam & 0xFFFF);
 				uint32_t height = (lparam >> 16) & 0xFFFF;
 				
+				resetMousePos.x = LONG((width) / 2);
+				resetMousePos.y = LONG((height) / 2);
+
 				MC::WindowResizeEvent event(width, height);
 
 				//Making sure it's not nullptr

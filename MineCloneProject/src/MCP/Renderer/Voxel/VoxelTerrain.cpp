@@ -29,7 +29,7 @@ namespace MC
 		SnowTexture  = new Texture2D("res/Textures/branco.png");
 		StoneTexture = new Texture2D("res/Textures/stone.png");
 		DirtTexture  = new Texture2D("res/Textures/dirt/dirt.png");
-
+		WoodTexture =  new Texture2D("res/Textures/wood/oak_wood.png");
 
 		//#TODO: Overcome RAII issues 
 		GrassTexture = new BlockTexture2D
@@ -51,7 +51,7 @@ namespace MC
 		delete SandTexture;
 		delete SnowTexture;
 		delete DirtTexture;
-
+		delete WoodTexture;
 		delete superChunk;
 	}
 
@@ -86,7 +86,9 @@ namespace MC
 							 {
 								 if      (should > 0.0f  &&  should < 0.4f)  superChunk->Set(x, y, z, BLOCK_WATER, WaterTexture);
 								 else if (should > 0.4f  &&  should < 0.45f) superChunk->Set(x, y, z, BLOCK_SAND, SandTexture);
-								 else if (should > 0.45f &&  should < 0.60f) superChunk->Set(x, y, z, BLOCK_GRASS, GrassTexture);
+								 else if (should > 0.45f &&  should < 0.60f) 
+									 if(superChunk->Get(x, y+1, z)) superChunk->Set(x, y, z, BLOCK_DIRT, DirtTexture);
+									 else superChunk->Set(x, y, z, BLOCK_GRASS, GrassTexture);
 								 else if (should > 0.60f &&  should < 0.8f)  superChunk->Set(x, y, z, BLOCK_STONE, StoneTexture);
 								 else if (should > 0.8f  &&  should < 1.0f)  superChunk->Set(x, y, z, BLOCK_SNOW, SnowTexture);
 							 }
@@ -112,6 +114,12 @@ namespace MC
 	void VoxelTerrain::RemoveBlock(uint8_t x, uint8_t y, uint8_t z)
 	{
 		superChunk->Set(x, y, z, 0, WaterTexture);
+
+	}
+
+	void VoxelTerrain::PlaceBlock(uint8_t x, uint8_t y, uint8_t z)
+	{
+		superChunk->Set(x, y, z, 1, WoodTexture);
 
 	}
 

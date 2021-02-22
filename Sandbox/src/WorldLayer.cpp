@@ -2,11 +2,14 @@
 #include "imgui/imgui.h"
 #include "MCP/Physic/AABB.h"
 #include "MCP/Physic/Trace.h"
-WorldLayer::WorldLayer() : Layer("WorldLayer"), terrain(64, 64, 64)
+
+#include <thread>
+WorldLayer::WorldLayer() : Layer("WorldLayer"), terrain(32, 32, 32)
 {
 	camera = MC::Camera(1362.0f / 701.0f, { 0.0f, 0.0f, 500.0f });
 	camera.SetCameraLag(true);
 	camera.SetCameraLagValue(0.15000f);
+
 
 	terrain.GenNoiseTerrain(MC::VoxelTerrain::TerrainType::Terrain3D, octaves, frequency, persistence, 0.0f, 0.0f);
 	//terrain.GenFlatTerrain();
@@ -33,23 +36,74 @@ void WorldLayer::OnEvent(MC::Event& e)
 	MC::EventDispatcher dispatcher(e);
 	dispatcher.Dispatch<MC::MouseButtonPressedEvent>(BIND_EVENT_FN(WorldLayer::ChangeBlock));
 
-	//MC_LOG_TRACE(e);
+
+	MC_LOG_TRACE(e);
 }
 
 bool WorldLayer::ChangeBlock(MC::MouseButtonPressedEvent& event)
 {
-	MC::vec3 coords = MC::Trace::UnprojectCenterPixel(camera);
+	if ((MC::MC_KEYS)event.GetMouseButton() == MC::MC_KEYS::MC_BUTTON_LBUTTON)
+	{
+		MC::vec3 coords = MC::Trace::UnprojectCenterPixel(camera);
 
-	uint32_t x = MC::floorf(coords.x);
-	uint32_t y = MC::floorf(coords.y);
-	uint32_t z = MC::floorf(coords.z);
+		uint32_t x = MC::floorf(coords.x);
+		uint32_t y = MC::floorf(coords.y);
+		uint32_t z = MC::floorf(coords.z);
 
-	if (x >= terrain.GetWidth() || y >= terrain.GetHeight() || z >= terrain.GetDepth() || x < 0 || y < 0 || z < 0)
-		return false;
 
-	terrain.RemoveBlock(x, y, z);
+		if (x > terrain.GetWidth() || y > terrain.GetHeight() || z > terrain.GetDepth() || x < 0 || y < 0 || z < 0)
+			return false;
 
-	return true;
+		terrain.RemoveBlock(x, y, z);
+
+
+		return true;
+	}
+
+	if ((MC::MC_KEYS)event.GetMouseButton() == MC::MC_KEYS::MC_BUTTON_RBUTTON)
+	{
+		MC::vec3 coords = MC::Trace::UnprojectCenterPixel(camera);
+
+		uint32_t x = MC::floorf(coords.x);
+		uint32_t y = MC::floorf(coords.y);
+		uint32_t z = MC::floorf(coords.z);
+
+		int nx = x;
+		int ny = y;
+		int nz = z;
+
+		if (x >= terrain.GetWidth() || y >= terrain.GetHeight() || z >= terrain.GetDepth() || x < 0 || y < 0 || z < 0)
+			return false;
+
+		if (MC::dti(coords.x) < MC::dti(coords.y))
+			if (MC::dti(coords.x) < MC::dti(coords.z))
+				if (camera.GetCameraPos().x > 0)
+					nx--;
+				else
+					nx++;
+			else
+				if (camera.GetCameraPos().z > 0)
+					nz--;
+				else
+					nz++;
+		else
+			if (MC::dti(coords.y) < MC::dti(coords.z))
+				if (camera.GetCameraPos().y > 0)
+					ny++;
+				else
+					ny--;
+			else
+				if (camera.GetCameraPos().z > 0)
+					nz--;
+				else
+					nz++;
+
+		terrain.PlaceBlock(nx, ny, nz);
+
+		return true;
+	}
+
+	return false;
 }
 
 void WorldLayer::OnImGuiRender()

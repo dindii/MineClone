@@ -26,6 +26,7 @@ namespace MC
 		inline Texture2D& GetTerrainPreview() { return m_terrainPreviewTex; }
 
 		void RemoveBlock(uint8_t x, uint8_t y, uint8_t z);
+		void PlaceBlock(uint8_t x, uint8_t y, uint8_t z);
 
 		inline uint32_t GetWidth()  const { return width; }
 		inline uint32_t GetHeight() const { return height; }
@@ -43,6 +44,7 @@ namespace MC
 		Texture2D*  SnowTexture;
 		Texture2D*  StoneTexture;
 		Texture2D*  DirtTexture;
+		Texture2D*  WoodTexture;
 		
 		//Multiple textures voxels
 		BlockTexture2D*  GrassTexture;

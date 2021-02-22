@@ -8,10 +8,11 @@
 #include "MCP/Maths/Maths.h"
 namespace MC
 {
-	constexpr uint32_t CHUNK_SQUARED = CHUNK_SIZE * CHUNK_SIZE;
-	constexpr uint32_t CHUNK_SIZE_CUBED = CHUNK_SQUARED * CHUNK_SIZE;
+	constexpr uint32_t CHUNK_SQUARED = (CHUNK_SIZE+1) * (CHUNK_SIZE+1);
+	constexpr uint32_t CHUNK_SIZE_CUBED = CHUNK_SQUARED * (CHUNK_SIZE+1);
 
-#define CALC_INDEX(x, y, z, a) (x + z * CHUNK_SIZE + y * CHUNK_SQUARED) + (CHUNK_SIZE_CUBED * a)
+#define CALC_INDEX(x, y, z, a) (x + z * (CHUNK_SIZE+1) + y * CHUNK_SQUARED) + (CHUNK_SIZE_CUBED * a)
+#define CALC_INDEX_SIMPLE(x, y, z) (x + z * (CHUNK_SIZE+1) + y * CHUNK_SQUARED)
 
 
 	Chunk::Chunk() : elements(0), changed(true)
@@ -31,12 +32,12 @@ namespace MC
 
 	uint8_t Chunk::get(int x, int y, int z)
 	{
-		return blocks[x][y][z];
+		return blocks[CALC_INDEX_SIMPLE(x, y, z)];
 	}
 
 	void Chunk::set(int x, int y, int z, uint8_t type, const BlockTexture2D* FaceTextures)
 	{
-		blocks[x][y][z] = type;
+		blocks[CALC_INDEX_SIMPLE(x, y, z)] = type;
 		changed = true;
 
 		if (type)
@@ -59,7 +60,7 @@ namespace MC
 
 	void Chunk::set(int x, int y, int z, uint8_t type, const Texture2D* UniformTexture)
 	{
-		blocks[x][y][z] = type;
+		blocks[CALC_INDEX_SIMPLE(x, y, z)] = type;
 		changed = true;
 
 		if (type)
@@ -86,7 +87,7 @@ namespace MC
 			for (uint8_t z = 0; z < CHUNK_SIZE; z++)	
 				for (uint8_t x = 0; x < CHUNK_SIZE; x++)
 				{
-					type = blocks[x][y][z];
+					type = blocks[CALC_INDEX_SIMPLE(x, y, z)];
 					if (!type)
 						continue;
 
@@ -106,10 +107,10 @@ namespace MC
 		{
 			case ECubeFace::LEFT:
 			{
-				if (x == 0 && nc.left_Chunk && nc.left_Chunk->blocks[CHUNK_SIZE - 1][y][z])
+				if (x == 0 && nc.left_Chunk && nc.left_Chunk->blocks[CALC_INDEX_SIMPLE((CHUNK_SIZE - 1), y, z)])
 					return false;
 			
-				else if (x == 0 || (x > 0 && !blocks[x - 1][y][z]))
+				else if (x == 0 || (x > 0 && !blocks[CALC_INDEX_SIMPLE((x - 1), y, z)]))
 					return true;
 
 				
@@ -117,10 +118,10 @@ namespace MC
 			}
 			case ECubeFace::RIGHT:
 			{
-				if (x == CHUNK_SIZE - 1 && nc.right_Chunk && nc.right_Chunk->blocks[0][y][z])
+				if (x == CHUNK_SIZE - 1 && nc.right_Chunk && nc.right_Chunk->blocks[CALC_INDEX_SIMPLE(0, y, z)])
 					return false;
 				
-				else if (x == CHUNK_SIZE -1 || !blocks[x + 1][y][z])
+				else if (x == CHUNK_SIZE -1 || !blocks[CALC_INDEX_SIMPLE((x+1), y, z)])
 					return true;
 				
 
@@ -128,40 +129,40 @@ namespace MC
 			}
 			case ECubeFace::DOWN:
 			{
-				if (y == 0 && nc.below_Chunk && nc.below_Chunk->blocks[x][CHUNK_SIZE - 1][z])
+				if (y == 0 && nc.below_Chunk && nc.below_Chunk->blocks[CALC_INDEX_SIMPLE(x, (CHUNK_SIZE-1), z)])
 					return false;
 				
-				else if (y == 0 || (y > 0 && !blocks[x][y - 1][z]))
+				else if (y == 0 || (y > 0 && !blocks[CALC_INDEX_SIMPLE(x, (y - 1), z)]))
 					return true;
 				
 					break;
 			}
 			case ECubeFace::UP:
 			{
-				if (y == CHUNK_SIZE - 1 && nc.upper_Chunk && nc.upper_Chunk->blocks[x][0][z])
+				if (y == CHUNK_SIZE - 1 && nc.upper_Chunk && nc.upper_Chunk->blocks[CALC_INDEX_SIMPLE(x, 0, z)])
 					return false;
 				
-				else if (y == CHUNK_SIZE - 1 || !blocks[x][y + 1][z])
+				else if (y == CHUNK_SIZE - 1 || !blocks[CALC_INDEX_SIMPLE(x, (y + 1), z)])
 					return true;
 
 				break;
 			}
 			case ECubeFace::BACK:
 			{
-				if (z == 0 && nc.back_Chunk && nc.back_Chunk->blocks[x][y][CHUNK_SIZE - 1])
+				if (z == 0 && nc.back_Chunk && nc.back_Chunk->blocks[CALC_INDEX_SIMPLE(x, y, (CHUNK_SIZE - 1))])
 					return false;
 				
-				else if (z == 0 || (z > 0 && !blocks[x][y][z - 1]))
+				else if (z == 0 || (z > 0 && !blocks[CALC_INDEX_SIMPLE(x, y, (z - 1))]))
 					return true;
 				
 				break;
 			}
 			case ECubeFace::FRONT:
 			{
- 				if (z == CHUNK_SIZE - 1 && nc.front_Chunk && nc.front_Chunk->blocks[x][y][0])
+ 				if (z == CHUNK_SIZE - 1 && nc.front_Chunk && nc.front_Chunk->blocks[CALC_INDEX_SIMPLE(x, y, 0)])
  					return false;
  				
- 				else if (z == CHUNK_SIZE - 1 || !blocks[x][y][z + 1])
+ 				else if (z == CHUNK_SIZE - 1 || !blocks[CALC_INDEX_SIMPLE(x, y, (z + 1))])
  					return true;
 
 				break;
@@ -192,12 +193,6 @@ namespace MC
 
 	void Chunk::GenCubeFace(const uint8_t x, const uint32_t y, const uint8_t z, const uint8_t length, const uint32_t height, const uint8_t depth, const uint8_t type, uint32_t& vertexIterator, uint8_t textureID, ECubeFace face)
 	{
-
-		//#TODO an easier way to identify textures once they already are inside the renderer pipeline. Maybe a map?
-		//If grass and theres a block above, turn into dirt
-		if (blocks[x][y][z] == 3 && blocks[x][y + 1][z])
-			textureID = 4;
-
 		switch (face)
 		{
 			//#TODO: All faces (specially RIGHT and LEFT) doesn't follow a pattern of vertex setting, put them uniform.
@@ -304,9 +299,10 @@ namespace MC
 				{
 
 					uint32_t PreCalculatedIndex = CALC_INDEX(xx, yy, z, i);
+					uint32_t PreCalculatedBlocksIndex = CALC_INDEX_SIMPLE(xx, yy, z);
 
 					//O bloco é diferente do atual, é vazio ou não visivel? Se sim, não o processe
-					if (!blocks[xx][yy][z] || blocks[xx][yy][z] != blocks[xx][y][z] || blocks[xx][yy][z] != blocks[x][yy][z] || VisitedBlocks[PreCalculatedIndex] || !isFaceVisible(xx, yy, z, face))
+					if (!blocks[PreCalculatedBlocksIndex] || blocks[PreCalculatedBlocksIndex]  != blocks[CALC_INDEX_SIMPLE(xx, y, z)] || blocks[PreCalculatedBlocksIndex] != blocks[CALC_INDEX_SIMPLE(x, yy, z, i)] || VisitedBlocks[PreCalculatedIndex] || !isFaceVisible(xx, yy, z, face))
 						break;
 	
 					
@@ -350,9 +346,10 @@ namespace MC
 				for (uint32_t xx = x; xx <= CHUNK_SIZE; xx++)
 				{
 					uint32_t PreCalculatedIndex = CALC_INDEX(xx, y, zz, i);
+					uint32_t PreCalculatedBlocksIndex = CALC_INDEX_SIMPLE(xx, y, zz);
 
 					//O bloco é diferente do atual, é vazio ou não visivel? Se sim, não o processe
-					if (!blocks[xx][y][zz] || blocks[xx][y][zz] != blocks[xx][y][z] || blocks[xx][y][zz] != blocks[x][y][zz] || VisitedBlocks[PreCalculatedIndex] || !isFaceVisible(xx, y, zz, face))
+					if (!blocks[PreCalculatedBlocksIndex] || blocks[PreCalculatedBlocksIndex] != blocks[CALC_INDEX_SIMPLE(xx, y, z, i)] || blocks[PreCalculatedBlocksIndex] != blocks[CALC_INDEX_SIMPLE(x, y, zz, i)] || VisitedBlocks[PreCalculatedIndex] || !isFaceVisible(xx, y, zz, face))
 						break;
 		
 					//Salvamos falando que o bloco ja foi visitado
@@ -384,7 +381,7 @@ namespace MC
 		{
 			uint8_t depth = 0, height = 0;
 			uint32_t PreviousDepth = 0;
-		
+
 			ECubeFace face = (ECubeFace)i;
 			uint8_t textureID = 0;
 
@@ -394,12 +391,13 @@ namespace MC
 				{
 
 					uint32_t PreCalculatedIndex = CALC_INDEX(x, yy, zz, i);
+					uint32_t PreCalculatedBlockIndex = CALC_INDEX_SIMPLE(x, yy, zz);
 
-				
+
 					//O bloco é diferente do atual, é vazio ou não visivel? Se sim, não o processe
-					if (!blocks[x][yy][zz] || blocks[x][yy][zz] != blocks[x][y][zz] || blocks[x][yy][zz] != blocks[x][yy][z] || VisitedBlocks[PreCalculatedIndex] || !isFaceVisible(x, yy, zz, face))
+					if (!blocks[PreCalculatedBlockIndex] || blocks[PreCalculatedBlockIndex] != blocks[CALC_INDEX_SIMPLE(x, y, zz)] || blocks[PreCalculatedBlockIndex] != blocks[CALC_INDEX_SIMPLE(x, yy, z)] || VisitedBlocks[PreCalculatedIndex] || !isFaceVisible(x, yy, zz, face))
 						break;
-		
+
 					//Salvamos falando que o bloco ja foi visitado
 					VisitedBlocks[PreCalculatedIndex] = true;
 					textureID = m_TexturesID[PreCalculatedIndex] = m_TexturesID[CALC_INDEX(x, y, z, i)];
@@ -407,16 +405,16 @@ namespace MC
 					//Caso não seja, aumentamos o length, ou seja, mais um bloco à direita que cubrimos.
 					depth++;
 				}
-		
+
 				if (yy > 0 && (PreviousDepth != depth || yy == CHUNK_SIZE))
 				{
 					GenCubeFace(x, yy - height, z, 1, height, PreviousDepth, type, vertexBufferIterator, textureID, face);
 					height = 0;
 				}
-		
+
 				PreviousDepth = depth;
 				depth = 0;
-		
+
 				height++;
 			}
 		}
