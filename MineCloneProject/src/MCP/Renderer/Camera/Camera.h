@@ -35,15 +35,15 @@ namespace MC
 		inline vec3 GetCameraUp() const { return m_CameraUp; }
 		inline vec3 GetCameraRight() const { return m_CameraRight; }
 		inline vec3 GetCameraPos() const { return m_CameraPos; }
-			 
+		inline float GetFieldOfView() const { return m_FOV; }
 		inline float GetCameraYaw() const { return m_Yaw; }
 		inline float GetCameraPitch() const { return m_Pitch; }
 
 		inline mat4 GetProjection() const { return m_Projection; }
+		
 		inline void SetProjection(float AR);
-
 		inline void SetViewMatrix(mat4& view) { m_ViewMatrix = view; }
-
+		inline void SetFieldOfView(const float FOV) { m_FOV = FOV; }
 		inline void SetCameraLag(bool val) { m_CameraLag = val; }
 		inline void SetCameraLagValue(float LagVal) { m_LagVal = LagVal; }
 
@@ -54,7 +54,7 @@ namespace MC
 		vec3  m_DesiredPos;
 		bool  m_CameraLag = false;
 		float m_LagVal;
-
+		float m_FOV;
 	private:
 		vec3 m_CameraTarget;
 		vec3 m_CameraUp;

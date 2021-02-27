@@ -19,6 +19,13 @@ namespace MC
 	}
 
 
+	vec3::vec3(const vec4& other)
+	{
+		x = other.x;
+		y = other.y;
+		z = other.z;
+	}
+
 	std::string vec3::ToString() const
 	{
 		std::stringstream ss;
@@ -63,10 +70,10 @@ namespace MC
 
 	vec3  vec3::Normalized()
 	{
-		float lenght = this->Length();
+		float length = this->Length();
 
-		if (lenght)
-			return vec3(x / lenght, y / lenght, z / lenght);
+		if (length)
+			return vec3(x / length, y / length, z / length);
 		else
 		{
 			MC_LOG_ERROR("Cannot divide by zero");

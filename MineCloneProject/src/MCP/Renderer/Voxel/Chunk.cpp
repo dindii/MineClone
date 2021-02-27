@@ -37,28 +37,17 @@ namespace MC
 
 	void Chunk::set(int x, int y, int z, uint8_t type, const BlockTexture2D* FaceTextures)
 	{
-		blocks[CALC_INDEX_SIMPLE(x, y, z)] = type;
-		changed = true;
-
-		if (type)
-		{
-			for (uint8_t face = 0; face < CUBE_FACES; face++)
-			{
-
-
-				int8_t TextureID = VoxelRenderer::GetTexture(FaceTextures->Textures[face]);
-
-				if (TextureID < 0)
-					TextureID = VoxelRenderer::AddTexture(FaceTextures->Textures[face]);
-
-				//Almost all of my voxel mesh generation works with faces, so i have to make my texture array also work with faces
-				//This can leads us in the future to a setup where we can choose a texture for each of the six cube faces. 
-					m_TexturesID[CALC_INDEX(x, y, z, face)] = TextureID;
-			}
-		}
+		for (uint8_t face = 0; face < CUBE_FACES; face++)
+		   this->set(x, y, z, type, (ECubeFace)face, FaceTextures->Textures[face]);			
 	}
 
 	void Chunk::set(int x, int y, int z, uint8_t type, const Texture2D* UniformTexture)
+	{
+		for (uint8_t faces = 0; faces < 6; faces++)
+			this->set(x, y, z, type, (ECubeFace)faces, UniformTexture);
+	}
+
+	void Chunk::set(int x, int y, int z, uint8_t type, ECubeFace face, const Texture2D* UniformTexture)
 	{
 		blocks[CALC_INDEX_SIMPLE(x, y, z)] = type;
 		changed = true;
@@ -69,13 +58,14 @@ namespace MC
 
 			if (TextureID < 0)
 				TextureID = VoxelRenderer::AddTexture(UniformTexture);
-
+			
+			
 			//Almost all of my voxel mesh generation works with faces, so i have to make my texture array also work with faces
 			//This can leads us in the future to a setup where we can choose a texture for each of the six cube faces. 
-			for (uint8_t a = 0; a < CUBE_FACES; a++)
-				m_TexturesID[CALC_INDEX(x, y, z, a)] = TextureID;
+				m_TexturesID[CALC_INDEX(x, y, z, face)] = TextureID;
 		}
 	}
+
 	void Chunk::update()
 	{
 	    uint8_t type = 0;

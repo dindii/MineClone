@@ -9,12 +9,12 @@ namespace MC
 		Texture2D(const uint8_t* data, const uint32_t width, const uint32_t height, const uint32_t channels = 4);
 		Texture2D();
 
-		~Texture2D();
+		virtual ~Texture2D();
 
-		uint32_t GetWidth()   const { return m_Width; }
-		uint32_t GetHeight()  const { return m_Height; }
-		uint32_t GetID()      const { return m_RendererID; }
-		std::string GetPath()const { return m_Path; }
+		virtual uint32_t GetWidth()   const { return m_Width; }
+		virtual uint32_t GetHeight()  const { return m_Height; }
+		virtual uint32_t GetID()      const { return m_RendererID; }
+		virtual std::string GetPath()const { return m_Path; }
 		virtual void SetData(void* data);
 
 		virtual void Bind(uint32_t slot = 0) const;
@@ -36,6 +36,7 @@ namespace MC
 	{
 		BlockTexture2D() = default;
 
+		BlockTexture2D(Texture2D* uniformTexture);
 		BlockTexture2D(const std::string& UniformTexturePath);
 		BlockTexture2D(const std::string& UniformSidesTexturePath, const std::string& TopTexturePath);
 
@@ -48,12 +49,12 @@ namespace MC
 		{
 		 struct
 		 {
-			Texture2D*  FrontTexture;
-			Texture2D*  BackTexture;
-			Texture2D*  TopTexture; 
-			Texture2D*  BottomTexture;
-			Texture2D*  LeftTexture;
-			Texture2D*  RightTexture;
+			const Texture2D*  FrontTexture;
+			const Texture2D*  BackTexture;
+			const Texture2D*  TopTexture; 
+			const Texture2D*  BottomTexture;
+			const Texture2D*  LeftTexture;
+			const Texture2D*  RightTexture;
 	     };
 
 		 struct

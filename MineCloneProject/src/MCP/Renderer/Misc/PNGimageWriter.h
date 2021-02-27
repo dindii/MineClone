@@ -14,6 +14,7 @@ namespace MC
 
 	    void Write();
 	    void Set(const float& value);
+		void Set(const uint32_t x, const uint32_t y, const float value);
 	    void Set(const int& value);
 
 		inline	uint8_t* GetData() { return m_data; }

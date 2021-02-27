@@ -9,6 +9,8 @@
 #include "MCP/Renderer/Voxel/VoxelTerrain.h"
 #include "MCP/Renderer/Texture2D.h"
 
+#include <unordered_map>
+
 namespace MC
 {
 	class VoxelRenderer
@@ -33,8 +35,7 @@ namespace MC
 		//INFOS
 		static uint32_t DrawnChunks;
 		
-	public:
-	//private:
+	private:
 		struct VoxelRenderingResources
 		{
 			static const uint32_t MaxTextureSlots = 32;

@@ -59,6 +59,14 @@ namespace MC
 		return *this;
 	}
 
+	vec4& vec4::multiply(const float other)
+	{
+		for (uint8_t x = 0; x < 4; x++)
+			elements[x] *= other;
+
+		return *this;
+	}
+
 	vec4& vec4::divide(const vec4& other)
 	{
 		x /= other.x;
@@ -116,6 +124,11 @@ namespace MC
 		return left.subtract(right);
 	}
     vec4 operator*(vec4 left, const vec4& right)
+	{
+		return left.multiply(right);
+	}
+
+	vec4 operator*(vec4 left, const float right)
 	{
 		return left.multiply(right);
 	}

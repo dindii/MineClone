@@ -2,8 +2,8 @@
 #include "Window.h"
 #include "Utils/Logger.h"
 
-//TEMPORARY
 #include "glad/glad.h"
+#include "MCP/Renderer/RenderCommand.h"
 
 namespace MC
 {
@@ -89,12 +89,8 @@ namespace MC
 		
 
 
-		MC_LOG_TRACE((char*)glGetString(GL_VENDOR));
-		MC_LOG_TRACE((char*)glGetString(GL_VERSION));
-
-
 		//Setup the first OpenGL call
-		glViewport(0, 0, m_Details->Width, m_Details->Height); //@TODO: Mover isso para outro lugar que lide apenas com OpenGL calls.
+		MC::RenderCommand::SetViewport(0, 0, m_Details->Width, m_Details->Height);
 	}
 
 	Window::~Window()

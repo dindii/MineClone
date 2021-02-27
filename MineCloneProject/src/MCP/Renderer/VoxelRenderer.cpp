@@ -32,7 +32,6 @@ namespace MC
 
 		RenderCommand::SetClearColor({0.6f, 0.8f, 1.0f, 1.0f});
 
-		//#TODO: delete properly
 		v_Data->SceneActiveCamera     = new mat4();
 		v_Data->SceneActiveProjection = new mat4();
 	}
@@ -71,6 +70,8 @@ namespace MC
 	
 	void VoxelRenderer::ShutDown()
 	{
+		delete v_Data->SceneActiveCamera;
+		delete v_Data->SceneActiveProjection;
 		delete v_Data;
 	}
 
@@ -115,7 +116,7 @@ namespace MC
 						if (fabsf(center.x) > 1 + fabsf(CHUNK_SIZE * 2 / center.w) || fabsf(center.y) > 1 + fabsf(CHUNK_SIZE * 2 / center.w))
 							continue;
  
-						//render distance  //#TODO maybe a radius for this?
+						//render distance 
 						if (distance > 200.0f)
 							continue;
 

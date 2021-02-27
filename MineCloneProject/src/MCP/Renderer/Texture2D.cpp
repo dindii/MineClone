@@ -159,6 +159,13 @@ namespace MC
 			 RightTexture  = new Texture2D(RightTexturePath);
 		}
 
+		BlockTexture2D::BlockTexture2D(Texture2D* uniformTexture)
+		{
+			for (uint8_t x = 0; x < 6; x++)
+				Textures[x] = uniformTexture;
+		}
+
+
 		//Attempt to delete if it is not already deleted
 		BlockTexture2D::~BlockTexture2D()
 		{

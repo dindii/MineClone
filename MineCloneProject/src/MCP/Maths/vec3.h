@@ -1,6 +1,6 @@
 #pragma once
 #include <iostream>
-
+#include "vec4.h"
 
 namespace MC
 {
@@ -16,6 +16,7 @@ namespace MC
 		vec3();
 		vec3(float scalar);
 		vec3(const float xx, const float yy, const float zz);
+		vec3(const vec4& other);
 
 		std::string ToString() const;
 

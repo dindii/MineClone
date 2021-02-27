@@ -1,18 +1,23 @@
 ﻿#include "WorldLayer.h"
 #include "imgui/imgui.h"
-#include "MCP/Physic/AABB.h"
-#include "MCP/Physic/Trace.h"
+#include "MCP/Physic/Utils.h"
+#include "MCP/Physic/Ray.h"
 
-#include <thread>
-WorldLayer::WorldLayer() : Layer("WorldLayer"), terrain(32, 32, 32)
+
+WorldLayer::WorldLayer() : Layer("WorldLayer"), terrain(32, 64, 32)
 {
-	camera = MC::Camera(1362.0f / 701.0f, { 0.0f, 0.0f, 500.0f });
+	MC::Application* App = MC::Application::Get();
+
+	uint32_t width = App->GetWindow().getWidth();
+	uint32_t height = App->GetWindow().getHeight();
+
+	camera = MC::Camera(float(width) / float(height), { 0.0f, 0.0f, -500.0f });
+
 	camera.SetCameraLag(true);
 	camera.SetCameraLagValue(0.15000f);
 
 
 	terrain.GenNoiseTerrain(MC::VoxelTerrain::TerrainType::Terrain3D, octaves, frequency, persistence, 0.0f, 0.0f);
-	//terrain.GenFlatTerrain();
 
 	MC::InputHandler::showCursor(true);
 }
@@ -36,74 +41,63 @@ void WorldLayer::OnEvent(MC::Event& e)
 	MC::EventDispatcher dispatcher(e);
 	dispatcher.Dispatch<MC::MouseButtonPressedEvent>(BIND_EVENT_FN(WorldLayer::ChangeBlock));
 
-
-	MC_LOG_TRACE(e);
+	//MC_LOG_TRACE(e);
 }
 
 bool WorldLayer::ChangeBlock(MC::MouseButtonPressedEvent& event)
 {
-	if ((MC::MC_KEYS)event.GetMouseButton() == MC::MC_KEYS::MC_BUTTON_LBUTTON)
+	MC::Application* App = MC::Application::Get();
+
+	float width = App->GetWindow().getWidth();
+	float height = App->GetWindow().getHeight();
+	
+	//Trace from viewport from world coords
+	MC::Trace direction((width / 2), (height / 2), camera);
+
+	float   distancePerStep = 1.0f;
+	uint8_t stepCount = 0;
+	MC::vec3 trace;
+	MC::vec3 lastTraceStep;
+
+	uint32_t x = 0;
+	uint32_t y = 0;
+	uint32_t z = 0;
+
+	bool foundBlock = false;
+
+	while (stepCount < 30)
 	{
-		MC::vec3 coords = MC::Trace::UnprojectCenterPixel(camera);
+		trace = camera.GetCameraPos() + direction.getDirection() * distancePerStep;
 
-		uint32_t x = MC::floorf(coords.x);
-		uint32_t y = MC::floorf(coords.y);
-		uint32_t z = MC::floorf(coords.z);
+		x = (trace.x);
+		y = (trace.y);
+		z = (trace.z);
 
+		if (terrain.GetTerrainData()->Get(x, y, z))
+		{
+			foundBlock = true;
+			break;
+		}
 
-		if (x > terrain.GetWidth() || y > terrain.GetHeight() || z > terrain.GetDepth() || x < 0 || y < 0 || z < 0)
-			return false;
+		distancePerStep += 1.0f;
+		stepCount++;	
 
-		terrain.RemoveBlock(x, y, z);
-
-
-		return true;
+		lastTraceStep = trace;
 	}
 
-	if ((MC::MC_KEYS)event.GetMouseButton() == MC::MC_KEYS::MC_BUTTON_RBUTTON)
+	if (foundBlock)
 	{
-		MC::vec3 coords = MC::Trace::UnprojectCenterPixel(camera);
+		if (event.GetMouseButton() == MC::MC_KEYS::MC_BUTTON_LBUTTON)
+			terrain.RemoveBlock(x, y, z);
 
-		uint32_t x = MC::floorf(coords.x);
-		uint32_t y = MC::floorf(coords.y);
-		uint32_t z = MC::floorf(coords.z);
-
-		int nx = x;
-		int ny = y;
-		int nz = z;
-
-		if (x >= terrain.GetWidth() || y >= terrain.GetHeight() || z >= terrain.GetDepth() || x < 0 || y < 0 || z < 0)
-			return false;
-
-		if (MC::dti(coords.x) < MC::dti(coords.y))
-			if (MC::dti(coords.x) < MC::dti(coords.z))
-				if (camera.GetCameraPos().x > 0)
-					nx--;
-				else
-					nx++;
-			else
-				if (camera.GetCameraPos().z > 0)
-					nz--;
-				else
-					nz++;
-		else
-			if (MC::dti(coords.y) < MC::dti(coords.z))
-				if (camera.GetCameraPos().y > 0)
-					ny++;
-				else
-					ny--;
-			else
-				if (camera.GetCameraPos().z > 0)
-					nz--;
-				else
-					nz++;
-
-		terrain.PlaceBlock(nx, ny, nz);
-
-		return true;
+		if (event.GetMouseButton() == MC::MC_KEYS::MC_BUTTON_RBUTTON)
+		{
+			x = lastTraceStep.x, y = lastTraceStep.y, z = lastTraceStep.z;
+            terrain.PlaceBlock(x, y, z);
+		}
 	}
 
-	return false;
+	return true;
 }
 
 void WorldLayer::OnImGuiRender()
@@ -158,13 +152,10 @@ void WorldLayer::MovePlayer(MC::DeltaTime deltaTime)
 		cameraSpeed = 360.0f;
 	else
 		cameraSpeed = 50.5f;
-	
 
 	camera.AddCameraTargetPosition(gotoCamera, deltaTime);	
-//	camera.SetCameraPosition(MC::vec3(camera.GetCameraPos().x - gotoCamera.x,camera.GetCameraPos().y + gotoCamera.y, camera.GetCameraPos().z + gotoCamera.z));
 }
 
-//#TODO: mover para um controller
 void WorldLayer::LookAround()
 {
 	MC::vec2 Delta = MC::InputHandler::GetMouseDelta();

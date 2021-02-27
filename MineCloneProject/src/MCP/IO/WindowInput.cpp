@@ -230,6 +230,8 @@ namespace MC
 
 				EventCallback(event);
 
+
+
 				//Mouse delta logic
 				if (!deltaLock)
 				{
@@ -253,13 +255,13 @@ namespace MC
 					// Reset mouse to the middle of screen
 					POINT temp = resetMousePos;
 					ClientToScreen(hwnd, &temp);
-
 					// the new difference should be 0
 					currMousePos.x = resetMousePos.x;
 					currMousePos.y = resetMousePos.y;
 					lastMousePos = currMousePos;
 					SetCursorPos(temp.x, temp.y);
 				}
+				
 
 				break;
 			}

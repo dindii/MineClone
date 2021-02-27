@@ -25,10 +25,4 @@ public:
 
 	int octaves = 1;
 	float persistence = 0.25f, frequency = 2.865f, previewSize = 290.0f, xOffset = 0.0f, yOffset = 0.0f;
-
-
-	/*  DEBUG */
-	MC::Superchunk Directions;
-
-
 };

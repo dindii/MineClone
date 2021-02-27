@@ -33,9 +33,12 @@ namespace MC
 		inline uint32_t GetDepth()  const { return depth; }
 
 	private:
+		bool ValidateBlock(const uint8_t x, const uint8_t y, const uint8_t z);
+
+	private:
 		uint32_t width, height, depth;
 
-		Superchunk* superChunk; //@TODO: extent to multiple superchunks
+		Superchunk* superChunk; 
 		Texture2D m_terrainPreviewTex;
 
 		//DEBUG
@@ -48,6 +51,5 @@ namespace MC
 		
 		//Multiple textures voxels
 		BlockTexture2D*  GrassTexture;
-		//DEBUG
 	};
 }

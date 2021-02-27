@@ -1,5 +1,5 @@
 #include "mcpch.h"
-#include "Trace.h"
+#include "Utils.h"
 #include "MCP/IO/InputHandler.h"
 #include "MCP/Application.h"
 #include "../Renderer/RenderCommand.h"
@@ -7,7 +7,7 @@
 
 namespace MC
 {
-	MC::vec3 Trace::UnprojectCenterPixel(const Camera& camera)
+	MC::vec3 Utils::UnprojectCenterPixel(const Camera& camera)
 	{
 		mat4 projectionMatrix = camera.GetProjection();
 		mat4 viewMatrix       = camera.getViewMatrix();
@@ -27,7 +27,7 @@ namespace MC
 
  		tmp.x    = (width  / 2) / width;
 		tmp.y    = (height / 2) / height;
- 		tmp      = tmp * (2.0f) - (1.0f);
+ 		tmp      = (tmp * (2.0f)) - (1.0f);
 
 		vec4 obj = Inverse * tmp;
 		obj /= obj.w;

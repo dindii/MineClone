@@ -21,7 +21,7 @@ namespace MC
 	/**
 	* Initializing our own keycodes. This is not better or worse than win32api native keycodes but i decided to make my own keycodes just for test purposes. 
 	*/
-	enum class MC_KEYS : unsigned char
+	enum MC_KEYS : unsigned char
 	{
 		MC_NO_KEY = 0,
 		MC_BUTTON_LBUTTON = 1,

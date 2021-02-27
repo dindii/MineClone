@@ -16,7 +16,7 @@ namespace MC
 		m_data(nullptr)
 	{
 		m_data = new uint8_t[m_width * m_height];
-		m_index = (m_height * m_height) - 1;
+		m_index = (m_height * m_width) - 1;
 	}
 
 	PNGimageWriter::~PNGimageWriter()
@@ -40,6 +40,11 @@ namespace MC
 	{
 		if ((m_index >= 0))
 			m_data[m_index--] =  clamp(0, 255, value);
+	}
+
+	void PNGimageWriter::Set(const uint32_t x, const uint32_t y, const float value)
+	{
+		m_data[x * m_width + y] = floatToByte(value);
 	}
 
 }

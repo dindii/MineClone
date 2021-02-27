@@ -3,7 +3,7 @@
 
 namespace MC
 {
-	struct Trace
+	struct Utils
 	{
 		static vec3 UnprojectCenterPixel(const Camera& camera);
 	};

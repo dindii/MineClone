@@ -44,7 +44,7 @@ namespace MC
 				uint8_t r, g, b, a;
 			};
 			struct {
-				uint8_t elements[3];
+				uint8_t elements[4];
 			};
 		};
 	};
