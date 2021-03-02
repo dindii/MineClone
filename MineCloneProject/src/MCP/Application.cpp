@@ -92,6 +92,9 @@ namespace MC
 
 	bool Application::OnWindowResize(WindowResizeEvent& e)
 	{
+		m_Window->setWidth(e.GetWidth());
+		m_Window->setHeight(e.GetHeight());
+
 		if (e.GetWidth() == 0 || e.GetHeight() == 0)
 		{
 			m_Minimized = true;

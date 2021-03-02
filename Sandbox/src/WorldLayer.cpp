@@ -4,20 +4,19 @@
 #include "MCP/Physic/Ray.h"
 
 
-WorldLayer::WorldLayer() : Layer("WorldLayer"), terrain(32, 64, 32)
+WorldLayer::WorldLayer() : Layer("WorldLayer"), terrain(256, 256, 256)
 {
 	MC::Application* App = MC::Application::Get();
 
-	uint32_t width = App->GetWindow().getWidth();
-	uint32_t height = App->GetWindow().getHeight();
+	float width  = (float)App->GetWindow().getWidth();
+	float height = (float)App->GetWindow().getHeight();
 
-	camera = MC::Camera(float(width) / float(height), { 0.0f, 0.0f, -500.0f });
+	camera = MC::Camera(width / height, { 0.0f, 0.0f, -100.0f });
 
 	camera.SetCameraLag(true);
 	camera.SetCameraLagValue(0.15000f);
 
-
-	terrain.GenNoiseTerrain(MC::VoxelTerrain::TerrainType::Terrain3D, octaves, frequency, persistence, 0.0f, 0.0f);
+	terrain.GenNoiseTerrain(VoxelTerrain::TerrainType::Terrain3D, octaves, frequency, persistence, 0.0f, 0.0f);
 
 	MC::InputHandler::showCursor(true);
 }
@@ -48,12 +47,13 @@ bool WorldLayer::ChangeBlock(MC::MouseButtonPressedEvent& event)
 {
 	MC::Application* App = MC::Application::Get();
 
-	float width = App->GetWindow().getWidth();
-	float height = App->GetWindow().getHeight();
+	float width =  (float)App->GetWindow().getWidth();
+	float height = (float)App->GetWindow().getHeight();
 	
 	//Trace from viewport from world coords
 	MC::Trace direction((width / 2), (height / 2), camera);
 
+	
 	float   distancePerStep = 1.0f;
 	uint8_t stepCount = 0;
 	MC::vec3 trace;
@@ -65,13 +65,16 @@ bool WorldLayer::ChangeBlock(MC::MouseButtonPressedEvent& event)
 
 	bool foundBlock = false;
 
-	while (stepCount < 30)
+	while (stepCount < 64)
 	{
 		trace = camera.GetCameraPos() + direction.getDirection() * distancePerStep;
 
-		x = (trace.x);
-		y = (trace.y);
-		z = (trace.z);
+		x = uint32_t(trace.x);
+		y = uint32_t(trace.y);
+		z = uint32_t(trace.z);
+
+		if (x > terrain.GetWidth() || x < 0 || y > terrain.GetHeight() || y < 0 || z > terrain.GetDepth() || z < 0)
+			return false;
 
 		if (terrain.GetTerrainData()->Get(x, y, z))
 		{
@@ -79,7 +82,7 @@ bool WorldLayer::ChangeBlock(MC::MouseButtonPressedEvent& event)
 			break;
 		}
 
-		distancePerStep += 1.0f;
+		distancePerStep += 0.5f;
 		stepCount++;	
 
 		lastTraceStep = trace;
@@ -92,8 +95,8 @@ bool WorldLayer::ChangeBlock(MC::MouseButtonPressedEvent& event)
 
 		if (event.GetMouseButton() == MC::MC_KEYS::MC_BUTTON_RBUTTON)
 		{
-			x = lastTraceStep.x, y = lastTraceStep.y, z = lastTraceStep.z;
-            terrain.PlaceBlock(x, y, z);
+			x = (uint32_t)lastTraceStep.x, y = (uint32_t)lastTraceStep.y, z = (uint32_t)lastTraceStep.z;
+            terrain.PlaceBlock(x, y, z, selectedBlock);
 		}
 	}
 
@@ -119,11 +122,92 @@ void WorldLayer::OnImGuiRender()
 		ReGenTerrain();
 	}
 
+	ImGui::NewLine();
+
+	//Blocks image buttons
+	{
+		ImGui::Text("Blocks: ");
+
+		if (ImGui::ImageButton((ImTextureID)terrain.GetTexture(EBlockType::BLOCK_GRASS)->TopTexture->GetID(), { 50.0f, 50.0f }))
+			selectedBlock = BLOCK_GRASS;
+		ImGui::SameLine();
+
+
+		if (ImGui::ImageButton((ImTextureID)terrain.GetTexture(EBlockType::BLOCK_SAND)->TopTexture->GetID(), { 50.0f, 50.0f }))
+			selectedBlock = EBlockType::BLOCK_SAND;
+		ImGui::SameLine();
+
+
+		if (ImGui::ImageButton((ImTextureID)terrain.GetTexture(EBlockType::BLOCK_WOOD)->TopTexture->GetID(), { 50.0f, 50.0f }))
+			selectedBlock = EBlockType::BLOCK_WOOD;
+
+		if (ImGui::ImageButton((ImTextureID)terrain.GetTexture(EBlockType::BLOCK_STONE)->TopTexture->GetID(), { 50.0f, 50.0f }))
+			selectedBlock = EBlockType::BLOCK_STONE;
+		ImGui::SameLine();
+
+
+		if (ImGui::ImageButton((ImTextureID)terrain.GetTexture(EBlockType::BLOCK_BLACK_WOOL)->TopTexture->GetID(), { 50.0f, 50.0f }))
+			selectedBlock = EBlockType::BLOCK_BLACK_WOOL;
+		ImGui::SameLine();
+
+
+		if (ImGui::ImageButton((ImTextureID)terrain.GetTexture(EBlockType::BLOCK_BLUE_WOOL)->TopTexture->GetID(), { 50.0f, 50.0f }))
+			selectedBlock = EBlockType::BLOCK_BLUE_WOOL;
+
+		if (ImGui::ImageButton((ImTextureID)terrain.GetTexture(EBlockType::BLOCK_BROWN_WOOL)->TopTexture->GetID(), { 50.0f, 50.0f }))
+			selectedBlock = EBlockType::BLOCK_BROWN_WOOL;
+		ImGui::SameLine();
+
+
+		if (ImGui::ImageButton((ImTextureID)terrain.GetTexture(EBlockType::BLOCK_CYAN_WOOL)->TopTexture->GetID(), { 50.0f, 50.0f }))
+			selectedBlock = EBlockType::BLOCK_CYAN_WOOL;
+		ImGui::SameLine();
+
+		if (ImGui::ImageButton((ImTextureID)terrain.GetTexture(EBlockType::BLOCK_GRAY_WOOL)->TopTexture->GetID(), { 50.0f, 50.0f }))
+			selectedBlock = EBlockType::BLOCK_GRAY_WOOL;
+
+		if (ImGui::ImageButton((ImTextureID)terrain.GetTexture(EBlockType::BLOCK_GREEN_WOOL)->TopTexture->GetID(), { 50.0f, 50.0f }))
+			selectedBlock = EBlockType::BLOCK_GREEN_WOOL;
+		ImGui::SameLine();
+
+		if (ImGui::ImageButton((ImTextureID)terrain.GetTexture(EBlockType::BLOCK_LIGHT_BLUE_WOOL)->TopTexture->GetID(), { 50.0f, 50.0f }))
+			selectedBlock = EBlockType::BLOCK_LIGHT_BLUE_WOOL;
+		ImGui::SameLine();
+
+		if (ImGui::ImageButton((ImTextureID)terrain.GetTexture(EBlockType::BLOCK_LIGHT_GRAY_WOOL)->TopTexture->GetID(), { 50.0f, 50.0f }))
+			selectedBlock = EBlockType::BLOCK_LIGHT_GRAY_WOOL;
+
+		if (ImGui::ImageButton((ImTextureID)terrain.GetTexture(EBlockType::BLOCK_LIME_WOOL)->TopTexture->GetID(), { 50.0f, 50.0f }))
+			selectedBlock = EBlockType::BLOCK_LIME_WOOL;
+		ImGui::SameLine();
+
+
+		if (ImGui::ImageButton((ImTextureID)terrain.GetTexture(EBlockType::BLOCK_MAGENTA_WOOL)->TopTexture->GetID(), { 50.0f, 50.0f }))
+			selectedBlock = EBlockType::BLOCK_MAGENTA_WOOL;
+		ImGui::SameLine();
+
+		if (ImGui::ImageButton((ImTextureID)terrain.GetTexture(EBlockType::BLOCK_ORANGE_WOOL)->TopTexture->GetID(), { 50.0f, 50.0f }))
+			selectedBlock = EBlockType::BLOCK_ORANGE_WOOL;
+
+		if (ImGui::ImageButton((ImTextureID)terrain.GetTexture(EBlockType::BLOCK_PURPLE_WOOL)->TopTexture->GetID(), { 50.0f, 50.0f }))
+			selectedBlock = EBlockType::BLOCK_PURPLE_WOOL;
+		ImGui::SameLine();
+
+		if (ImGui::ImageButton((ImTextureID)terrain.GetTexture(EBlockType::BLOCK_RED_WOOL)->TopTexture->GetID(), { 50.0f, 50.0f }))
+			selectedBlock = EBlockType::BLOCK_RED_WOOL;
+		ImGui::SameLine();
+
+		if (ImGui::ImageButton((ImTextureID)terrain.GetTexture(EBlockType::BLOCK_WHITE_WOOL)->TopTexture->GetID(), { 50.0f, 50.0f }))
+			selectedBlock = EBlockType::BLOCK_WHITE_WOOL;
+
+		if (ImGui::ImageButton((ImTextureID)terrain.GetTexture(EBlockType::BLOCK_YELLOW_WOOL)->TopTexture->GetID(), { 50.0f, 50.0f }))
+			selectedBlock = EBlockType::BLOCK_YELLOW_WOOL;
+	}
 }
 
 void WorldLayer::ReGenTerrain()
 {
-	terrain.GenNoiseTerrain(MC::VoxelTerrain::TerrainType::Terrain3D, octaves, frequency, persistence, xOffset, yOffset);
+	terrain.GenNoiseTerrain(VoxelTerrain::TerrainType::Terrain3D, octaves, frequency, persistence, xOffset, yOffset);
 }
 
 void WorldLayer::MovePlayer(MC::DeltaTime deltaTime)

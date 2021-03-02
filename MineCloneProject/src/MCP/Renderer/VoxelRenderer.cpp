@@ -83,7 +83,7 @@ namespace MC
 		DrawnChunks++;
 	}
 
-	void VoxelRenderer::Draw(Superchunk* superchunk)
+	void VoxelRenderer::Draw(ChunkManager* superchunk)
 	{
  		for (int x = 0; x < SUPER_CHUNK_SIZE; x++)
  			for (int y = 0; y < SUPER_CHUNK_SIZE; y++)

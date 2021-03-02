@@ -24,8 +24,12 @@ namespace MC
 		bool pollEvents();
 		void swapBuffers() const;
 		
-		inline uint32_t	getWidth() const {  return m_Details->Width; }
+		inline uint32_t	getWidth() const {  return m_Details->Width; }  
 		inline uint32_t getHeight() const { return m_Details->Height; }
+
+		inline void	setWidth(const uint32_t width)    { m_Details->Width = width; }  
+		inline void setHeight(const uint32_t height)  { m_Details->Height = height; }
+
 		inline const char* getName() const { return m_Details->Name; }
 		inline HWND GetNativeWindow() const { return m_NativeWindow; }
 

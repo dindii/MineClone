@@ -228,6 +228,7 @@ namespace MC
 				MouseCoords->x = event.GetX();
 				MouseCoords->y = event.GetY();
 
+				
 				EventCallback(event);
 
 
@@ -242,8 +243,7 @@ namespace MC
 					difference.x = currMousePos.x - lastMousePos.x;
 					difference.y = currMousePos.y - lastMousePos.y;
 
-				//	MouseDelta.x += difference.x;
-				//	MouseDelta.y += difference.y;
+				
 
 					MouseDelta += {(float)difference.x, (float)difference.y};
 					

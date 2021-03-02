@@ -15,12 +15,12 @@ namespace MC
 		Application* app = Application::Get();
 
 		//Screen Coords |   0:width, 0:height
-		float width = app->GetWindow().getWidth();
-		float height = app->GetWindow().getHeight();
+		float width =  (float)app->GetWindow().getWidth();
+		float height = (float)app->GetWindow().getHeight();
 
 		//Convert to NDC | -1:1, -1:1, -1:1
-		float x = ((2.0f * xCoord) / width) - 1.0f;
-		float y = 1.0f - ((2.0f * yCoord) / height); //- 1.0f;
+		float x = (2.0f * xCoord) / width - 1.0f;
+		float y = 1.0f - (2.0f * yCoord) / height; //- 1.0f;
 		float z = 1.0f;
 
 		vec3 ray_NormalizedDeviceCoords(x, y, z);
@@ -33,7 +33,7 @@ namespace MC
 		vec4 ray_ViewSpace = mat4::Inverse(camera.GetProjection()) * ray_ClipCoords;
 
 		//Not necessary but in order to be more generic, i will leave this here.
-		ray_ViewSpace /= ray_ViewSpace.w;
+	//	ray_ViewSpace /= ray_ViewSpace.w;
 
 		//We only need the x, y, depth values we will set further
 		ray_ViewSpace = vec4(ray_ViewSpace.x, ray_ViewSpace.y, -1.0f, 0.0f);

@@ -37,33 +37,37 @@ namespace MC
 
 	void Chunk::set(int x, int y, int z, uint8_t type, const BlockTexture2D* FaceTextures)
 	{
+	
+		if (!type || !FaceTextures)
+		{
+			for (uint8_t face = 0; face < CUBE_FACES; face++)
+				this->set(x, y, z, type, (ECubeFace)face, nullptr);
+		
+			return;
+		}
+		
 		for (uint8_t face = 0; face < CUBE_FACES; face++)
-		   this->set(x, y, z, type, (ECubeFace)face, FaceTextures->Textures[face]);			
+			this->set(x, y, z, type, (ECubeFace)face, FaceTextures->Textures[face]);
+			
 	}
-
-	void Chunk::set(int x, int y, int z, uint8_t type, const Texture2D* UniformTexture)
-	{
-		for (uint8_t faces = 0; faces < 6; faces++)
-			this->set(x, y, z, type, (ECubeFace)faces, UniformTexture);
-	}
-
 	void Chunk::set(int x, int y, int z, uint8_t type, ECubeFace face, const Texture2D* UniformTexture)
 	{
 		blocks[CALC_INDEX_SIMPLE(x, y, z)] = type;
 		changed = true;
 
-		if (type)
-		{
-			int8_t TextureID = VoxelRenderer::GetTexture(UniformTexture);
+		if (!type || !UniformTexture)
+			return;	
+		
+		int8_t TextureID = VoxelRenderer::GetTexture(UniformTexture);
 
-			if (TextureID < 0)
-				TextureID = VoxelRenderer::AddTexture(UniformTexture);
-			
-			
-			//Almost all of my voxel mesh generation works with faces, so i have to make my texture array also work with faces
-			//This can leads us in the future to a setup where we can choose a texture for each of the six cube faces. 
-				m_TexturesID[CALC_INDEX(x, y, z, face)] = TextureID;
-		}
+		if (TextureID < 0)
+			TextureID = VoxelRenderer::AddTexture(UniformTexture);
+		
+		
+		//Almost all of my voxel mesh generation works with faces, so i have to make my texture array also work with faces
+		//This can leads us in the future to a setup where we can choose a texture for each of the six cube faces. 
+			m_TexturesID[CALC_INDEX(x, y, z, face)] = TextureID;
+		
 	}
 
 	void Chunk::update()
@@ -292,7 +296,7 @@ namespace MC
 					uint32_t PreCalculatedBlocksIndex = CALC_INDEX_SIMPLE(xx, yy, z);
 
 					//O bloco é diferente do atual, é vazio ou não visivel? Se sim, não o processe
-					if (!blocks[PreCalculatedBlocksIndex] || blocks[PreCalculatedBlocksIndex]  != blocks[CALC_INDEX_SIMPLE(xx, y, z)] || blocks[PreCalculatedBlocksIndex] != blocks[CALC_INDEX_SIMPLE(x, yy, z, i)] || VisitedBlocks[PreCalculatedIndex] || !isFaceVisible(xx, yy, z, face))
+					if (!blocks[PreCalculatedBlocksIndex] || blocks[PreCalculatedBlocksIndex]  != blocks[CALC_INDEX_SIMPLE(xx, y, z)] || blocks[PreCalculatedBlocksIndex] != blocks[CALC_INDEX_SIMPLE(x, yy, z)] || VisitedBlocks[PreCalculatedIndex] || !isFaceVisible(xx, yy, z, face))
 						break;
 	
 					
@@ -339,7 +343,7 @@ namespace MC
 					uint32_t PreCalculatedBlocksIndex = CALC_INDEX_SIMPLE(xx, y, zz);
 
 					//O bloco é diferente do atual, é vazio ou não visivel? Se sim, não o processe
-					if (!blocks[PreCalculatedBlocksIndex] || blocks[PreCalculatedBlocksIndex] != blocks[CALC_INDEX_SIMPLE(xx, y, z, i)] || blocks[PreCalculatedBlocksIndex] != blocks[CALC_INDEX_SIMPLE(x, y, zz, i)] || VisitedBlocks[PreCalculatedIndex] || !isFaceVisible(xx, y, zz, face))
+					if (!blocks[PreCalculatedBlocksIndex] || blocks[PreCalculatedBlocksIndex] != blocks[CALC_INDEX_SIMPLE(xx, y, z)] || blocks[PreCalculatedBlocksIndex] != blocks[CALC_INDEX_SIMPLE(x, y, zz)] || VisitedBlocks[PreCalculatedIndex] || !isFaceVisible(xx, y, zz, face))
 						break;
 		
 					//Salvamos falando que o bloco ja foi visitado

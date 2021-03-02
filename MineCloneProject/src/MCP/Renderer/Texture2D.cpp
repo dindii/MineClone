@@ -169,13 +169,8 @@ namespace MC
 		//Attempt to delete if it is not already deleted
 		BlockTexture2D::~BlockTexture2D()
 		{
-			for (uint8_t x = 0; x < 6; x++)
-				if (Textures[x])
-				{
-					delete Textures[x];
-					Textures[x] = nullptr;
-				}
-			
+//#TODO destructor
+			//delete[] Textures;			
 		}
 
 }

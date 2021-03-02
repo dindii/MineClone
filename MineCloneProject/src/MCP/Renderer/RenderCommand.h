@@ -2,7 +2,7 @@
 
 #include "MCP/Maths/vec4.h"
 #include "MCP/Renderer/Voxel/Chunk.h"
-#include "MCP/Renderer/Voxel/Superchunk.h"
+#include "MCP/Renderer/Voxel/ChunkManager.h"
 
 
 namespace MC

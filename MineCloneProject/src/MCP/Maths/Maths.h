@@ -63,7 +63,7 @@ namespace MC
 		 return ((start * (1.0f - alpha)) + (end * alpha));	
 	}
 
-	inline int floorf(const float val)
+	inline float floorf(const float val)
 	{
 		return ::floorf(val);
 	}

@@ -5,8 +5,7 @@
 #include "Camera/Camera.h"
 
 #include "MCP/Renderer/Voxel/Chunk.h"
-#include "MCP/Renderer/Voxel/Superchunk.h"
-#include "MCP/Renderer/Voxel/VoxelTerrain.h"
+#include "MCP/Renderer/Voxel/ChunkManager.h"
 #include "MCP/Renderer/Texture2D.h"
 
 #include <unordered_map>
@@ -17,7 +16,7 @@ namespace MC
 	{
 	public:
 		static void Draw(Chunk* chunk);
-		static void Draw(Superchunk* superchunk);
+		static void Draw(ChunkManager* superchunk);
 
 		static void BeginScene(const Camera& camera);
 		static void EndScene();

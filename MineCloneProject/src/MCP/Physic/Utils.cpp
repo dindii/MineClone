@@ -15,11 +15,11 @@ namespace MC
 		MC::Application* app  = MC::Application::Get();
 
 		//Screen actual width and height
-		float width = app->GetWindow().getWidth();
-		float height = app->GetWindow().getHeight();
+		float width =  (float)app->GetWindow().getWidth();
+		float height = (float)app->GetWindow().getHeight();
 
 		//middle screen fragment depth (0-1)
-		float depth = MC::RenderCommand::GetPixelDepth(width / 2, height / 2, 1, 1);
+		float depth = MC::RenderCommand::GetPixelDepth(width / 2.0f, height / 2.0f, 1, 1);
 
 		mat4 Inverse = mat4::Inverse(projectionMatrix * viewMatrix);
 
