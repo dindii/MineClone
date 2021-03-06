@@ -2,6 +2,7 @@
 #include "Chunk.h"
 #include "MCP/Renderer/Texture2D.h"
 #include "MCP/Maths/uivec3.h"
+
 constexpr int SUPER_CHUNK_SIZE = 20;
 
 namespace MC

@@ -4,7 +4,7 @@
 #include "MCP/Physic/Ray.h"
 
 
-WorldLayer::WorldLayer() : Layer("WorldLayer"), terrain(256, 256, 256)
+WorldLayer::WorldLayer() : Layer("WorldLayer"), terrain(32, 32, 32)
 {
 	MC::Application* App = MC::Application::Get();
 
@@ -69,12 +69,12 @@ bool WorldLayer::ChangeBlock(MC::MouseButtonPressedEvent& event)
 	{
 		trace = camera.GetCameraPos() + direction.getDirection() * distancePerStep;
 
+		if (trace.x < 0.0f || trace.y < 0.0f || trace.z < 0.0f)
+			return false;
+
 		x = uint32_t(trace.x);
 		y = uint32_t(trace.y);
 		z = uint32_t(trace.z);
-
-		if (x > terrain.GetWidth() || x < 0 || y > terrain.GetHeight() || y < 0 || z > terrain.GetDepth() || z < 0)
-			return false;
 
 		if (terrain.GetTerrainData()->Get(x, y, z))
 		{
