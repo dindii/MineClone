@@ -296,14 +296,15 @@ namespace MC
 					uint32_t PreCalculatedBlocksIndex = CALC_INDEX_SIMPLE(xx, yy, z);
 
 					//O bloco é diferente do atual, é vazio ou não visivel? Se sim, não o processe
-					if (!blocks[PreCalculatedBlocksIndex] || blocks[PreCalculatedBlocksIndex]  != blocks[CALC_INDEX_SIMPLE(xx, y, z)] || blocks[PreCalculatedBlocksIndex] != blocks[CALC_INDEX_SIMPLE(x, yy, z)] || VisitedBlocks[PreCalculatedIndex] || !isFaceVisible(xx, yy, z, face))
+					if (!blocks[PreCalculatedBlocksIndex] || (blocks[PreCalculatedBlocksIndex] != blocks[CALC_INDEX_SIMPLE(xx, y, z)] || blocks[PreCalculatedBlocksIndex] != blocks[CALC_INDEX_SIMPLE(x, yy, z)]) || VisitedBlocks[PreCalculatedIndex] || !isFaceVisible(xx, yy, z, face))
 						break;
-	
 					
 	
 					//Salvamos falando que o bloco ja foi visitado
 					VisitedBlocks[PreCalculatedIndex] = true;
-					textureID = m_TexturesID[PreCalculatedIndex] = m_TexturesID[CALC_INDEX(x, y, z, i)];
+					
+	
+					textureID =  m_TexturesID[CALC_INDEX(x, y, z, i)];
 		
 					//Caso não seja, aumentamos o length, ou seja, mais um bloco à direita que cubrimos.
 					length++;
@@ -343,13 +344,19 @@ namespace MC
 					uint32_t PreCalculatedBlocksIndex = CALC_INDEX_SIMPLE(xx, y, zz);
 
 					//O bloco é diferente do atual, é vazio ou não visivel? Se sim, não o processe
-					if (!blocks[PreCalculatedBlocksIndex] || blocks[PreCalculatedBlocksIndex] != blocks[CALC_INDEX_SIMPLE(xx, y, z)] || blocks[PreCalculatedBlocksIndex] != blocks[CALC_INDEX_SIMPLE(x, y, zz)] || VisitedBlocks[PreCalculatedIndex] || !isFaceVisible(xx, y, zz, face))
+				//	if (!blocks[PreCalculatedBlocksIndex] || blocks[PreCalculatedBlocksIndex] != blocks[CALC_INDEX_SIMPLE(xx, y, z)] || blocks[PreCalculatedBlocksIndex] != blocks[CALC_INDEX_SIMPLE(x, y, zz)] || VisitedBlocks[PreCalculatedIndex] || !isFaceVisible(xx, y, zz, face))
+				//		break;
+				
+					if (!blocks[PreCalculatedBlocksIndex] || (blocks[PreCalculatedBlocksIndex] != blocks[CALC_INDEX_SIMPLE(xx, y, z)] || blocks[PreCalculatedBlocksIndex] != blocks[CALC_INDEX_SIMPLE(x, y, zz)]) || VisitedBlocks[PreCalculatedIndex] || !isFaceVisible(xx, y, zz, face))
 						break;
 		
 					//Salvamos falando que o bloco ja foi visitado
-					VisitedBlocks[PreCalculatedIndex] = true;
-					textureID = m_TexturesID[PreCalculatedIndex] = m_TexturesID[CALC_INDEX(x, y, z, i)];
+				//	textureID = m_TexturesID[PreCalculatedIndex] = m_TexturesID[CALC_INDEX(x, y, z, i)];
 					//Caso não seja, aumentamos o length, ou seja, mais um bloco à direita que cubrimos.
+
+
+					VisitedBlocks[PreCalculatedIndex] = true;
+					textureID = m_TexturesID[CALC_INDEX(x, y, z, i)];
 
 					length++;
 				}
@@ -389,12 +396,13 @@ namespace MC
 
 
 					//O bloco é diferente do atual, é vazio ou não visivel? Se sim, não o processe
-					if (!blocks[PreCalculatedBlockIndex] || blocks[PreCalculatedBlockIndex] != blocks[CALC_INDEX_SIMPLE(x, y, zz)] || blocks[PreCalculatedBlockIndex] != blocks[CALC_INDEX_SIMPLE(x, yy, z)] || VisitedBlocks[PreCalculatedIndex] || !isFaceVisible(x, yy, zz, face))
+					if (!blocks[PreCalculatedBlockIndex] || (blocks[PreCalculatedBlockIndex] != blocks[CALC_INDEX_SIMPLE(x, y, zz)] || blocks[PreCalculatedBlockIndex] != blocks[CALC_INDEX_SIMPLE(x, yy, z)]) || VisitedBlocks[PreCalculatedIndex] || !isFaceVisible(x, yy, zz, face))
 						break;
 
 					//Salvamos falando que o bloco ja foi visitado
 					VisitedBlocks[PreCalculatedIndex] = true;
-					textureID = m_TexturesID[PreCalculatedIndex] = m_TexturesID[CALC_INDEX(x, y, z, i)];
+
+					textureID = m_TexturesID[CALC_INDEX(x, y, z, i)];
 
 					//Caso não seja, aumentamos o length, ou seja, mais um bloco à direita que cubrimos.
 					depth++;
