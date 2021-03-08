@@ -4,7 +4,7 @@
 #include "MCP/Physic/Ray.h"
 
 
-WorldLayer::WorldLayer() : Layer("WorldLayer"), terrain(128, 128, 128)
+WorldLayer::WorldLayer() : Layer("WorldLayer"), terrain(1, 1, 1)
 {
 	MC::Application* App = MC::Application::Get();
 

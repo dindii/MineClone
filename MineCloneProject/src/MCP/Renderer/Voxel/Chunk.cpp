@@ -8,11 +8,11 @@
 #include "MCP/Maths/Maths.h"
 namespace MC
 {
-	constexpr uint32_t CHUNK_SQUARED = (CHUNK_SIZE+1) * (CHUNK_SIZE+1);
-	constexpr uint32_t CHUNK_SIZE_CUBED = CHUNK_SQUARED * (CHUNK_SIZE+1);
+	constexpr uint32_t CHUNK_SQUARED = (CHUNK_SIZE) * (CHUNK_SIZE);
+	constexpr uint32_t CHUNK_SIZE_CUBED = CHUNK_SQUARED * (CHUNK_SIZE);
 
-#define CALC_INDEX(x, y, z, a) (x + z * (CHUNK_SIZE+1) + y * CHUNK_SQUARED) + (CHUNK_SIZE_CUBED * a)
-#define CALC_INDEX_SIMPLE(x, y, z) (x + z * (CHUNK_SIZE+1) + y * CHUNK_SQUARED)
+#define CALC_INDEX(x, y, z, a) (x + z * (CHUNK_SIZE) + y * CHUNK_SQUARED) + (CHUNK_SIZE_CUBED * a)
+#define CALC_INDEX_SIMPLE(x, y, z) (x + z * (CHUNK_SIZE) + y * CHUNK_SQUARED)
 
 
 	Chunk::Chunk() : elements(0), changed(true)
@@ -284,13 +284,19 @@ namespace MC
 		{
 			uint8_t length = 0, height = 0;
 			uint32_t PreviousLength = 0;
-	
+			
+			//Since the greedy always work with the adjacent block, we will use this to process the last block
+			uint32_t cacheY = 0, cacheX = 0;
+
 			ECubeFace face = (ECubeFace)i;
 			uint8_t textureID = 0;
-			for (uint32_t yy = y; yy <= CHUNK_SIZE; yy++)
+			for (uint32_t yy = y; yy < CHUNK_SIZE; yy++)
 			{
-				for (uint32_t xx = x; xx <= CHUNK_SIZE; xx++)
+				cacheY = yy;
+
+				for (uint32_t xx = x; xx < CHUNK_SIZE; xx++)
 				{
+					cacheX = xx;
 
 					uint32_t PreCalculatedIndex = CALC_INDEX(xx, yy, z, i);
 					uint32_t PreCalculatedBlocksIndex = CALC_INDEX_SIMPLE(xx, yy, z);
@@ -321,6 +327,10 @@ namespace MC
 	
 				height++;
 			}
+
+			if (cacheY > 0 && (PreviousLength != length || cacheY == CHUNK_SIZE))
+				GenCubeFace(x, (cacheY+1) - height, z, PreviousLength, height, 1, type, vertexBufferIterator, textureID, face);
+			
 		}
 
 	}
@@ -332,32 +342,30 @@ namespace MC
 			uint8_t length = 0, depth = 0;
 			uint32_t PreviousLength = 0;
 
+			//Since the greedy always work with the adjacent block, we will use this to process the last block
+			uint32_t cacheZ = 0, cacheX = 0;
+
 			ECubeFace face = (ECubeFace)i;
 
 			uint8_t textureID = 0;
 
-			for (uint32_t zz = z; zz <= CHUNK_SIZE; zz++)
+			for (uint32_t zz = z; zz < CHUNK_SIZE; zz++)
 			{
-				for (uint32_t xx = x; xx <= CHUNK_SIZE; xx++)
+				cacheZ = zz;
+
+				for (uint32_t xx = x; xx < CHUNK_SIZE; xx++)
 				{
+					cacheX = xx;
+
 					uint32_t PreCalculatedIndex = CALC_INDEX(xx, y, zz, i);
 					uint32_t PreCalculatedBlocksIndex = CALC_INDEX_SIMPLE(xx, y, zz);
-
-					//O bloco é diferente do atual, é vazio ou não visivel? Se sim, não o processe
-				//	if (!blocks[PreCalculatedBlocksIndex] || blocks[PreCalculatedBlocksIndex] != blocks[CALC_INDEX_SIMPLE(xx, y, z)] || blocks[PreCalculatedBlocksIndex] != blocks[CALC_INDEX_SIMPLE(x, y, zz)] || VisitedBlocks[PreCalculatedIndex] || !isFaceVisible(xx, y, zz, face))
-				//		break;
 				
 					if (!blocks[PreCalculatedBlocksIndex] || (blocks[PreCalculatedBlocksIndex] != blocks[CALC_INDEX_SIMPLE(xx, y, z)] || blocks[PreCalculatedBlocksIndex] != blocks[CALC_INDEX_SIMPLE(x, y, zz)]) || VisitedBlocks[PreCalculatedIndex] || !isFaceVisible(xx, y, zz, face))
 						break;
-		
-					//Salvamos falando que o bloco ja foi visitado
-				//	textureID = m_TexturesID[PreCalculatedIndex] = m_TexturesID[CALC_INDEX(x, y, z, i)];
-					//Caso não seja, aumentamos o length, ou seja, mais um bloco à direita que cubrimos.
-
 
 					VisitedBlocks[PreCalculatedIndex] = true;
 					textureID = m_TexturesID[CALC_INDEX(x, y, z, i)];
-
+					
 					length++;
 				}
 
@@ -372,6 +380,10 @@ namespace MC
 
 				depth++;
 			}
+
+			if (cacheZ > 0 && (PreviousLength != length || cacheZ == CHUNK_SIZE))
+				GenCubeFace(x, y, (cacheZ + 1) - depth, PreviousLength, 1, depth, type, vertexBufferIterator, textureID, face);
+			
 		}
 	}
 	
@@ -383,13 +395,19 @@ namespace MC
 			uint8_t depth = 0, height = 0;
 			uint32_t PreviousDepth = 0;
 
+			//Since the greedy always work with the adjacent block, we will use this to process the last block
+			uint32_t cacheZ = 0, cacheY = 0;
+
 			ECubeFace face = (ECubeFace)i;
 			uint8_t textureID = 0;
 
-			for (uint32_t yy = y; yy <= CHUNK_SIZE; yy++)
+			for (uint32_t yy = y; yy < CHUNK_SIZE; yy++)
 			{
-				for (uint32_t zz = z; zz <= CHUNK_SIZE; zz++)
+				cacheY = yy;
+
+				for (uint32_t zz = z; zz < CHUNK_SIZE; zz++)
 				{
+					cacheZ = zz;
 
 					uint32_t PreCalculatedIndex = CALC_INDEX(x, yy, zz, i);
 					uint32_t PreCalculatedBlockIndex = CALC_INDEX_SIMPLE(x, yy, zz);
@@ -419,6 +437,10 @@ namespace MC
 
 				height++;
 			}
+
+			if (cacheY > 0 && (PreviousDepth != depth || cacheY == CHUNK_SIZE))
+				GenCubeFace(x, (cacheY+1) - height, z, 1, height, PreviousDepth, type, vertexBufferIterator, textureID, face);
+			
 		}
 	}
 }
