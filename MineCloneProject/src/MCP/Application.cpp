@@ -12,21 +12,26 @@ namespace MC
 
 	Application::Application() : m_Running(true)
 	{
-		//We need to initialize the logger first in order to recieve info of the other systems initialization
-		logger = new MC::Debug::Logger;
+		if (!s_Instance)
+		{
+			//We need to initialize the logger first in order to recieve info of the other systems initialization
+			logger = new MC::Debug::Logger;
 
-		s_Instance = this;
-		m_Minimized = false;
+	
+			s_Instance = this;
 
-		m_Window = new Window(1360, 768, "MCP");
+			m_Minimized = false;
+
+			m_Window = new Window(1360, 768, "MCP");
 
 
-		m_Window->setEventCallback(BIND_EVENT_FN(Application::OnEvent));
+			m_Window->setEventCallback(BIND_EVENT_FN(Application::OnEvent));
 
-		VoxelRenderer::Init();
+			VoxelRenderer::Init();
 
-		m_ImGuiLayer = new ImGuiLayer;
-		PushOverLay(m_ImGuiLayer);
+			m_ImGuiLayer = new ImGuiLayer;
+			PushOverLay(m_ImGuiLayer);
+		}
 	}
 
 	Application::~Application()
@@ -35,9 +40,7 @@ namespace MC
 
 		delete m_Window;
 		delete logger;
-
 	}
-
 	void Application::Run()
 	{
 		while (m_Running)

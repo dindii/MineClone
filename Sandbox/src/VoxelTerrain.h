@@ -46,6 +46,8 @@ public:
 	};
 
 	void GenNoiseTerrain(TerrainType type, uint32_t octaves, float frequency, float persistence, float xOffset, float yOffset);
+	void GenNoiseChunk(uint32_t x, uint32_t y, uint32_t z, TerrainType type, uint32_t octaves, float frequency, float persistence, float xOffset, float yOffset);
+	void GenNoiseChunk(MC::vec3 ChunkPos, TerrainType type, uint32_t octaves, float frequency, float persistence, float xOffset, float yOffset);
 	void GenFlatTerrain();
 
 	inline void ResizeTerrain(uint32_t newWidth, uint32_t newHeight, uint32_t newDepth) { width = newWidth; height = newHeight, depth = newDepth; }
@@ -53,8 +55,8 @@ public:
 	inline MC::ChunkManager* GetTerrainData() { return superChunk; }
 	inline MC::Texture2D& GetTerrainPreview() { return m_terrainPreviewTex; }
 
-	void RemoveBlock(uint8_t x, uint8_t y, uint8_t z);
-	void PlaceBlock(uint8_t x, uint8_t y, uint8_t z, EBlockType type);
+	void RemoveBlock(uint32_t x, uint32_t y, uint32_t z);
+	void PlaceBlock(uint32_t x, uint32_t y, uint32_t z, EBlockType type);
 
 	inline uint32_t GetWidth()  const { return width; }
 	inline uint32_t GetHeight() const { return height; }

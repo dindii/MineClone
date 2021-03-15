@@ -19,7 +19,7 @@ namespace MC
 					delete c[x][y][z];
 	}
 
-	uint8_t ChunkManager::Get(int x, int y, int z)
+	uint8_t ChunkManager::GetVoxel(int x, int y, int z)
 	{
 		int cx = x / CHUNK_SIZE;
 		int cy = y / CHUNK_SIZE;
@@ -34,6 +34,18 @@ namespace MC
 		
 
 		return c[cx][cy][cz]->get(x, y, z);
+	}
+
+	MC::Chunk* ChunkManager::GetChunk(int x, int y, int z)
+	{
+		uint32_t cx = x / CHUNK_SIZE;
+		uint32_t cy = y / CHUNK_SIZE;
+		uint32_t cz = z / CHUNK_SIZE;
+
+		if (c[cx][cy][cz])
+			return c[cx][cy][cz];
+
+		return nullptr;
 	}
 
 	void ChunkManager::Set(int x, int y, int z, uint8_t type)
@@ -96,4 +108,56 @@ namespace MC
 
 		c[cx][cy][cz]->set(x, y, z, type, FaceTextures);
 	}
+
+		MC::Chunk* ChunkManager::CreateChunk(uint32_t x, uint32_t y, uint32_t z)
+		{
+			if (x > SUPER_CHUNK_SIZE || y > SUPER_CHUNK_SIZE || z > SUPER_CHUNK_SIZE)
+				return nullptr;
+
+			c[x][y][z] = new Chunk;
+			
+		
+			if (x > 0 && c[x - 1][y][z])
+			{
+				c[x][y][z]->nc.left_Chunk = c[x - 1][y][z];
+				c[x - 1][y][z]->nc.right_Chunk = c[x][y][z];
+			}
+
+			if (y > 0 && c[x][y - 1][z])
+			{
+				c[x][y][z]->nc.below_Chunk = c[x][y - 1][z];
+				c[x][y - 1][z]->nc.upper_Chunk = c[x][y][z];
+			}
+
+			if (z > 0 && c[x][y][z - 1])
+			{
+				c[x][y][z]->nc.back_Chunk = c[x][y][z - 1];
+				c[x][y][z - 1]->nc.front_Chunk = c[x][y][z];
+			}
+			
+
+			if (c[x][y][z]->nc.left_Chunk)
+				c[x][y][z]->nc.left_Chunk->changed = true;
+
+			else if (c[x][y][z]->nc.right_Chunk)
+				c[x][y][z]->nc.right_Chunk->changed = true;
+
+
+			if (c[x][y][z]->nc.below_Chunk)
+				c[x][y][z]->nc.below_Chunk->changed = true;
+
+			else if (c[x][y][z]->nc.upper_Chunk)
+				c[x][y][z]->nc.upper_Chunk->changed = true;
+
+
+			if (c[x][y][z]->nc.back_Chunk)
+				c[x][y][z]->nc.back_Chunk->changed = true;
+
+			else if (c[x][y][z]->nc.front_Chunk)
+				c[x][y][z]->nc.front_Chunk->changed = true;
+		
+			return c[x][y][z];
+		}
+
+
 }

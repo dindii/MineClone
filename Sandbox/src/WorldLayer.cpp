@@ -3,22 +3,40 @@
 #include "MCP/Physic/Utils.h"
 #include "MCP/Physic/Ray.h"
 
-
-WorldLayer::WorldLayer() : Layer("WorldLayer"), terrain(1, 1, 1)
+WorldLayer::WorldLayer() : Layer("WorldLayer"), terrain(64, 64, 64)
 {
 	MC::Application* App = MC::Application::Get();
 
 	float width  = (float)App->GetWindow().getWidth();
 	float height = (float)App->GetWindow().getHeight();
 
-	camera = MC::Camera(width / height, { 0.0f, 0.0f, -100.0f });
+	camera = MC::Camera(width / height, { 0, 0.0f, 0 });
 
 	camera.SetCameraLag(true);
 	camera.SetCameraLagValue(0.15000f);
 
-	terrain.GenNoiseTerrain(VoxelTerrain::TerrainType::Terrain3D, octaves, frequency, persistence, 0.0f, 0.0f);
+	//terrain.GenNoiseTerrain(VoxelTerrain::TerrainType::Terrain3D, octaves, frequency, persistence, 0.0f, 0.0f);
+	terrain.GenFlatTerrain();
 
 	MC::InputHandler::showCursor(true);
+
+	//sfloat radius = 64;
+
+	//MC::vec3 center = camera.GetCameraPos();
+	//for (int x = (center.x ); x <= (center.x + (radius + radius)); x++ )
+	//for (int y = (center.y ); y <= (center.y + (radius + radius)); y++ )
+	//	for (int z = center.z; z <= center.z + (radius + radius);  z++ )
+	//	{
+	//		//float distance = sqrt(pow(x - center.x, 2) + pow(y - center.y, 2) + pow(z - center.z, 2));
+	//		float distance = sqrt(pow((x - radius) - center.x, 2) + pow((y - radius) - center.y, 2) + pow((z - radius) - center.z, 2));
+	//
+	//		if (distance < radius)
+	//		{
+	//			//terrain.PlaceBlock(x, 0, z, BLOCK_YELLOW_WOOL);
+	//			terrain.PlaceBlock(x, y, z, BLOCK_RED_WOOL);
+	//		}
+	//
+	//	}
 }
 
 void WorldLayer::OnUpdate(MC::DeltaTime deltaTime)
@@ -29,7 +47,11 @@ void WorldLayer::OnUpdate(MC::DeltaTime deltaTime)
 
 	MC::VoxelRenderer::Clear();
 	MC::VoxelRenderer::BeginScene(camera);
+	ProcessTerrainNearPlayer(camera.GetCameraPos(), 10.0f, 1, 60);
 	MC::VoxelRenderer::Draw(terrain.GetTerrainData());
+	
+
+	
 	MC::VoxelRenderer::EndScene();
 }
 
@@ -65,7 +87,7 @@ bool WorldLayer::ChangeBlock(MC::MouseButtonPressedEvent& event)
 
 	bool foundBlock = false;
 
-	while (stepCount < 64)
+	while (stepCount < 32)
 	{
 		trace = camera.GetCameraPos() + direction.getDirection() * distancePerStep;
 
@@ -76,7 +98,7 @@ bool WorldLayer::ChangeBlock(MC::MouseButtonPressedEvent& event)
 		y = uint32_t(trace.y);
 		z = uint32_t(trace.z);
 
-		if (terrain.GetTerrainData()->Get(x, y, z))
+		if (terrain.GetTerrainData()->GetVoxel(x, y, z))
 		{
 			foundBlock = true;
 			break;
@@ -101,6 +123,52 @@ bool WorldLayer::ChangeBlock(MC::MouseButtonPressedEvent& event)
 	}
 
 	return true;
+}
+
+void WorldLayer::ProcessTerrainNearPlayer(MC::vec3 CameraPosition, float GenChunkDistance, uint32_t ChunksGen, float radius)
+{
+//	MC::vec3 center = camera.GetCameraPos();
+
+
+
+
+		
+	////debug
+	//MC::vec3 center = camera.GetCameraPos();
+	//for (int x = (center.x - radius); x <= (center.x + radius); x += 15)
+	//	for (int z = center.z; z <= center.z + radius; z += 15)
+	//	{
+	//		//float distance = sqrt(pow(x - center.x, 2) + pow(y - center.y, 2) + pow(z - center.z, 2));
+	//		float distance = sqrt(pow(x - center.x, 2) + pow(z - center.z, 2));
+	//
+	//		if (distance < radius)
+	//		{
+	//			//terrain.PlaceBlock(x, 0, z, BLOCK_YELLOW_WOOL);
+	//			terrain.GenNoiseChunk({ (float)x, 1, (float)z }, VoxelTerrain::TerrainType::Terrain3D, octaves, frequency, persistence, 0.0f, 0.0f);
+	//
+	//		}
+	//
+	//	}
+	//debug
+
+	MC::vec3 facing = camera.GetCameraFacingDirection();
+
+	MC::vec3 center = camera.GetCameraPos();
+	for (int x = (center.x - radius); x <= (center.x + radius); x += 15)
+		for (int z = center.z; z <= center.z + radius; z += 15)
+		{
+			//float distance = sqrt(pow(x - center.x, 2) + pow(y - center.y, 2) + pow(z - center.z, 2));
+			float distance = sqrt(pow(x - center.x, 2) + pow(z - center.z, 2));
+
+			if (distance < radius)
+			{
+				//terrain.PlaceBlock(x, 0, z, BLOCK_YELLOW_WOOL);
+				terrain.GenNoiseChunk({ (float)x, 1, (float)z }, VoxelTerrain::TerrainType::Terrain3D, octaves, frequency, persistence, 0.0f, 0.0f);
+
+			}
+
+		}
+	
 }
 
 void WorldLayer::OnImGuiRender()

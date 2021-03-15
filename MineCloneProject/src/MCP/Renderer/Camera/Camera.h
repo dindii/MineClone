@@ -32,6 +32,7 @@ namespace MC
 		inline void SetCameraPitch(float Pitch) { UpdateCameraVectors(); m_Pitch = Pitch; }
 	
 		inline vec3 GetCameraTarget() const { return m_CameraTarget; }
+		inline vec3 GetCameraFacingDirection() const { return m_FacingDirection; }
 		inline vec3 GetCameraUp() const { return m_CameraUp; }
 		inline vec3 GetCameraRight() const { return m_CameraRight; }
 		inline vec3 GetCameraPos() const { return m_CameraPos; }
@@ -49,8 +50,8 @@ namespace MC
 
 
 		void OnEvent(Event& e);
-
 	private:
+		vec3 m_FacingDirection;
 		vec3  m_DesiredPos;
 		bool  m_CameraLag = false;
 		float m_LagVal;
@@ -60,7 +61,6 @@ namespace MC
 		vec3 m_CameraUp;
 		vec3 m_CameraRight;
 		vec3 m_CameraPos;
-
 	private:
 		float m_Yaw, m_Pitch;
 

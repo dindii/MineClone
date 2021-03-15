@@ -16,8 +16,9 @@ namespace MC
 
 	class Application
 	{
-	public:
+	protected:
 		Application();
+	public:
 		virtual ~Application();
 
 		virtual void Run();
@@ -40,12 +41,14 @@ namespace MC
 	private:
 		static Application* s_Instance;
 		bool m_Running;
-		LayerStack m_LayerStack;
 		bool m_Minimized;
 		DeltaTime deltaTime;
 		bool wireframeMode = false;
 		bool lockCursor = true;
 
+		LayerStack m_LayerStack;
+		
+		//Fixed Layers
 		ImGuiLayer* m_ImGuiLayer;
 
 		MC::Debug::Logger* logger;

@@ -10,7 +10,7 @@ namespace MC
 
 		//For 3D
 		float Gen(const float x, const float y, const float z) const;
-		float GenOctave(const float x, const float y, const float z, const uint32_t octaves, float frequency, const float persistence, const float xOffset, const float yOffset) const;
+		float GenOctave(const float x, const float y, const float z, const uint32_t octaves, float frequency, const float persistence, const float xOffset, const float yOffset, const float zOffset) const;
 	private:
 		float fade(const float t) const;
 		int inc(int num) const;

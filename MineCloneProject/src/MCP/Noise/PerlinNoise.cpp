@@ -63,14 +63,14 @@ namespace MC
 	}
 
 	float PerlinNoise::GenOctave(const float x, const float y, const float z,
-								 const uint32_t octaves, float frequency, const float persistence, const float xOffset, const float yOffset) const
+								 const uint32_t octaves, float frequency, const float persistence, const float xOffset, const float yOffset, const float zOffset) const
 	{
 		float total = 0;
 		float amplitude = 1;
 		float maxValue = 0;			// Used for normalizing result to 0.0 - 1.0
 
 		for (uint32_t i = 0; i < octaves; i++) {
-			total += Gen((x + xOffset) * frequency, (y + yOffset) * frequency, z * frequency) * amplitude;
+			total += Gen((x + xOffset) * frequency, (y + yOffset) * frequency, (z + zOffset) * frequency) * amplitude;
 
 			maxValue += amplitude;
 
@@ -93,6 +93,7 @@ namespace MC
 		int xi = (int)x & 255;								// Calculate the "unit cube" that the point asked will be located in
 		int yi = (int)y & 255;								// The left bound is ( |_x_|,|_y_|,|_z_| ) and the right bound is that
 		int zi = (int)z & 255;								// plus 1.  Next we calculate the location (from 0.0 to 1.0) in that cube.
+
 		float xf = x - (int)x;								// We also fade the location to smooth the result.
 		float yf = y - (int)y;
 		float zf = z - (int)z;

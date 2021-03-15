@@ -1,4 +1,4 @@
-#include "mcpch.h"
+Ôªø#include "mcpch.h"
 #include "Chunk.h"
 #include "MCP/Renderer/RenderCommand.h"
 
@@ -85,6 +85,7 @@ namespace MC
 					if (!type)
 						continue;
 
+					//otimizar isso aqui!!!
 					CalcFrontAndBackFace(x, y, z, type, vertexBufferIterator);
 					CalcUpAndDownFace   (x, y, z, type, vertexBufferIterator);
 					CalcRightAndLeftFace(x, y, z, type, vertexBufferIterator);
@@ -301,7 +302,7 @@ namespace MC
 					uint32_t PreCalculatedIndex = CALC_INDEX(xx, yy, z, i);
 					uint32_t PreCalculatedBlocksIndex = CALC_INDEX_SIMPLE(xx, yy, z);
 
-					//O bloco È diferente do atual, È vazio ou n„o visivel? Se sim, n„o o processe
+					//O bloco √© diferente do atual, √© vazio ou n√£o visivel? Se sim, n√£o o processe
 					if (!blocks[PreCalculatedBlocksIndex] || (blocks[PreCalculatedBlocksIndex] != blocks[CALC_INDEX_SIMPLE(xx, y, z)] || blocks[PreCalculatedBlocksIndex] != blocks[CALC_INDEX_SIMPLE(x, yy, z)]) || VisitedBlocks[PreCalculatedIndex] || !isFaceVisible(xx, yy, z, face))
 						break;
 					
@@ -312,7 +313,7 @@ namespace MC
 	
 					textureID =  m_TexturesID[CALC_INDEX(x, y, z, i)];
 		
-					//Caso n„o seja, aumentamos o length, ou seja, mais um bloco ‡ direita que cubrimos.
+					//Caso n√£o seja, aumentamos o length, ou seja, mais um bloco √† direita que cubrimos.
 					length++;
 				}
 	
@@ -413,7 +414,7 @@ namespace MC
 					uint32_t PreCalculatedBlockIndex = CALC_INDEX_SIMPLE(x, yy, zz);
 
 
-					//O bloco È diferente do atual, È vazio ou n„o visivel? Se sim, n„o o processe
+					//O bloco √© diferente do atual, √© vazio ou n√£o visivel? Se sim, n√£o o processe
 					if (!blocks[PreCalculatedBlockIndex] || (blocks[PreCalculatedBlockIndex] != blocks[CALC_INDEX_SIMPLE(x, y, zz)] || blocks[PreCalculatedBlockIndex] != blocks[CALC_INDEX_SIMPLE(x, yy, z)]) || VisitedBlocks[PreCalculatedIndex] || !isFaceVisible(x, yy, zz, face))
 						break;
 
@@ -422,7 +423,7 @@ namespace MC
 
 					textureID = m_TexturesID[CALC_INDEX(x, y, z, i)];
 
-					//Caso n„o seja, aumentamos o length, ou seja, mais um bloco ‡ direita que cubrimos.
+					//Caso n√£o seja, aumentamos o length, ou seja, mais um bloco √† direita que cubrimos.
 					depth++;
 				}
 

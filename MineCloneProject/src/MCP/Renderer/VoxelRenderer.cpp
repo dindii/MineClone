@@ -109,15 +109,15 @@ namespace MC
 						center.y /= center.w;
  
 						//if the chunk is behind the camera, don't render it
-						if (center.z < (-CHUNK_SIZE / 1.5f))
+						if (center.z < (-10.0f / 1.5f))
 							continue;
 
 						//if the chunk is out of the camera bounds + margin, don't render it
-						if (fabsf(center.x) > 1 + fabsf(CHUNK_SIZE * 2 / center.w) || fabsf(center.y) > 1 + fabsf(CHUNK_SIZE * 2 / center.w))
+						if (fabsf(center.x) > 1 + fabsf(10.0f * 2 / center.w) || fabsf(center.y) > 1 + fabsf(10.0f * 2 / center.w))
 							continue;
  
 						//render distance 
-						if (distance > 200.0f)
+						if (distance > 150.0f)
 							continue;
 
  						v_Data->voxelShader.Bind();

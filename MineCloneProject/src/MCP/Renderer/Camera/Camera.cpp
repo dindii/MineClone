@@ -14,6 +14,9 @@ namespace MC
 		m_Projection =  mat4::Perspective(m_FOV /*zoom*/, AR, 0.1f, 100.0f);
 
 		m_CameraPos = position;
+		m_DesiredPos = m_CameraPos;
+		m_CameraTarget = m_DesiredPos;
+
 		UpdateCameraVectors();
 	}
 
@@ -31,8 +34,11 @@ namespace MC
 		m_CameraRotation *= mat4::Rotate(m_Yaw, vec3(0.0f, 1.0f, 0.0f));
 
 		m_CameraPosition *= mat4::Translate(-m_CameraPos);
-	    
+	 
 		m_ViewMatrix = m_CameraRotation * m_CameraPosition;
+
+		vec3 forward(m_ViewMatrix[2 + 0 * 4], m_ViewMatrix[2 + 1 * 4], m_ViewMatrix[2 + 2 * 4]);
+		m_FacingDirection = forward;
 	}
 
 	//For Free look fps camera
@@ -47,8 +53,10 @@ namespace MC
 		MC::vec3 up(m_ViewMatrix[1 + 0 * 4], m_ViewMatrix[1 + 1 * 4], m_ViewMatrix[1 + 2 * 4]);
 
 		MC::vec3 target = m_CameraTarget;
+		
 
 		target += ((forward * pos.z) + (strafe * pos.x)) + (up * pos.y);
+
 
 		m_CameraTarget = target;
 
