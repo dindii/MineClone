@@ -85,7 +85,6 @@ namespace MC
 					if (!type)
 						continue;
 
-					//otimizar isso aqui!!!
 					CalcFrontAndBackFace(x, y, z, type, vertexBufferIterator);
 					CalcUpAndDownFace   (x, y, z, type, vertexBufferIterator);
 					CalcRightAndLeftFace(x, y, z, type, vertexBufferIterator);
@@ -283,6 +282,9 @@ namespace MC
 		//Front = 0 and Back = 1
 		for (uint8_t i = 0; i < 2; i++)
 		{
+			if (VisitedBlocks[CALC_INDEX(x, y, z, i)] == true)
+				break;
+
 			uint8_t length = 0, height = 0;
 			uint32_t PreviousLength = 0;
 			
@@ -340,6 +342,9 @@ namespace MC
 		//Up = 2 and Down = 3
 		for (uint8_t i = 2; i < 4; i++)
 		{
+			if (VisitedBlocks[CALC_INDEX(x, y, z, i)] == true)
+				break;
+
 			uint8_t length = 0, depth = 0;
 			uint32_t PreviousLength = 0;
 
@@ -393,6 +398,9 @@ namespace MC
 		//Left = 4 and Right = 5
 		for (uint8_t i = 4; i < 6; i++)
 		{
+			if (VisitedBlocks[CALC_INDEX(x, y, z, i)] == true)
+				break;
+
 			uint8_t depth = 0, height = 0;
 			uint32_t PreviousDepth = 0;
 
