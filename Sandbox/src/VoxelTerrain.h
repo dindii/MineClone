@@ -5,6 +5,7 @@
 
 #include <unordered_map>
 
+//Our terrain block types, this could be in a general file for a broader use
 enum EBlockType : uint8_t
 {
 	BLOCK_AIR = 0,
@@ -39,35 +40,27 @@ public:
 	VoxelTerrain(uint32_t c_width, uint32_t c_height, uint32_t c_depth);
 	~VoxelTerrain();
 
-	enum class TerrainType : uint8_t
-	{
-		Terrain2D   = 2,
-		Terrain3D   = 3
-	};
-
-	void GenNoiseTerrain(TerrainType type, uint32_t octaves, float frequency, float persistence, float xOffset, float yOffset);
-	void GenNoiseChunk(uint32_t x, uint32_t y, uint32_t z, TerrainType type, uint32_t octaves, float frequency, float persistence, float xOffset, float yOffset);
-	void GenNoiseChunk(MC::vec3 ChunkPos, TerrainType type, uint32_t octaves, float frequency, float persistence, float xOffset, float yOffset);
+	void GenNoiseChunk(int32_t PositionX, int32_t PositionY, int32_t PositionZ, uint32_t octaves, float frequency, float persistence, float xOffset, float yOffset);
 	void GenFlatTerrain();
 
-	inline void ResizeTerrain(uint32_t newWidth, uint32_t newHeight, uint32_t newDepth) { width = newWidth; height = newHeight, depth = newDepth; }
+	inline void ResizeTerrain(uint32_t newWidth, uint32_t newHeight, uint32_t newDepth) { m_width = newWidth; m_height = newHeight, m_depth = newDepth; }
 
-	inline MC::ChunkManager* GetTerrainData() { return superChunk; }
-	inline MC::Texture2D& GetTerrainPreview() { return m_terrainPreviewTex; }
+	inline MC::ChunkManager* GetTerrainData() { return m_superChunk; }
 
 	void RemoveBlock(uint32_t x, uint32_t y, uint32_t z);
 	void PlaceBlock(uint32_t x, uint32_t y, uint32_t z, EBlockType type);
 
-	inline uint32_t GetWidth()  const { return width; }
-	inline uint32_t GetHeight() const { return height; }
-	inline uint32_t GetDepth()  const { return depth; }
+	inline uint32_t GetWidth()  const { return m_width; }
+	inline uint32_t GetHeight() const { return m_height; }
+	inline uint32_t GetDepth()  const { return m_depth; }
 
 	inline MC::BlockTexture2D* GetTexture(EBlockType block) { return  m_TerrainTextures[block]; }
 private:
-	uint32_t width, height, depth;
+	uint32_t m_width, m_height, m_depth;
 
-	MC::ChunkManager* superChunk; 
-	MC::Texture2D m_terrainPreviewTex;
+	//Probably this will be turned in some global variable when we get our world divided in regions
+	MC::ChunkManager* m_superChunk; 
 
+	//We will link block types with its textures in this terrain approach
 	std::unordered_map<EBlockType, MC::BlockTexture2D*> m_TerrainTextures;
 };

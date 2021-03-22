@@ -7,9 +7,9 @@
 namespace MC
 {
 	//#TODO: Make a global function to change the size of the chunk and superchunk
-	constexpr uint8_t CHUNK_SIZE = 15;
-	constexpr uint8_t CUBE_FACES = 6;
-	constexpr uint8_t FACE_VERTICES_NUMBER = 6;
+	constexpr const uint8_t CHUNK_SIZE = 15;
+	constexpr const uint8_t CUBE_FACES = 6;
+	constexpr const uint8_t FACE_VERTICES_NUMBER = 6;
 
 	struct Chunk
 	{
@@ -51,7 +51,7 @@ namespace MC
 		NeighboursChunks nc;
 
 		//Mesh and OpenGL details, this will be used by the Renderer and it will possibly be abstracted away further
-		uint32_t VBO;
+		uint32_t VBO = 0;
 		int elements;
 		bool changed;
 

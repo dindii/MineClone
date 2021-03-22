@@ -8,6 +8,9 @@ namespace MC
 
 	void RenderCommand::Draw(Chunk* chunk)
 	{
+		if (!chunk->VBO)
+			chunk->VBO = GenMesh(1);
+
 		if (chunk->changed)
 		{
 			chunk->update();

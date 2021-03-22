@@ -90,7 +90,7 @@ namespace MC
  				for (int z = 0; z < SUPER_CHUNK_SIZE; z++)
  				{
  					if (superchunk->c[x][y][z])
- 					{
+					{
  						mat4 model;
  						model = model.Translate(vec3(float((x)* CHUNK_SIZE), float((y)* CHUNK_SIZE), float((z)* CHUNK_SIZE)));
 					

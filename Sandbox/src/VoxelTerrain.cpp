@@ -1,17 +1,13 @@
 #include "mcpch.h"
 #include "VoxelTerrain.h"
 #include "MCP/Noise/PerlinNoise.h"
-#include "MCP/Renderer/Misc/PNGimageWriter.h"
-#include "MCP/Utils/Logger.h"
-
 #include "MCP/Renderer/Texture2D.h"
-#include "MCP/Utils/RandomNumberGenerator.h"
 
-VoxelTerrain::VoxelTerrain(uint32_t c_width, uint32_t c_height, uint32_t c_depth) : width(c_width), height(c_height), depth(c_depth),
-	m_terrainPreviewTex(0, width, height, 1)
+VoxelTerrain::VoxelTerrain(uint32_t c_width, uint32_t c_height, uint32_t c_depth) : m_width(c_width), m_height(c_height), m_depth(c_depth)
 {
-	superChunk   = new MC::ChunkManager;
+	m_superChunk = new MC::ChunkManager;
 
+	//As we don't have an asset manager yet, is the user responsability to acquire and release resource.
 	m_TerrainTextures[EBlockType::BLOCK_WATER] = new MC::BlockTexture2D("res/Textures/azul.png");
 	m_TerrainTextures[EBlockType::BLOCK_SAND]  = new MC::BlockTexture2D("res/Textures/sand.png");
 	m_TerrainTextures[EBlockType::BLOCK_SNOW]  = new MC::BlockTexture2D("res/Textures/branco.png");
@@ -20,29 +16,29 @@ VoxelTerrain::VoxelTerrain(uint32_t c_width, uint32_t c_height, uint32_t c_depth
 	m_TerrainTextures[EBlockType::BLOCK_WOOD]  = new MC::BlockTexture2D("res/Textures/wood/oak_wood.png");
 
 	m_TerrainTextures[EBlockType::BLOCK_GRASS] = new MC::BlockTexture2D
-													                   ("res/Textures/grass/grass_side.png",
-													                   "res/Textures/grass/grass_side.png",
-													                   "res/Textures/grass/grass_top.png",
-													                   "res/Textures/grass/grass_bottom.png",
-													                   "res/Textures/grass/grass_side.png",
-													                   "res/Textures/grass/grass_side.png");
+	("res/Textures/grass/grass_side.png",
+		"res/Textures/grass/grass_side.png",
+		"res/Textures/grass/grass_top.png",
+		"res/Textures/grass/grass_bottom.png",
+		"res/Textures/grass/grass_side.png",
+		"res/Textures/grass/grass_side.png");
 
-	m_TerrainTextures[EBlockType::BLOCK_BLACK_WOOL     ] = new MC::BlockTexture2D("res/Textures/wool/black_wool.png");
-	m_TerrainTextures[EBlockType::BLOCK_BLUE_WOOL      ] = new MC::BlockTexture2D("res/Textures/wool/blue_wool.png");
-	m_TerrainTextures[EBlockType::BLOCK_BROWN_WOOL     ] = new MC::BlockTexture2D("res/Textures/wool/brown_wool.png");
-	m_TerrainTextures[EBlockType::BLOCK_CYAN_WOOL      ] = new MC::BlockTexture2D("res/Textures/wool/cyan_wool.png");
-	m_TerrainTextures[EBlockType::BLOCK_GRAY_WOOL      ] = new MC::BlockTexture2D("res/Textures/wool/gray_wool.png");
-	m_TerrainTextures[EBlockType::BLOCK_GREEN_WOOL     ] = new MC::BlockTexture2D("res/Textures/wool/green_wool.png");
+	m_TerrainTextures[EBlockType::BLOCK_BLACK_WOOL]		 = new MC::BlockTexture2D("res/Textures/wool/black_wool.png");
+	m_TerrainTextures[EBlockType::BLOCK_BLUE_WOOL]		 = new MC::BlockTexture2D("res/Textures/wool/blue_wool.png");
+	m_TerrainTextures[EBlockType::BLOCK_BROWN_WOOL]		 = new MC::BlockTexture2D("res/Textures/wool/brown_wool.png");
+	m_TerrainTextures[EBlockType::BLOCK_CYAN_WOOL]		 = new MC::BlockTexture2D("res/Textures/wool/cyan_wool.png");
+	m_TerrainTextures[EBlockType::BLOCK_GRAY_WOOL]       = new MC::BlockTexture2D("res/Textures/wool/gray_wool.png");
+	m_TerrainTextures[EBlockType::BLOCK_GREEN_WOOL]      = new MC::BlockTexture2D("res/Textures/wool/green_wool.png");
 	m_TerrainTextures[EBlockType::BLOCK_LIGHT_BLUE_WOOL] = new MC::BlockTexture2D("res/Textures/wool/light_blue_wool.png");
 	m_TerrainTextures[EBlockType::BLOCK_LIGHT_GRAY_WOOL] = new MC::BlockTexture2D("res/Textures/wool/light_gray_wool.png");
-	m_TerrainTextures[EBlockType::BLOCK_LIME_WOOL      ] = new MC::BlockTexture2D("res/Textures/wool/lime_wool.png");
-	m_TerrainTextures[EBlockType::BLOCK_MAGENTA_WOOL   ] = new MC::BlockTexture2D("res/Textures/wool/magenta_wool.png");
-	m_TerrainTextures[EBlockType::BLOCK_ORANGE_WOOL    ] = new MC::BlockTexture2D("res/Textures/wool/orange_wool.png");
-	m_TerrainTextures[EBlockType::BLOCK_PINK_WOOL      ] = new MC::BlockTexture2D("res/Textures/wool/pink_wool.png");
-	m_TerrainTextures[EBlockType::BLOCK_PURPLE_WOOL    ] = new MC::BlockTexture2D("res/Textures/wool/purple_wool.png");
-	m_TerrainTextures[EBlockType::BLOCK_RED_WOOL       ] = new MC::BlockTexture2D("res/Textures/wool/red_wool.png");
-	m_TerrainTextures[EBlockType::BLOCK_WHITE_WOOL     ] = new MC::BlockTexture2D("res/Textures/wool/white_wool.png");
-	m_TerrainTextures[EBlockType::BLOCK_YELLOW_WOOL    ] = new MC::BlockTexture2D("res/Textures/wool/yellow_wool.png");
+	m_TerrainTextures[EBlockType::BLOCK_LIME_WOOL]		 = new MC::BlockTexture2D("res/Textures/wool/lime_wool.png");
+	m_TerrainTextures[EBlockType::BLOCK_MAGENTA_WOOL]	 = new MC::BlockTexture2D("res/Textures/wool/magenta_wool.png");
+	m_TerrainTextures[EBlockType::BLOCK_ORANGE_WOOL]	 = new MC::BlockTexture2D("res/Textures/wool/orange_wool.png");
+	m_TerrainTextures[EBlockType::BLOCK_PINK_WOOL]	     = new MC::BlockTexture2D("res/Textures/wool/pink_wool.png");
+	m_TerrainTextures[EBlockType::BLOCK_PURPLE_WOOL]	 = new MC::BlockTexture2D("res/Textures/wool/purple_wool.png");
+	m_TerrainTextures[EBlockType::BLOCK_RED_WOOL]		 = new MC::BlockTexture2D("res/Textures/wool/red_wool.png");
+	m_TerrainTextures[EBlockType::BLOCK_WHITE_WOOL]		 = new MC::BlockTexture2D("res/Textures/wool/white_wool.png");
+	m_TerrainTextures[EBlockType::BLOCK_YELLOW_WOOL]	 = new MC::BlockTexture2D("res/Textures/wool/yellow_wool.png");
 }
 
 VoxelTerrain::~VoxelTerrain()
@@ -51,122 +47,83 @@ VoxelTerrain::~VoxelTerrain()
 		delete m_TerrainTextures[(EBlockType)x];
 }
 
-void VoxelTerrain::GenNoiseTerrain(TerrainType type, uint32_t octaves, float frequency, float persistence, float xOffset, float yOffset)
+void VoxelTerrain::GenNoiseChunk(int32_t PositionX, int32_t PositionY, int32_t PositionZ, uint32_t octaves, float frequency, float persistence, float xOffset, float yOffset)
 {
-	MC::PerlinNoise Noise;
-	
-	MC::PNGimageWriter terrainPreview("terrainpreview.png", width, height);
-	
-	float xf = (float)width;
-	float yf = (float)height;
-	float zf = (float)depth;
-	
-	float should = 0.0f; //This will be part of the process to select which type of block will be spawned.
-	
-	for (uint32_t x = 0; x < width; x++)
-	{
-		for (uint32_t y = 0; y < height; y++)
-		{
+	//We don't have negative chunk positions in our array but we do have negative world positions, so we must bea able to recieve negative numbers and then
+	//deny them. Otherwise we would get a large number (by the unsigned conversion) that would be harder to filter since it would not be negative.
+	if (PositionX <= 0 || PositionY <= 0 || PositionZ <= 0)
+		return;
 
-			if (type == TerrainType::Terrain2D)
-				should = (float)Noise.GenOctave(x / xf, 0.0f, y / yf, octaves, frequency, persistence, xOffset, yOffset, 0.0f);
+	MC::Chunk* ActualChunk = m_superChunk->GetChunk(PositionX, PositionY, PositionZ);
 
-			terrainPreview.Set(y, x, should);
-
-			for (uint32_t z = 0; z < depth; z++)
-			{
-				if (type == TerrainType::Terrain3D)
-					should = (float)Noise.GenOctave(x / xf, y / yf, z / zf, octaves, frequency, persistence, xOffset, yOffset, 0.0f);
-
-				if ((should * yf) > y)
-				{
-					if (should > 0.0f  &&  should < 0.4f)       superChunk->Set(x, y, z, BLOCK_WATER, m_TerrainTextures[BLOCK_WATER]);
-					else if (should > 0.4f  &&  should < 0.45f) superChunk->Set(x, y, z, BLOCK_SAND,  m_TerrainTextures[BLOCK_SAND]);
-					else if (should > 0.45f &&  should < 0.60f) superChunk->Set(x, y, z, BLOCK_GRASS, m_TerrainTextures[BLOCK_GRASS]);
-					else if (should > 0.60f &&  should < 0.8f)  superChunk->Set(x, y, z, BLOCK_STONE, m_TerrainTextures[BLOCK_STONE]);
-					else if (should > 0.8f  &&  should < 1.0f)  superChunk->Set(x, y, z, BLOCK_SNOW,  m_TerrainTextures[BLOCK_SNOW]);
-				}
-
-				else superChunk->Set(x, y, z, BLOCK_AIR);
-			}
-		}
-	}
-	
-	terrainPreview.Write();
-	m_terrainPreviewTex.SetData(terrainPreview.GetData());
-}
-
-void VoxelTerrain::GenNoiseChunk(uint32_t xChunk, uint32_t yChunk, uint32_t zChunk, TerrainType type, uint32_t octaves, float frequency, float persistence, float xOffset, float yOffset)
-{
-	MC::Chunk* ActualChunk = superChunk->GetChunk(xChunk, yChunk, zChunk);
-
+	//If we already have a generated or loaded chunk, skip.
 	if (ActualChunk)
 		return;
 
-	int CHUNK_SIZE = 15; //debug
-
-	ActualChunk = superChunk->CreateChunk(xChunk / CHUNK_SIZE, yChunk / CHUNK_SIZE, zChunk / CHUNK_SIZE);
-
+	
 	MC::PerlinNoise Noise;
-	float should = 0.0f;
+	
+	//We will store the noise value here and use it to decide if a block will be place in the position or not
+	float ShouldPlaceBlock = 0.0f;
 
-	float xf = (float)CHUNK_SIZE;
-	float yf = (float)CHUNK_SIZE;
-	float zf = (float)CHUNK_SIZE;
+	//This conversion is necessary because ChunkManager::Set(x, y, z) uses modulus operator and then divides by the chunk size
+	//So we must make some conversions first for a more accurate value
+	uint32_t  ChunkX = PositionX / MC::CHUNK_SIZE;
+	uint32_t  ChunkY = PositionY / MC::CHUNK_SIZE;
+	uint32_t  ChunkZ = PositionZ / MC::CHUNK_SIZE;
 
-	for (uint32_t x = 0; x < CHUNK_SIZE; x++)
+	uint32_t ChunkXLoc = ChunkX * MC::CHUNK_SIZE;
+	uint32_t ChunkYLoc = ChunkY * MC::CHUNK_SIZE;
+	uint32_t ChunkZLoc = ChunkZ * MC::CHUNK_SIZE;
+
+	//We need float values for our noise to work correctly
+	float fWidth  =  (float)m_width;
+	float fHeight =  (float)m_height;
+	float fDepth  =  (float)m_depth;
+
+	for (uint32_t x = 0; x < fWidth; x++)
 	{
-		for (uint32_t y = 0; y < CHUNK_SIZE; y++)
+		for (uint32_t y = 0; y < fHeight; y++)
 		{
-			for (uint32_t z = 0; z < CHUNK_SIZE; z++)
+			for (uint32_t z = 0; z < fDepth; z++)
 			{
-				should = (float)Noise.GenOctave(x / xf, y / yf, z / zf, octaves, frequency, persistence, (xChunk / CHUNK_SIZE), yOffset, (zChunk / CHUNK_SIZE));
+				//We use the PositionX and PositionZ in the world so we can offset our noise and make the world procedural.
+				ShouldPlaceBlock = (float)Noise.GenOctave(x / fWidth, y / fHeight, z / fDepth, octaves, frequency, persistence, (PositionX / MC::CHUNK_SIZE), yOffset, (PositionZ / MC::CHUNK_SIZE));
 
-
-				if ((should * yf) > y)
+				//Values defined by ourselves, you can make a lot of stuff with creativity.
+				if ((ShouldPlaceBlock * fHeight) > y)
 				{
-					if (should > 0.0f  &&  should < 0.4f)       ActualChunk->set(x, y, z, BLOCK_WATER, m_TerrainTextures[BLOCK_WATER]);
-					else if (should > 0.4f  &&  should < 0.45f) ActualChunk->set(x, y, z, BLOCK_SAND, m_TerrainTextures[BLOCK_SAND]);
-					else if (should > 0.45f &&  should < 0.60f) ActualChunk->set(x, y, z, BLOCK_GRASS, m_TerrainTextures[BLOCK_GRASS]);
-					else if (should > 0.60f &&  should < 0.8f)  ActualChunk->set(x, y, z, BLOCK_STONE, m_TerrainTextures[BLOCK_STONE]);
-					else if (should > 0.8f  &&  should < 1.0f)  ActualChunk->set(x, y, z, BLOCK_SNOW, m_TerrainTextures[BLOCK_SNOW]);
+					if (ShouldPlaceBlock > 0.0f  &&  ShouldPlaceBlock < 0.4f)       m_superChunk->Set(x + ChunkXLoc, y + ChunkYLoc, z + ChunkZLoc, BLOCK_WATER, m_TerrainTextures[BLOCK_WATER]);
+					else if (ShouldPlaceBlock > 0.4f  &&  ShouldPlaceBlock < 0.45f) m_superChunk->Set(x + ChunkXLoc, y + ChunkYLoc, z + ChunkZLoc, BLOCK_SAND, m_TerrainTextures[BLOCK_SAND]);
+					else if (ShouldPlaceBlock > 0.45f &&  ShouldPlaceBlock < 0.60f) m_superChunk->Set(x + ChunkXLoc, y + ChunkYLoc, z + ChunkZLoc, BLOCK_GRASS, m_TerrainTextures[BLOCK_GRASS]);
+					else if (ShouldPlaceBlock > 0.60f &&  ShouldPlaceBlock < 0.8f)  m_superChunk->Set(x + ChunkXLoc, y + ChunkYLoc, z + ChunkZLoc, BLOCK_STONE, m_TerrainTextures[BLOCK_STONE]);
+					else if (ShouldPlaceBlock > 0.8f  &&  ShouldPlaceBlock < 1.0f)  m_superChunk->Set(x + ChunkXLoc, y + ChunkYLoc, z + ChunkZLoc, BLOCK_SNOW, m_TerrainTextures[BLOCK_SNOW]);
 				}
 
-				else ActualChunk->set(x, y, z, BLOCK_AIR, m_TerrainTextures[BLOCK_WATER]);
-
+				//If it shoudn't be a block, set it as an air block
+				else m_superChunk->Set(x + ChunkXLoc, y, z + ChunkZLoc, BLOCK_AIR, m_TerrainTextures[BLOCK_WATER]);
 			}
 		}
 	}
 }
 
-
-void VoxelTerrain::GenNoiseChunk(MC::vec3 ChunkPos, TerrainType type, uint32_t octaves, float frequency, float persistence, float xOffset, float yOffset)
-{
-	if (ChunkPos.x < 0 || ChunkPos.y < 0 || ChunkPos.z < 0)
-		return;
-
-	uint32_t xChunk = (uint32_t)ChunkPos.x;
-	uint32_t yChunk = (uint32_t)ChunkPos.y;
-	uint32_t zChunk = (uint32_t)ChunkPos.z;
-
-	GenNoiseChunk(xChunk, yChunk, zChunk, type, octaves, frequency, persistence, xOffset, yOffset);
-}
-
+//Gen a cube terrain for debug or test purposes
 void VoxelTerrain::GenFlatTerrain()
 {
-	for (uint32_t y = 0; y < height; y++)
-		for (uint32_t z = 0; z < depth; z++)
-			for (uint32_t x = 0; x < width; x++)
-				superChunk->Set(x, y, z, BLOCK_WATER, m_TerrainTextures[BLOCK_WATER]);
+	for (uint32_t y = 0; y < m_height; y++)
+		for (uint32_t z = 0; z < m_depth; z++)
+			for (uint32_t x = 0; x < m_width; x++)
+				m_superChunk->Set(x, y, z, BLOCK_WATER, m_TerrainTextures[BLOCK_WATER]);
 }
 
+//Turns the block into an air block
 void VoxelTerrain::RemoveBlock(uint32_t x, uint32_t y, uint32_t z)
 {
-	superChunk->Set(x, y, z, BLOCK_AIR);
+	m_superChunk->Set(x, y, z, BLOCK_AIR);
 }
 
+//Place a block with an type and it will be placed with its correspondent texture
 void VoxelTerrain::PlaceBlock(uint32_t x, uint32_t y, uint32_t z, EBlockType type)
 {
-	superChunk->Set(x, y, z, type, m_TerrainTextures[type]);
+	m_superChunk->Set(x, y, z, type, m_TerrainTextures[type]);
 }
-
