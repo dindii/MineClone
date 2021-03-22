@@ -281,8 +281,10 @@ void WorldLayer::MovePlayer(MC::DeltaTime deltaTime)
 
 void WorldLayer::LookAround()
 {
+	//Get the mouse delta, i.e: the relation between the last mouse position and the actual position
 	MC::vec2 Delta = MC::InputHandler::GetMouseDelta();
 
+	//Takes this delta, multiply by the current mouse sensitivity and applies to the camera pitch and yaw
 	camera.SetCameraPitch(MC::toRadians(Delta.y * cameraSens));
 	camera.SetCameraYaw(MC::toRadians(Delta.x * cameraSens));
 }
