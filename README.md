@@ -18,21 +18,28 @@ Briefing:
 -------------------
 Features:
   Greedy Meshing Algorithm. (naive approach, it really needs a remake more related to the articles)
+  
   Texture, Normals, Postions and data for texture tilling factor are all packed, thus leading at 4 bytes per vertex.
+  
   Easy to set a voxel with texture, to make a terrain using noise, to remove or place blocks using Trace functions etc.
+  
   Clean user workflow.
+  
   Easy to add ImGui code for debugging or so.
   
 -------------------
 Compatibility:
+
   Windows/OpenGL
 
 -------------------
 
 Dependencies: 
   Glad,
+  
   Imgui,
-  stbi
+  
+  stbi.
 
 -------------------
 HOW TO BUILD:
