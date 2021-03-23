@@ -17,10 +17,11 @@ Briefing:
 
 -------------------
 Features:
-  Greedy Meshing Algorithm (naive approach, it really needs a remake more related to the articles)
+  Greedy Meshing Algorithm. (naive approach, it really needs a remake more related to the articles)
   Texture, Normals, Postions and data for texture tilling factor are all packed, thus leading at 4 bytes per vertex.
-  Easy to set a voxel with texture, to make a terrain using noise, to remove or place blocks using Trace functions etc
-  Clean user workflow
+  Easy to set a voxel with texture, to make a terrain using noise, to remove or place blocks using Trace functions etc.
+  Clean user workflow.
+  Easy to add ImGui code for debugging or so.
   
 -------------------
 Compatibility:
@@ -43,8 +44,12 @@ HOW TO BUILD:
 -------------------
 
 
-![The greedy is applied to the whole terrain](https://imgur.com/UWpI43O)
+![The greedy is applied to the whole terrain](https://i.imgur.com/UWpI43O.png)
 
-![Two types of voxels using greedy](https://imgur.com/BgL1c8g)
+![Two types of voxels using greedy](https://i.imgur.com/BgL1c8g.png)
 
-![Greedy rearranging after block removed](https://imgur.com/mGiRmv3)
+![Greedy rearranging after block removed](https://i.imgur.com/mGiRmv3.png)
+
+[![Minecraft Terrain Clone Overview](http://img.youtube.com/vi/9Lc9JFJrxwg/0.jpg)](http://www.youtube.com/watch?v=9Lc9JFJrxwg "Minecraft Terrain Clone Overview")
+
+[![Minecraft Terrain Clone Overview](http://img.youtube.com/vi/mjCKv8ObIYM/0.jpg)](http://www.youtube.com/watch?v=mjCKv8ObIYM "Minecraft Terrain Clone Overview")
