@@ -49,6 +49,13 @@ HOW TO BUILD:
   e.g in a .bat file for visual studio 2017: call vendor\bin\premake\premake5.exe vs2017
 
 -------------------
+Controls:
+  
+  F1 - Wireframe mode
+  
+  F2 - Lock/Unlock mouse
+  
+-------------------
 
 IMAGES:
 ![The greedy is applied to the whole terrain](https://i.imgur.com/UWpI43O.png)
