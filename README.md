@@ -43,12 +43,15 @@ HOW TO BUILD:
 
 -------------------
 
-
+IMAGES:
 ![The greedy is applied to the whole terrain](https://i.imgur.com/UWpI43O.png)
 
 ![Two types of voxels using greedy](https://i.imgur.com/BgL1c8g.png)
 
 ![Greedy rearranging after block removed](https://i.imgur.com/mGiRmv3.png)
+
+-------------------
+VIDEOS:
 
 [![Minecraft Terrain Clone Overview](http://img.youtube.com/vi/9Lc9JFJrxwg/0.jpg)](http://www.youtube.com/watch?v=9Lc9JFJrxwg "Minecraft Terrain Clone Overview")
 
