@@ -1,6 +1,7 @@
 # MineClone
 
-Learning purposes project.
+The purpose of this project is to learn more about architecture in general, this is, main loops, layers, inputs and these sort of stuff present in a interactive real time software.
+I have another two projects being dev, one for Vulkan and another for Raytracing, i surely will mix the knowledge of those three projects in one big pbr renderer.
 
 -------------------
  @-The Minecraft map clone is in the src folder inside SandBox folder. 
